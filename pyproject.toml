@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "keytrainer"
+version = "0.1.0"
+description = "Keyboard trainer"
+authors = ["Климов Олег <klimovole@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+black = "^24.0"
+flake8 = "^7.0"
+pre-commit = "^3.0"
+flake8-docstrings = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
