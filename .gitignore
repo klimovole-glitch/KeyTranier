@@ -1,12 +1,16 @@
 __pycache__/
 *.py[cod]
-*.egg-info/
 .venv/
-venv/
-*.db
-*.db.bak
-*.db.corrupted_*
-*.log
-*.csv
 .pytest_cache/
-.coverage
+build/
+dist/
+*.spec
+# runtime files of the application
+keytrainer.db
+keytrainer.db.bak
+keytrainer.db.corrupted_*
+keytrainer.log
+*.csv
+.idea/
+.vscode/
+settings.json
