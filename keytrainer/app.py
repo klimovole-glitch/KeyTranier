@@ -9,6 +9,7 @@ from tkinter import messagebox
 
 from keytrainer.config import APP_NAME, DB_PATH, SETTINGS_PATH, setup_logging
 from keytrainer.controllers.app_state import AppState
+from keytrainer.controllers.stats_controller import StatsController
 from keytrainer.controllers.training_controller import (
     ResultsController,
     TrainingController,
@@ -23,6 +24,7 @@ from keytrainer.data.repositories import (
     UserRepository,
     WordRepository,
 )
+from keytrainer.engine.analytics_engine import AnalyticsEngine
 from keytrainer.engine.exercise_generator import (
     ExerciseGenerator,
     RepositoryWordSource,
@@ -32,6 +34,7 @@ from keytrainer.labels import LAYOUT_TITLES
 from keytrainer.views.dialogs.about_dialog import AboutDialog
 from keytrainer.views.main_window import MainWindow
 from keytrainer.views.screens.results_screen import ResultsScreen
+from keytrainer.views.screens.stats_screen import StatsScreen
 from keytrainer.views.screens.training_screen import TrainingScreen
 from keytrainer.views.theme import ThemeManager
 
@@ -93,6 +96,7 @@ class Application:
             self.repos.sessions, self.repos.keys, self.repos.layouts
         )
         self._build_training(ExerciseGenerator(source))
+        self._build_stats()
         self.state.subscribe(self._on_user_changed)
         self._on_user_changed(user)
 
@@ -123,6 +127,17 @@ class Application:
         self.window.add_screen(
             "results", "результаты", self.results_view, results, in_menu=False
         )
+
+    def _build_stats(self) -> None:
+        """Create the statistics screen (heatmap and problem keys)."""
+        analytics = AnalyticsEngine(
+            self.repos.key_stats, self.repos.keys, self.repos.sessions
+        )
+        view = StatsScreen(self.window.content, self.theme)
+        controller = StatsController(
+            self.root, view, self.state, analytics, self.training, self.window.show
+        )
+        self.window.add_screen("stats", "статистика", view, controller)
 
     def _show_results(self, result) -> None:
         """Open the results card.
