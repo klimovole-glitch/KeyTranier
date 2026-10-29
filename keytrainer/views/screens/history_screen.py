@@ -73,6 +73,17 @@ def use_bundled_font() -> None:
     rcParams["font.family"] = ["JetBrains Mono", "DejaVu Sans Mono", "monospace"]
 
 
+def set_date_axis(axis, dates) -> None:
+    """Label the time axis: days, or hours when all sessions are on one day.
+
+    Args:
+        axis: Matplotlib axis.
+        dates: Dates of the points.
+    """
+    one_day = len({d.date() for d in dates}) == 1 and len(dates) > 1
+    axis.xaxis.set_major_formatter(DateFormatter("%H:%M" if one_day else "%d.%m"))
+
+
 COLUMNS = {
     "started_at": ("дата и время", 190),
     "exercise_mode": ("режим", 230),
@@ -419,7 +430,7 @@ class HistoryScreen(tk.Frame):
             else:  # one session: a week around it instead of a random range
                 day = date2num(data.dates[0])
                 wpm_axis.set_xlim(day - 3, day + 3)
-            wpm_axis.xaxis.set_major_formatter(DateFormatter("%d.%m"))
+            set_date_axis(wpm_axis, data.dates)
             lines = wpm_axis.get_lines() + err_axis.get_lines()
             legend = wpm_axis.legend(
                 lines,
