@@ -52,6 +52,7 @@ class ConfirmOverlay:
         self.confirmed = False
         self.layer = DimLayer(self.root, self._client_area)
         self.panel: tk.Toplevel | None = None
+        self._geometry = ""
 
     def _client_area(self) -> tuple[int, int, int, int]:
         """The whole main window.
@@ -96,7 +97,12 @@ class ConfirmOverlay:
         panel.bind("<Escape>", lambda _e: self._cancel())
         panel.bind("<Return>", lambda _e: self._confirm())
         self._place_panel()
-        follow = self.root.bind("<Configure>", lambda _e: self._place_panel(), add="+")
+        panel.lift()
+        follow = self.root.bind(
+            "<Configure>",
+            lambda e: e.widget is self.root and self._place_panel(),
+            add="+",
+        )
         self.layer.show()
         if transparent:
             Animator(panel).run(
@@ -149,8 +155,10 @@ class ConfirmOverlay:
             width, height = px(640), px(240)
             x = self.root.winfo_rootx() + (self.root.winfo_width() - width) // 2
             y = self.root.winfo_rooty() + (self.root.winfo_height() - height) // 3
-        panel.geometry(f"{width}x{height}+{x}+{y}")
-        panel.lift()
+        geometry = f"{width}x{height}+{x}+{y}"
+        if geometry != self._geometry:  # see DimLayer.place: avoid a loop
+            self._geometry = geometry
+            panel.geometry(geometry)
 
     def _confirm(self) -> None:
         """Close with "yes"."""

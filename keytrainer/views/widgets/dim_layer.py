@@ -56,6 +56,7 @@ class DimLayer:
         self._current = 0.0
         self._animator = Animator(root)
         self._bind_id: str | None = None
+        self._geometry = ""
 
     def show(self) -> None:
         """Create the layer and fade it in."""
@@ -71,8 +72,10 @@ class DimLayer:
                 window.bind("<KeyPress>", self.on_key)
             self.window = window
             self._current = 0.0
+            self._geometry = ""
             self._bind_id = self.root.bind("<Configure>", self._follow, add="+")
         self.place()
+        self.window.lift(self.root)
         self._fade(self.alpha)
 
     def place(self) -> None:
@@ -83,15 +86,25 @@ class DimLayer:
         width, height = max(1, width), max(1, height)
         left = self.root.winfo_rootx() + x
         top = self.root.winfo_rooty() + y
-        self.window.geometry(f"{width}x{height}+{left}+{top}")
-        self.window.lift(self.root)
+        geometry = f"{width}x{height}+{left}+{top}"
+        # Only a real change is applied: moving or raising a window makes
+        # Windows send <Configure> to the main window again, and reacting
+        # to that endlessly froze the program.
+        if geometry != self._geometry:
+            self._geometry = geometry
+            self.window.geometry(geometry)
 
-    def _follow(self, _event: tk.Event) -> None:
+    def _follow(self, event: tk.Event) -> None:
         """Move the layer when the main window moves or changes size.
 
+        The binding on the main window also receives <Configure> of every
+        widget inside it; those are ignored.
+
         Args:
-            _event: Tk configure event.
+            event: Tk configure event.
         """
+        if event.widget is not self.root:
+            return
         if self.window is not None and self.window.winfo_exists():
             self.place()
 
