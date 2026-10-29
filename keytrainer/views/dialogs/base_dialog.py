@@ -2,7 +2,10 @@
 
 import tkinter as tk
 
+from keytrainer.views.animation import Animator
 from keytrainer.views.theme import ThemeManager
+
+DIALOG_FADE_MS = 180
 
 
 class BaseDialog(tk.Toplevel):
@@ -33,6 +36,21 @@ class BaseDialog(tk.Toplevel):
         x = parent.winfo_rootx() + (parent.winfo_width() - self.winfo_width()) // 2
         y = parent.winfo_rooty() + (parent.winfo_height() - self.winfo_height()) // 3
         self.geometry(f"+{max(x, 0)}+{max(y, 0)}")
+        self._fade_in()
         self.grab_set()
         self.focus_set()
         self.wait_window()
+
+    def _fade_in(self) -> None:
+        """Make the window appear smoothly (transparency 0 -> 1).
+
+        Some Linux window managers do not support transparency; then the
+        window simply appears at once.
+        """
+        try:
+            self.attributes("-alpha", 0.0)
+        except tk.TclError:
+            return
+        Animator(self).run(
+            "alpha", DIALOG_FADE_MS, lambda t: self.attributes("-alpha", t)
+        )

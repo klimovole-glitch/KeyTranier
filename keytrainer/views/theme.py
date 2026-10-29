@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from tkinter import font as tkfont
 
 from keytrainer.data.models import Theme
+from keytrainer.views.animation import Animator, ease_in_out, mix_colors
+
+THEME_FADE_MS = 320
 
 MONO_FAMILIES = ("JetBrains Mono", "Consolas", "DejaVu Sans Mono", "Courier New")
 
@@ -35,17 +38,31 @@ class Palette:
     heat_empty: str
 
 
+COLOR_FIELDS = (
+    "bg",
+    "surface",
+    "surface_active",
+    "border",
+    "text",
+    "dim",
+    "muted",
+    "error",
+    "success",
+    "selection",
+    "heat_empty",
+)
+
 PALETTES = {
     Theme.DARK: Palette(
-        bg="#18181a",
-        surface="#1f1f22",
-        surface_active="#36363a",
-        border="#2c2c30",
-        text="#e8e8ea",
-        dim="#5c5c61",
-        muted="#8a8a90",
-        error="#e07a6e",
-        success="#86b47f",
+        bg="#17171a",
+        surface="#222226",
+        surface_active="#38383e",
+        border="#2c2c31",
+        text="#e6e6ea",
+        dim="#6e6e78",
+        muted="#9a9aa4",
+        error="#c97b7b",
+        success="#8fb59b",
         selection="#26262a",
         heat_saturation=0.45,
         heat_value=0.42,
@@ -121,6 +138,7 @@ class ThemeManager:
         )
         self._styled: list[tuple[tk.Misc, dict[str, str]]] = []
         self._listeners: list[Callable[[Palette], None]] = []
+        self._animator = Animator(root)
 
     def style(self, widget: tk.Misc, **roles: str) -> tk.Misc:
         """Color a widget now and every time the theme changes.
@@ -147,22 +165,43 @@ class ThemeManager:
     def set_theme(self, theme: Theme, font_size: int) -> None:
         """Switch the palette and the exercise font size.
 
+        Colors of ordinary widgets flow smoothly from the old palette to the
+        new one; canvases and the chart are redrawn once at the end.
+
         Args:
             theme: New theme.
             font_size: New size of the exercise text.
         """
+        old = self.palette
         self.theme = Theme(theme)
         self.palette = PALETTES[self.theme]
         self.fonts["text"].configure(size=font_size)
-        self._root.configure(bg=self.palette.bg)
-        alive = []
-        for widget, roles in self._styled:
-            if widget.winfo_exists():
-                self._apply(widget, roles)
-                alive.append((widget, roles))
-        self._styled = alive
-        for callback in self._listeners:
-            callback(self.palette)
+        self._styled = [(w, r) for w, r in self._styled if w.winfo_exists()]
+        if old == self.palette:
+            return
+        new = self.palette
+
+        def step(t: float) -> None:
+            mixed = {
+                field: mix_colors(getattr(old, field), getattr(new, field), t)
+                for field in COLOR_FIELDS
+            }
+            self._root.configure(bg=mixed["bg"])
+            for widget, roles in self._styled:
+                if widget.winfo_exists():
+                    widget.configure(
+                        **{option: mixed[role] for option, role in roles.items()}
+                    )
+
+        def done() -> None:
+            self._root.configure(bg=new.bg)
+            for widget, roles in self._styled:
+                if widget.winfo_exists():
+                    self._apply(widget, roles)
+            for callback in self._listeners:
+                callback(new)
+
+        self._animator.run("theme", THEME_FADE_MS, step, done, easing=ease_in_out)
 
     def _apply(self, widget: tk.Misc, roles: dict[str, str]) -> None:
         """Configure widget options from the palette.

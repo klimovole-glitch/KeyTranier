@@ -6,13 +6,15 @@ from datetime import datetime
 from tkinter import ttk
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.dates import DateFormatter
+from matplotlib.dates import DateFormatter, date2num
 from matplotlib.figure import Figure
 
 from keytrainer.data.models import Session
 from keytrainer.engine.history_service import ChartData, HistorySummary
 from keytrainer.labels import MODE_TITLES, format_duration, format_number
+from keytrainer.views.animation import Animator, ease_in_out, mix_colors
 from keytrainer.views.theme import Palette, ThemeManager
+from keytrainer.views.widgets.message import show_animated_message
 from keytrainer.views.widgets.text_button import TextButton
 
 COLUMNS = {
@@ -24,6 +26,8 @@ COLUMNS = {
 }
 INSERT_CHUNK = 400
 TABLE_ROWS = 9
+CHART_MS = 650
+CHART_FRAME_MS = 33
 
 
 class HistoryScreen(tk.Frame):
@@ -42,6 +46,8 @@ class HistoryScreen(tk.Frame):
         self.callbacks: dict[str, Callable] = {}
         self._chart_data: ChartData | None = None
         self._insert_job: str | None = None
+        self._progress = 1.0
+        self.animator = Animator(self)
         body = theme.frame(self)
         body.place(relx=0.5, rely=0.47, anchor="center")
         self._build_summary(body)
@@ -212,7 +218,14 @@ class HistoryScreen(tk.Frame):
             data: Smoothed series.
         """
         self._chart_data = data
-        self._draw_chart()
+
+        def step(t: float) -> None:
+            self._progress = t
+            self._draw_chart()
+
+        self.animator.run(
+            "chart", CHART_MS, step, easing=ease_in_out, frame_ms=CHART_FRAME_MS
+        )
 
     def _draw_chart(self) -> None:
         """Draw the chart with the colors of the current theme."""
@@ -227,9 +240,10 @@ class HistoryScreen(tk.Frame):
         wpm_axis.grid(axis="y", color=palette.border, linewidth=0.6)
         data = self._chart_data
         if data and data.dates:
+            dates, wpm, errors = grow_series(data, self._progress)
             wpm_axis.plot(
-                data.dates,
-                data.wpm,
+                dates,
+                wpm,
                 color=palette.text,
                 linewidth=1.4,
                 marker="o",
@@ -237,8 +251,8 @@ class HistoryScreen(tk.Frame):
                 label="wpm",
             )
             err_axis.plot(
-                data.dates,
-                data.error_rate,
+                dates,
+                errors,
                 color=palette.muted,
                 linewidth=1.1,
                 linestyle="--",
@@ -246,8 +260,10 @@ class HistoryScreen(tk.Frame):
                 markersize=2,
                 label="% ошибок",
             )
-            wpm_axis.set_ylim(bottom=0)
-            err_axis.set_ylim(bottom=0)
+            wpm_axis.set_ylim(0, max(data.wpm) * 1.15 or 1)
+            err_axis.set_ylim(0, max(data.error_rate) * 1.15 or 1)
+            if len(data.dates) > 1:
+                wpm_axis.set_xlim(data.dates[0], data.dates[-1])
             wpm_axis.xaxis.set_major_formatter(DateFormatter("%d.%m"))
             wpm_axis.text(
                 1.06,
@@ -281,6 +297,19 @@ class HistoryScreen(tk.Frame):
             self.after_cancel(self._insert_job)
         self.table.delete(*self.table.get_children())
         self._insert_chunk(list(sessions), 0)
+        palette = self.theme.palette
+
+        def step(t: float) -> None:
+            self.table.tag_configure(
+                "fresh", foreground=mix_colors(palette.bg, palette.muted, t)
+            )
+
+        def done() -> None:
+            for iid in self.table.get_children():
+                self.table.item(iid, tags=())
+
+        step(0)
+        self.animator.run("rows", 420, step, done, delay_ms=120)
 
     def _insert_chunk(self, sessions: list[Session], start: int) -> None:
         """Insert the next chunk of rows.
@@ -291,7 +320,11 @@ class HistoryScreen(tk.Frame):
         """
         for session in sessions[start : start + INSERT_CHUNK]:
             self.table.insert(
-                "", "end", iid=str(session.id), values=row_values(session)
+                "",
+                "end",
+                iid=str(session.id),
+                values=row_values(session),
+                tags=("fresh",) if start == 0 else (),
             )
         start += INSERT_CHUNK
         self._insert_job = (
@@ -326,10 +359,7 @@ class HistoryScreen(tk.Frame):
             text: Message.
             is_error: Color as an error.
         """
-        palette = self.theme.palette
-        self.message.configure(
-            text=text, fg=palette.error if is_error else palette.muted
-        )
+        show_animated_message(self.message, self.theme, text, is_error)
 
 
 def row_values(session: Session) -> tuple[str, ...]:
@@ -352,3 +382,32 @@ def row_values(session: Session) -> tuple[str, ...]:
         f"{format_number(session.error_rate)} %",
         format_duration(session.duration_sec or 0),
     )
+
+
+def grow_series(data: ChartData, progress: float) -> tuple[list, list, list]:
+    """Cut the chart lines at ``progress`` so they grow from left to right.
+
+    The last point is interpolated between two sessions, so the line moves
+    smoothly instead of jumping from point to point.
+
+    Args:
+        data: Full series.
+        progress: Part of the line to show, from 0 to 1.
+
+    Returns:
+        X values (matplotlib date numbers), WPM and error rate.
+    """
+    xs = [date2num(d) for d in data.dates]
+    if len(xs) < 2 or progress >= 1:
+        return xs, list(data.wpm), list(data.error_rate)
+    position = (len(xs) - 1) * max(progress, 0.0)
+    whole = int(position)
+    part = position - whole
+
+    def cut(values: list[float]) -> list[float]:
+        head = list(values[: whole + 1])
+        if part > 0:
+            head.append(values[whole] + (values[whole + 1] - values[whole]) * part)
+        return head
+
+    return cut(xs), cut(list(data.wpm)), cut(list(data.error_rate))
