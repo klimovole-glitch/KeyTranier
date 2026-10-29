@@ -193,7 +193,10 @@ class Application:
     def _update_status(self) -> None:
         """Show the profile and the layout in the status bar."""
         layout = LAYOUT_TITLES[self.training.params.layout_name]
-        self.window.set_status(f"профиль: {self.state.user.user_name}   ·   {layout}")
+        user = self.state.user
+        self.window.set_status(f"профиль: {user.user_name}   ·   {layout}")
+        theme = "тёмная тема" if user.theme == Theme.DARK else "светлая тема"
+        self.window.set_profile(user.user_name, f"{layout}   ·   {theme}")
 
     def show_about(self) -> None:
         """Open "О программе"."""

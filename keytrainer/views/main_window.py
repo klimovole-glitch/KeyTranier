@@ -14,10 +14,11 @@ from typing import Protocol
 from keytrainer.views.animation import PANEL_MS, SCREEN_MS, Animator
 from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
+from keytrainer.views.widgets.dim_layer import DimLayer
 from keytrainer.views.widgets.dropdown import Dropdown
 from keytrainer.views.widgets.text_button import TextButton
 
-MENU_WIDTH = 300
+MENU_WIDTH = 220
 HOVER_ZONE = 28
 HOVER_DELAY_MS = 140
 SCREEN_SHIFT = 22
@@ -93,11 +94,28 @@ class MainWindow:
 
         self.menu = theme.frame(root, role="surface")
         self._menu_items = theme.frame(self.menu, role="surface")
-        self._menu_items.pack(fill="both", expand=True, padx=px(34), pady=px(60))
+        self._menu_items.pack(fill="x", padx=px(30), pady=px((50, 0)))
+        profile = theme.frame(self.menu, role="surface")
+        profile.pack(side="bottom", fill="x", padx=px(30), pady=px((0, 40)))
+        theme.label(
+            profile, "активный профиль", role="dim", font="tiny", bg="surface"
+        ).pack(anchor="w")
+        self.profile_name = theme.label(profile, "", font="ui", bg="surface")
+        self.profile_name.pack(anchor="w", pady=px((6, 4)))
+        self.profile_details = theme.label(
+            profile, "", role="muted", font="tiny", bg="surface"
+        )
+        self.profile_details.pack(anchor="w")
         self.menu.bind("<Leave>", self._menu_leave)
+        self.dim = DimLayer(
+            root,
+            self._dim_area,
+            on_click=self.hide_menu,
+            on_key=self._on_key,
+        )
         self.menu_visible = False
         self._menu_x = -px(MENU_WIDTH)
-        self._menu_buttons: list[TextButton] = []
+        self._menu_buttons: dict[str, TextButton] = {}
 
         root.bind("<Button-1>", self._click_outside_menu, add="+")
         root.bind("<KeyPress>", self._on_key)
@@ -165,30 +183,51 @@ class MainWindow:
 
     # ------------------------------------------------------------- menu
     def _rebuild_menu(self) -> None:
-        """Recreate menu items for the registered screens."""
+        """Recreate menu items for the registered screens (Figma 02)."""
         for child in self._menu_items.winfo_children():
             child.destroy()
         self.theme.label(
-            self._menu_items, "keytrainer", role="muted", font="small", bg="surface"
-        ).pack(anchor="w", pady=px((0, 30)))
+            self._menu_items, "меню", role="dim", font="tiny", bg="surface"
+        ).pack(anchor="w", pady=px((0, 26)))
         items = [
-            (s.title, lambda n=s.name: self.show(n))
+            (s.name, s.title, lambda n=s.name: self.show(n))
             for s in self.screens.values()
             if s.in_menu
         ]
-        items += [("о программе  F1", self._about), ("выход", self.root.destroy)]
-        self._menu_buttons = []
-        for caption, command in items:
+        items.append(("about", "о программе", self._about))
+        self._menu_buttons = {}
+        for name, caption, command in items:
             button = TextButton(
-                self._menu_items,
-                self.theme,
-                caption,
-                command,
-                bg="surface",
-                font="title",
+                self._menu_items, self.theme, caption, command, bg="surface"
             )
-            button.pack(anchor="w", pady=px(8))
-            self._menu_buttons.append(button)
+            button.pack(anchor="w", pady=px(7))
+            self._menu_buttons[name] = button
+        self._mark_current()
+
+    def _mark_current(self) -> None:
+        """Underline the menu item of the visible screen."""
+        current = self.current.name if self.current else None
+        for name, button in self._menu_buttons.items():
+            button.set_state(selected=name == current)
+
+    def set_profile(self, name: str, details: str) -> None:
+        """Show the active profile at the bottom of the menu.
+
+        Args:
+            name: Profile name.
+            details: Layout and theme, e.g. "EN · QWERTY · тёмная тема".
+        """
+        self.profile_name.configure(text=name)
+        self.profile_details.configure(text=details)
+
+    def _dim_area(self) -> tuple[int, int, int, int]:
+        """Part of the window to the right of the menu (it is darkened).
+
+        Returns:
+            ``x, y, width, height`` relative to the main window.
+        """
+        left = max(0, self._menu_x + px(MENU_WIDTH))
+        return left, 0, self.root.winfo_width() - left, self.root.winfo_height()
 
     def _about(self) -> None:
         """Open the "О программе" dialog."""
@@ -216,6 +255,7 @@ class MainWindow:
         def step(t: float) -> None:
             self._menu_x = round(start + (target - start) * t)
             self.menu.place_configure(x=self._menu_x)
+            self.dim.place()
 
         self.animator.run("menu", duration_ms, step, done)
 
@@ -227,8 +267,10 @@ class MainWindow:
         self.menu_visible = True
         self.menu.place(x=self._menu_x, y=0, relheight=1, width=px(MENU_WIDTH))
         self.menu.lift()
+        self._mark_current()
+        self.dim.show()
         self._slide_menu(0, PANEL_MS)
-        for index, button in enumerate(self._menu_buttons):
+        for index, button in enumerate(self._menu_buttons.values()):
             button.fade_in(delay_ms=90 + index * 45)
 
     def hide_menu(self) -> None:
@@ -237,6 +279,7 @@ class MainWindow:
             return
         self.menu_visible = False
         self.animator.cancel("hover_open")
+        self.dim.hide(round(PANEL_MS * 0.7))
         self._slide_menu(
             -px(MENU_WIDTH), round(PANEL_MS * 0.7), done=self.menu.place_forget
         )
