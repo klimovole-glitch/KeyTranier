@@ -6,6 +6,7 @@ and saves the finished session through :class:`SessionService`.
 """
 
 import logging
+import sys
 import tkinter as tk
 from collections.abc import Callable
 from dataclasses import replace
@@ -57,10 +58,31 @@ IGNORED_KEYSYMS = frozenset(
     }
 )
 CONTROL_MASK = 0x0004
+VK_P = 80  # Windows virtual key code of the P key
 AUTOREPEAT_WINDOW_MS = 20
 TICK_MS = 200
 LAYOUT_BY_ID = {layout_id: name for name, layout_id in LAYOUT_IDS.items()}
 WeakRatesProvider = Callable[[int, str], dict[str, float]]
+
+
+def is_pause_key(event: tk.Event) -> bool:
+    """Check for Ctrl+P in any keyboard layout.
+
+    With the Russian layout the key P gives "з" (``Cyrillic_ze``), and on
+    Windows Tk sometimes reports the control character instead of the
+    letter, so the physical key code (VK_P = 80) is checked as well.
+
+    Args:
+        event: Tk key event with Ctrl pressed.
+
+    Returns:
+        ``True`` for Ctrl+P / Ctrl+З.
+    """
+    if event.keysym.lower() in ("p", "cyrillic_ze"):
+        return True
+    if event.char == "\x10":  # Ctrl+P as a control character
+        return True
+    return sys.platform == "win32" and event.keycode == VK_P
 
 
 class TrainingController:
@@ -357,7 +379,7 @@ class TrainingController:
         if self._is_autorepeat(event.keycode) or event.keysym in IGNORED_KEYSYMS:
             return True
         if event.state & CONTROL_MASK:
-            if event.keysym.lower() in ("p", "cyrillic_ze"):
+            if is_pause_key(event):
                 self.toggle_pause()
             return True
         handlers = {"Tab": self.restart, "Return": self.abort, "KP_Enter": self.abort}
@@ -436,6 +458,9 @@ class TrainingController:
     def toggle_pause(self) -> None:
         """Pause or resume the exercise (Ctrl+P)."""
         if self.typing is None:
+            return
+        if self.typing.state == SessionState.READY:
+            self.view.show_message("пауза включается, когда упражнение уже идёт")
             return
         if self.typing.state == SessionState.RUNNING:
             self.typing.pause()
