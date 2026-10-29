@@ -427,6 +427,9 @@ class HistoryScreen(tk.Frame):
             err_axis.set_ylim(0, max(data.error_rate) * 1.15 or 1)
             if len(data.dates) > 1:
                 wpm_axis.set_xlim(data.dates[0], data.dates[-1])
+            else:  # one session: a week around it instead of a random range
+                day = date2num(data.dates[0])
+                wpm_axis.set_xlim(day - 3, day + 3)
             wpm_axis.xaxis.set_major_formatter(DateFormatter("%d.%m"))
             wpm_axis.text(
                 1.06,
