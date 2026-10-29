@@ -94,8 +94,13 @@ class HistoryController:
         if not ids:
             self.view.show_message("выберите сессию в таблице", is_error=True)
             return
-        question = f"Удалить {plural(len(ids), 'сессию', 'сессии', 'сессий')}?"
-        if not ask_confirm(self.root, self.view.theme, "Удаление", question):
+        if len(ids) == 1:
+            question = f"удалить запись от {self.view.selected_dates()[0]}?"
+            details = "Сессия будет удалена из истории и графика."
+        else:
+            question = f"удалить {plural(len(ids), 'запись', 'записи', 'записей')}?"
+            details = "Сессии будут удалены из истории и графика."
+        if not ask_confirm(self.root, self.view.theme, question, details):
             return
         deleted = self.service.delete(ids)
         self.refresh()
