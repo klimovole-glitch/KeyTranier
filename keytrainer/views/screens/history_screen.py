@@ -22,7 +22,7 @@ from keytrainer.engine.history_service import ChartData, HistorySummary
 from keytrainer.labels import MODE_TITLES, format_duration, format_number
 from keytrainer.utils.background import run_in_background
 from keytrainer.views.animation import Animator, ease_in_out, mix_colors
-from keytrainer.views.display import FONTS_DIR, px
+from keytrainer.views.display import FONTS_DIR, px, scale
 from keytrainer.views.theme import Palette, ThemeManager
 from keytrainer.views.widgets.message import show_animated_message
 from keytrainer.views.widgets.slim_scrollbar import SlimScrollbar
@@ -179,12 +179,16 @@ class HistoryScreen(tk.Frame):
     def _create_figure(self) -> None:
         """Create the figure inside the chart holder (in the interface font)."""
         use_bundled_font()
-        self.figure = Figure(figsize=(8.6, 2.3), dpi=100)
+        # the screen scale is applied here once; matplotlib's own correction
+        # on <Map> is switched off, otherwise the chart is scaled twice
+        self.figure = Figure(figsize=(8.6, 2.3), dpi=round(100 * scale()))
         self.axis_wpm = self.figure.add_subplot(111)
         self.axis_errors = self.axis_wpm.twinx()
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.chart_holder)
-        self.canvas.get_tk_widget().configure(highlightthickness=0, bd=0)
-        self.canvas.get_tk_widget().pack()
+        widget = self.canvas.get_tk_widget()
+        widget.unbind("<Map>")
+        widget.configure(highlightthickness=0, bd=0)
+        widget.pack()
 
     def _build_chart_placeholder(self) -> None:
         """Explain that the chart needs matplotlib and offer to install it."""
