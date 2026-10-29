@@ -174,6 +174,7 @@ class ConfirmOverlay:
         if self.panel is not None and self.panel.winfo_exists():
             self.panel.grab_release()
             self.panel.destroy()
+        self.root.focus_force()  # keys must go back to the main window
 
 
 def ask_confirm(
