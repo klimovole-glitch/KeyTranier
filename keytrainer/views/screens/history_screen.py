@@ -1,5 +1,7 @@
 """History screen: summary, chart and table of sessions (Figma: рисунок 9)."""
 
+import subprocess
+import sys
 import tkinter as tk
 from collections.abc import Callable, Sequence
 from datetime import datetime
@@ -14,13 +16,62 @@ try:  # the chart needs matplotlib; without it the program still works
 except ImportError:  # pragma: no cover - depends on the installation
     HAS_MATPLOTLIB = False
 
+
 from keytrainer.data.models import Session
 from keytrainer.engine.history_service import ChartData, HistorySummary
 from keytrainer.labels import MODE_TITLES, format_duration, format_number
+from keytrainer.utils.background import run_in_background
 from keytrainer.views.animation import Animator, ease_in_out, mix_colors
+from keytrainer.views.display import FONTS_DIR, px
 from keytrainer.views.theme import Palette, ThemeManager
 from keytrainer.views.widgets.message import show_animated_message
+from keytrainer.views.widgets.slim_scrollbar import SlimScrollbar
 from keytrainer.views.widgets.text_button import TextButton
+
+
+def _load_matplotlib() -> bool:
+    """Import matplotlib after it was installed while the program runs.
+
+    Returns:
+        ``True`` if the import succeeded.
+    """
+    global HAS_MATPLOTLIB, FigureCanvasTkAgg, DateFormatter, date2num, Figure
+    try:
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+        from matplotlib.dates import DateFormatter, date2num
+        from matplotlib.figure import Figure
+    except ImportError:
+        return False
+    HAS_MATPLOTLIB = True
+    return True
+
+
+def install_matplotlib() -> None:
+    """Install matplotlib with pip into the Python that runs the program.
+
+    Raises:
+        RuntimeError: pip finished with an error.
+    """
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    result = subprocess.run(
+        [sys.executable, "-m", "pip", "install", "matplotlib"],
+        capture_output=True,
+        text=True,
+        creationflags=flags,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip().splitlines()[-1:] or "pip error")
+
+
+def use_bundled_font() -> None:
+    """Draw chart labels with JetBrains Mono, like the rest of the window."""
+    from matplotlib import font_manager, rcParams
+
+    for path in FONTS_DIR.glob("*.ttf"):
+        font_manager.fontManager.addfont(str(path))
+    rcParams["font.family"] = ["JetBrains Mono", "DejaVu Sans Mono", "monospace"]
+
 
 COLUMNS = {
     "started_at": ("дата и время", 190),
@@ -59,7 +110,7 @@ class HistoryScreen(tk.Frame):
         self._build_chart(body)
         self._build_table(body)
         buttons = theme.frame(body)
-        buttons.pack(pady=(24, 0))
+        buttons.pack(pady=px((24, 0)))
         TextButton(
             buttons,
             theme,
@@ -67,12 +118,12 @@ class HistoryScreen(tk.Frame):
             lambda: self._emit("delete"),
             role="error",
             hover_role="error",
-        ).pack(side="left", padx=70)
+        ).pack(side="left", padx=px(70))
         TextButton(
             buttons, theme, "экспорт в csv", lambda: self._emit("export"), role="text"
-        ).pack(side="left", padx=70)
+        ).pack(side="left", padx=px(70))
         self.message = theme.label(body, "", role="muted", font="small")
-        self.message.pack(pady=(12, 0))
+        self.message.pack(pady=px((12, 0)))
         theme.on_change(self._on_theme)
         self._on_theme(theme.palette)
 
@@ -95,7 +146,7 @@ class HistoryScreen(tk.Frame):
             parent: Container.
         """
         row = self.theme.frame(parent)
-        row.pack(pady=(0, 14))
+        row.pack(pady=px((0, 14)))
         self.summary_values = {}
         for key, caption in (
             ("total", "всего сессий"),
@@ -103,7 +154,7 @@ class HistoryScreen(tk.Frame):
             ("avg", "среднее за 10"),
         ):
             self.theme.label(row, caption, role="muted").pack(
-                side="left", padx=(30, 14)
+                side="left", padx=px((30, 14))
             )
             value = self.theme.label(row, "—")
             value.pack(side="left")
@@ -112,26 +163,66 @@ class HistoryScreen(tk.Frame):
     def _build_chart(self, parent: tk.Misc) -> None:
         """Create the matplotlib chart embedded with FigureCanvasTkAgg.
 
+        Without matplotlib a placeholder offers to install it in one click.
+
         Args:
             parent: Container.
         """
-        if not HAS_MATPLOTLIB:
-            self.figure = None
-            self.theme.label(
-                parent,
-                "график недоступен: установите matplotlib —\n"
-                "py -m pip install -r requirements.txt",
-                role="muted",
-                font="small",
-                height=6,
-            ).pack()
-            return
+        self.chart_holder = self.theme.frame(parent)
+        self.chart_holder.pack()
+        self.figure = None
+        if HAS_MATPLOTLIB:
+            self._create_figure()
+        else:
+            self._build_chart_placeholder()
+
+    def _create_figure(self) -> None:
+        """Create the figure inside the chart holder (in the interface font)."""
+        use_bundled_font()
         self.figure = Figure(figsize=(8.6, 2.3), dpi=100)
         self.axis_wpm = self.figure.add_subplot(111)
         self.axis_errors = self.axis_wpm.twinx()
-        self.canvas = FigureCanvasTkAgg(self.figure, master=parent)
+        self.canvas = FigureCanvasTkAgg(self.figure, master=self.chart_holder)
         self.canvas.get_tk_widget().configure(highlightthickness=0, bd=0)
         self.canvas.get_tk_widget().pack()
+
+    def _build_chart_placeholder(self) -> None:
+        """Explain that the chart needs matplotlib and offer to install it."""
+        box = self.theme.frame(self.chart_holder)
+        box.pack(pady=px(40))
+        self.chart_note = self.theme.label(
+            box, "для графика нужна библиотека matplotlib", role="muted"
+        )
+        self.chart_note.pack()
+        if not getattr(sys, "frozen", False):
+            self.install_button = TextButton(
+                box, self.theme, "установить", self._install, role="text"
+            )
+            self.install_button.pack(pady=px((10, 0)))
+
+    def _install(self) -> None:
+        """Install matplotlib in the background and show the chart."""
+        self.install_button.set_state(enabled=False)
+        self.chart_note.configure(text="установка matplotlib… (около минуты)")
+
+        def done(_result: object) -> None:
+            if not _load_matplotlib():
+                failed(RuntimeError("не удалось загрузить"))
+                return
+            for child in self.chart_holder.winfo_children():
+                child.destroy()
+            self._create_figure()
+            self._on_theme(self.theme.palette)
+            if self._chart_data is not None:
+                self.show_chart(self._chart_data)
+
+        def failed(error: Exception) -> None:
+            self.chart_note.configure(
+                text=f"не получилось: {error}\nкоманда: py -m pip install matplotlib"
+            )
+            self.install_button.set_state(enabled=True)
+
+        run_in_background(self, install_matplotlib, done, failed)
 
     def _build_table(self, parent: tk.Misc) -> None:
         """Create the table of sessions with sortable headings.
@@ -140,7 +231,7 @@ class HistoryScreen(tk.Frame):
             parent: Container.
         """
         holder = self.theme.frame(parent)
-        holder.pack(pady=(14, 0))
+        holder.pack(pady=px((18, 0)), fill="x")
         self.table = ttk.Treeview(
             holder,
             columns=list(COLUMNS),
@@ -148,21 +239,45 @@ class HistoryScreen(tk.Frame):
             height=TABLE_ROWS,
             selectmode="extended",
             style="History.Treeview",
+            takefocus=False,
         )
         for column, (title, width) in COLUMNS.items():
             self.table.heading(
-                column, text=title, command=lambda c=column: self._emit("sort", c)
+                column,
+                text=title,
+                anchor="w",
+                command=lambda c=column: self._emit("sort", c),
             )
-            self.table.column(column, width=width, anchor="w")
-        scroll = ttk.Scrollbar(
-            holder,
-            orient="vertical",
-            command=self.table.yview,
-            style="History.Vertical.TScrollbar",
-        )
+            self.table.column(column, width=px(width), anchor="w", stretch=False)
+        scroll = SlimScrollbar(holder, self.theme, self.table.yview)
         self.table.configure(yscrollcommand=scroll.set)
         self.table.pack(side="left")
-        scroll.pack(side="left", fill="y")
+        scroll.pack(side="left", fill="y", padx=px((6, 0)))
+        self._hover_row = ""
+        self.table.bind("<Motion>", self._on_row_motion)
+        self.table.bind("<Leave>", lambda _e: self._set_hover(""))
+
+    def _on_row_motion(self, event: tk.Event) -> None:
+        """Highlight the row under the mouse.
+
+        Args:
+            event: Tk motion event.
+        """
+        self._set_hover(self.table.identify_row(event.y))
+
+    def _set_hover(self, row: str) -> None:
+        """Move the hover highlight to another row.
+
+        Args:
+            row: Row id, empty string for none.
+        """
+        if row == self._hover_row:
+            return
+        for iid, tags in ((self._hover_row, ()), (row, ("hover",))):
+            if iid and self.table.exists(iid):
+                old = tuple(t for t in self.table.item(iid, "tags") if t != "hover")
+                self.table.item(iid, tags=old + tags)
+        self._hover_row = row
 
     # ------------------------------------------------------------ theme
     def _on_theme(self, palette: Palette) -> None:
@@ -174,42 +289,66 @@ class HistoryScreen(tk.Frame):
         style = ttk.Style(self)
         if style.theme_use() != "clam":
             style.theme_use("clam")
+        # only the rows area: no field border, no focus frame
+        style.layout("History.Treeview", [("Treeview.treearea", {"sticky": "nswe"})])
+        style.layout(
+            "History.Treeview.Heading",
+            [
+                (
+                    "Treeheading.cell",
+                    {
+                        "sticky": "nswe",
+                        "children": [
+                            (
+                                "Treeheading.padding",
+                                {
+                                    "sticky": "nswe",
+                                    "children": [
+                                        ("Treeheading.text", {"sticky": "we"})
+                                    ],
+                                },
+                            )
+                        ],
+                    },
+                )
+            ],
+        )
         flat = {
             "bordercolor": palette.bg,
             "lightcolor": palette.bg,
             "darkcolor": palette.bg,
             "borderwidth": 0,
+            "relief": "flat",
         }
         style.configure(
             "History.Treeview",
             background=palette.bg,
             fieldbackground=palette.bg,
             foreground=palette.muted,
-            rowheight=30,
-            font=self.theme.fonts["small"],
+            rowheight=px(36),
+            font=self.theme.fonts["ui"],
             **flat,
         )
         style.map(
             "History.Treeview",
-            background=[("selected", palette.selection)],
+            background=[("selected", palette.surface_active)],
             foreground=[("selected", palette.text)],
         )
         style.configure(
             "History.Treeview.Heading",
             background=palette.bg,
             foreground=palette.dim,
-            relief="flat",
-            font=self.theme.fonts["tiny"],
+            font=self.theme.fonts["small"],
+            padding=(px(4), px(8)),
             **flat,
         )
-        style.map("History.Treeview.Heading", background=[("active", palette.bg)])
-        style.configure(
-            "History.Vertical.TScrollbar",
-            background=palette.surface,
-            troughcolor=palette.bg,
-            arrowcolor=palette.muted,
-            gripcount=0,
-            **flat,
+        style.map(
+            "History.Treeview.Heading",
+            background=[("active", palette.bg)],
+            foreground=[("active", palette.text)],
+        )
+        self.table.tag_configure(
+            "hover", background=palette.surface, foreground=palette.text
         )
         if self.figure is None:
             return
