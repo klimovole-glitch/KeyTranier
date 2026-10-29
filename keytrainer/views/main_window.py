@@ -1,7 +1,9 @@
 """Single main window: screens, side menu and status bar (ТЗ, п. 4.1.6).
 
-Navigation follows the Figma prototype: the menu opens with Esc or a click
-on the thin bar at the left edge; F1 opens "О программе".
+Navigation follows the Figma prototype: the side panel (300 px) slides out
+in 0.38 s with Esc, a click or simply by moving the mouse to the left edge
+(a 28 px zone with a thin bar); it covers the content without moving it.
+A new screen slides up a little when it appears. F1 opens "О программе".
 """
 
 import tkinter as tk
@@ -9,10 +11,15 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Protocol
 
+from keytrainer.views.animation import PANEL_MS, SCREEN_MS, Animator
 from keytrainer.views.theme import ThemeManager
+from keytrainer.views.widgets.dropdown import Dropdown
 from keytrainer.views.widgets.text_button import TextButton
 
-MENU_WIDTH = 280
+MENU_WIDTH = 300
+HOVER_ZONE = 28
+HOVER_DELAY_MS = 140
+SCREEN_SHIFT = 22
 
 
 class ScreenController(Protocol):
@@ -62,9 +69,7 @@ class MainWindow:
         self.current: Screen | None = None
         self.on_about: Callable[[], None] | None = None
 
-        handle = theme.label(root, "│", role="dim", font="title", cursor="hand2")
-        handle.place(x=6, rely=0.5, anchor="w")
-        handle.bind("<Button-1>", lambda _e: self.toggle_menu())
+        self.animator = Animator(root)
 
         status = theme.frame(root)
         status.pack(side="bottom", fill="x", padx=40, pady=(0, 18))
@@ -75,13 +80,25 @@ class MainWindow:
 
         self.content = theme.frame(root)
         self.content.pack(side="top", fill="both", expand=True, padx=(30, 0))
-        handle.lift()
+
+        zone = theme.frame(root, width=HOVER_ZONE, cursor="hand2")
+        zone.place(x=0, y=0, relheight=1, width=HOVER_ZONE)
+        self.handle = theme.frame(zone, role="dim", width=2, height=44)
+        self.handle.place(x=8, rely=0.5, anchor="w")
+        for widget in (zone, self.handle):
+            widget.bind("<Button-1>", lambda _e: self.toggle_menu())
+            widget.bind("<Enter>", self._zone_enter)
+            widget.bind("<Leave>", lambda _e: self.animator.cancel("hover_open"))
 
         self.menu = theme.frame(root, role="surface")
         self._menu_items = theme.frame(self.menu, role="surface")
         self._menu_items.pack(fill="both", expand=True, padx=34, pady=60)
+        self.menu.bind("<Leave>", self._menu_leave)
         self.menu_visible = False
+        self._menu_x = -MENU_WIDTH
+        self._menu_buttons: list[TextButton] = []
 
+        root.bind("<Button-1>", self._click_outside_menu, add="+")
         root.bind("<KeyPress>", self._on_key)
         root.bind("<KeyRelease>", self._on_key_release)
 
@@ -128,11 +145,17 @@ class MainWindow:
         if self.current is screen:
             return
         if self.current is not None:
-            self.current.frame.pack_forget()
+            self.current.frame.place_forget()
             if self.current.controller:
                 self.current.controller.on_hide()
         self.current = screen
-        screen.frame.pack(fill="both", expand=True)
+        frame = screen.frame
+        frame.place(x=0, y=SCREEN_SHIFT, relwidth=1, relheight=1)
+        self.animator.run(
+            "screen",
+            SCREEN_MS,
+            lambda t: frame.place_configure(y=round(SCREEN_SHIFT * (1 - t))),
+        )
         self.root.focus_set()  # keys must not stay in an entry of a hidden screen
         if screen.controller:
             screen.controller.on_show()
@@ -152,15 +175,18 @@ class MainWindow:
             if s.in_menu
         ]
         items += [("о программе  F1", self._about), ("выход", self.root.destroy)]
+        self._menu_buttons = []
         for caption, command in items:
-            TextButton(
+            button = TextButton(
                 self._menu_items,
                 self.theme,
                 caption,
                 command,
                 bg="surface",
                 font="title",
-            ).pack(anchor="w", pady=8)
+            )
+            button.pack(anchor="w", pady=8)
+            self._menu_buttons.append(button)
 
     def _about(self) -> None:
         """Open the "О программе" dialog."""
@@ -173,14 +199,79 @@ class MainWindow:
         if self.menu_visible:
             self.hide_menu()
         else:
-            self.menu.place(x=0, y=0, relheight=1, width=MENU_WIDTH)
-            self.menu.lift()
-            self.menu_visible = True
+            self.show_menu()
+
+    def _slide_menu(self, target: int, duration_ms: int, done=None) -> None:
+        """Move the side panel horizontally.
+
+        Args:
+            target: Final x of the panel (0 — open, ``-MENU_WIDTH`` — closed).
+            duration_ms: Length of the animation.
+            done: Called at the end.
+        """
+        start = self._menu_x
+
+        def step(t: float) -> None:
+            self._menu_x = round(start + (target - start) * t)
+            self.menu.place_configure(x=self._menu_x)
+
+        self.animator.run("menu", duration_ms, step, done)
+
+    def show_menu(self) -> None:
+        """Slide the side menu out (0.38 s)."""
+        if self.menu_visible:
+            return
+        Dropdown.close_active()
+        self.menu_visible = True
+        self.menu.place(x=self._menu_x, y=0, relheight=1, width=MENU_WIDTH)
+        self.menu.lift()
+        self._slide_menu(0, PANEL_MS)
+        for index, button in enumerate(self._menu_buttons):
+            button.fade_in(delay_ms=90 + index * 45)
 
     def hide_menu(self) -> None:
-        """Close the side menu."""
-        self.menu.place_forget()
+        """Slide the side menu back."""
+        if not self.menu_visible:
+            return
         self.menu_visible = False
+        self.animator.cancel("hover_open")
+        self._slide_menu(
+            -MENU_WIDTH, round(PANEL_MS * 0.7), done=self.menu.place_forget
+        )
+
+    def _zone_enter(self, _event: tk.Event) -> None:
+        """Open the menu when the mouse rests at the left edge.
+
+        Args:
+            _event: Tk event (unused).
+        """
+        self.animator.later("hover_open", HOVER_DELAY_MS, self.show_menu)
+
+    def _click_outside_menu(self, event: tk.Event) -> None:
+        """Close the menu on a click to the right of it.
+
+        Args:
+            event: Tk click event.
+        """
+        if self.menu_visible and event.x_root - self.root.winfo_rootx() > MENU_WIDTH:
+            self.hide_menu()
+
+    def _menu_leave(self, _event: tk.Event) -> None:
+        """Close the menu when the mouse leaves it to the right.
+
+        ``<Leave>`` also fires when the mouse moves onto a child widget,
+        so the pointer position is checked a moment later.
+
+        Args:
+            _event: Tk event (unused).
+        """
+
+        def check() -> None:
+            x = self.root.winfo_pointerx() - self.root.winfo_rootx()
+            if self.menu_visible and x > MENU_WIDTH + 4:
+                self.hide_menu()
+
+        self.animator.later("menu_leave", 220, check)
 
     # ------------------------------------------------------- status bar
     def set_status(self, text: str) -> None:
@@ -209,6 +300,8 @@ class MainWindow:
         Returns:
             ``"break"`` if the key was consumed.
         """
+        if Dropdown.close_active():
+            return "break"
         if event.keysym == "Escape":
             self.toggle_menu()
             return "break"
