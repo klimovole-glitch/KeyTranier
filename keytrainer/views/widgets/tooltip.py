@@ -2,6 +2,7 @@
 
 import tkinter as tk
 
+from keytrainer.views.animation import Animator
 from keytrainer.views.theme import ThemeManager
 
 OFFSET = 16
@@ -18,6 +19,8 @@ class Tooltip:
             theme: Theme manager.
         """
         self._container = container
+        self._theme = theme
+        self._visible = False
         self._label = theme.label(
             container,
             "",
@@ -28,6 +31,7 @@ class Tooltip:
             padx=14,
             pady=10,
         )
+        self._animator = Animator(self._label)
 
     def show(self, x_root: int, y_root: int, text: str) -> None:
         """Show the tooltip next to a point of the screen.
@@ -42,7 +46,14 @@ class Tooltip:
         y = y_root - self._container.winfo_rooty() + OFFSET
         self._label.place(x=x, y=y)
         self._label.lift()
+        if not self._visible:
+            palette = self._theme.palette
+            self._animator.fade(
+                "show", self._label, "fg", palette.surface, palette.text, 160
+            )
+        self._visible = True
 
     def hide(self) -> None:
         """Hide the tooltip."""
+        self._visible = False
         self._label.place_forget()

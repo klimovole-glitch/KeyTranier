@@ -13,6 +13,7 @@ from keytrainer.engine.analytics_engine import (
     heat_color,
 )
 from keytrainer.labels import format_number
+from keytrainer.views.animation import Animator
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.heatmap_canvas import HeatmapCanvas
 from keytrainer.views.widgets.text_button import TextButton
@@ -49,6 +50,7 @@ class StatsScreen(tk.Frame):
         theme.style(self, bg="bg")
         self.callbacks: dict[str, Callable] = {}
         self.data: HeatmapData | None = None
+        self.animator = Animator(self)
         body = theme.frame(self)
         body.place(relx=0.5, rely=0.46, anchor="center")
         left = theme.frame(body)
@@ -268,6 +270,34 @@ class StatsScreen(tk.Frame):
                 role="muted",
                 font="tiny",
             ).pack(anchor="w")
+            self._fade_row(row, rank)
+
+    def _fade_row(self, row: tk.Misc, rank: int) -> None:
+        """Let a row of the problem keys appear after the previous one.
+
+        Args:
+            row: Row frame.
+            rank: Place in the top (1 — first).
+        """
+        palette = self.theme.palette
+        delay = 260 + rank * 90
+        stack = [row]
+        while stack:
+            widget = stack.pop()
+            stack.extend(widget.winfo_children())
+            if isinstance(widget, tk.Label):
+                for option in ("fg", "bg"):
+                    end = widget.cget(option)
+                    if end != palette.bg:
+                        self.animator.fade(
+                            f"top{id(widget)}{option}",
+                            widget,
+                            option,
+                            palette.bg,
+                            end,
+                            320,
+                            delay,
+                        )
 
     def _on_hover(self, cell: KeyCell | None, x: int, y: int) -> None:
         """Show or hide the tooltip of a key.
