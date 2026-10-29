@@ -113,11 +113,9 @@ class SettingsController:
         """
         info = next(p for p in self.profiles.list_profiles() if p.user.id == user_id)
         sessions = plural(info.sessions_count, "сессия", "сессии", "сессий")
-        question = (
-            f"Удалить профиль «{info.user.user_name}»?\n"
-            f"Вместе с ним будут удалены {sessions} и статистика клавиш."
-        )
-        if not ask_confirm(self.root, self.view.theme, "Удаление профиля", question):
+        question = f"удалить профиль «{info.user.user_name}»?"
+        details = f"Вместе с ним будут удалены {sessions} и статистика клавиш."
+        if not ask_confirm(self.root, self.view.theme, question, details):
             return
         try:
             active = self.profiles.delete(user_id, self.state.user.id)

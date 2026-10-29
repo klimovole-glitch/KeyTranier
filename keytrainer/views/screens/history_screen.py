@@ -21,7 +21,7 @@ from keytrainer.data.models import Session
 from keytrainer.engine.history_service import ChartData, HistorySummary
 from keytrainer.labels import MODE_TITLES, format_duration, format_number
 from keytrainer.utils.background import run_in_background
-from keytrainer.views.animation import Animator, ease_in_out, mix_colors
+from keytrainer.views.animation import Animator, mix_colors
 from keytrainer.views.display import FONTS_DIR, px, scale
 from keytrainer.views.theme import Palette, ThemeManager
 from keytrainer.views.widgets.message import show_animated_message
@@ -82,8 +82,6 @@ COLUMNS = {
 }
 INSERT_CHUNK = 400
 TABLE_ROWS = 9
-CHART_MS = 650
-CHART_FRAME_MS = 33
 
 
 class HistoryScreen(tk.Frame):
@@ -102,7 +100,6 @@ class HistoryScreen(tk.Frame):
         self.callbacks: dict[str, Callable] = {}
         self._chart_data: ChartData | None = None
         self._insert_job: str | None = None
-        self._progress = 1.0
         self.animator = Animator(self)
         body = theme.frame(self)
         body.place(relx=0.5, rely=0.47, anchor="center")
@@ -379,14 +376,7 @@ class HistoryScreen(tk.Frame):
             data: Smoothed series.
         """
         self._chart_data = data
-
-        def step(t: float) -> None:
-            self._progress = t
-            self._draw_chart()
-
-        self.animator.run(
-            "chart", CHART_MS, step, easing=ease_in_out, frame_ms=CHART_FRAME_MS
-        )
+        self._draw_chart()  # drawn once: redrawing matplotlib per frame lags
 
     def _draw_chart(self) -> None:
         """Draw the chart with the colors of the current theme."""
@@ -403,10 +393,9 @@ class HistoryScreen(tk.Frame):
         wpm_axis.grid(axis="y", color=palette.border, linewidth=0.6)
         data = self._chart_data
         if data and data.dates:
-            dates, wpm, errors = grow_series(data, self._progress)
             wpm_axis.plot(
-                dates,
-                wpm,
+                data.dates,
+                data.wpm,
                 color=palette.text,
                 linewidth=1.4,
                 marker="o",
@@ -414,8 +403,8 @@ class HistoryScreen(tk.Frame):
                 label="wpm",
             )
             err_axis.plot(
-                dates,
-                errors,
+                data.dates,
+                data.error_rate,
                 color=palette.muted,
                 linewidth=1.1,
                 linestyle="--",
@@ -431,15 +420,19 @@ class HistoryScreen(tk.Frame):
                 day = date2num(data.dates[0])
                 wpm_axis.set_xlim(day - 3, day + 3)
             wpm_axis.xaxis.set_major_formatter(DateFormatter("%d.%m"))
-            wpm_axis.text(
-                1.06,
-                1.0,
-                "wpm\n% ошибок (пунктир)",
-                color=palette.muted,
+            lines = wpm_axis.get_lines() + err_axis.get_lines()
+            legend = wpm_axis.legend(
+                lines,
+                ["wpm", "% ошибок (пунктир)"],
+                loc="lower left",
+                bbox_to_anchor=(0.0, 1.0),
+                ncol=2,
+                frameon=False,
                 fontsize=7,
-                transform=wpm_axis.transAxes,
-                va="top",
+                borderaxespad=0.2,
             )
+            for text in legend.get_texts():
+                text.set_color(palette.muted)
         else:
             wpm_axis.text(
                 0.5,
@@ -450,7 +443,7 @@ class HistoryScreen(tk.Frame):
                 va="center",
                 transform=wpm_axis.transAxes,
             )
-        self.figure.subplots_adjust(left=0.05, right=0.8, top=0.95, bottom=0.14)
+        self.figure.subplots_adjust(left=0.05, right=0.95, top=0.86, bottom=0.14)
         self.canvas.draw_idle()
 
     def show_sessions(self, sessions: Sequence[Session]) -> None:
@@ -518,6 +511,14 @@ class HistoryScreen(tk.Frame):
         """
         return [int(iid) for iid in self.table.selection()]
 
+    def selected_dates(self) -> list[str]:
+        """Dates of the selected sessions as shown in the table.
+
+        Returns:
+            Texts of the first column.
+        """
+        return [self.table.item(iid, "values")[0] for iid in self.table.selection()]
+
     def show_message(self, text: str, is_error: bool = False) -> None:
         """Show a message under the buttons.
 
@@ -548,32 +549,3 @@ def row_values(session: Session) -> tuple[str, ...]:
         f"{format_number(session.error_rate)} %",
         format_duration(session.duration_sec or 0),
     )
-
-
-def grow_series(data: ChartData, progress: float) -> tuple[list, list, list]:
-    """Cut the chart lines at ``progress`` so they grow from left to right.
-
-    The last point is interpolated between two sessions, so the line moves
-    smoothly instead of jumping from point to point.
-
-    Args:
-        data: Full series.
-        progress: Part of the line to show, from 0 to 1.
-
-    Returns:
-        X values (matplotlib date numbers), WPM and error rate.
-    """
-    xs = [date2num(d) for d in data.dates]
-    if len(xs) < 2 or progress >= 1:
-        return xs, list(data.wpm), list(data.error_rate)
-    position = (len(xs) - 1) * max(progress, 0.0)
-    whole = int(position)
-    part = position - whole
-
-    def cut(values: list[float]) -> list[float]:
-        head = list(values[: whole + 1])
-        if part > 0:
-            head.append(values[whole] + (values[whole + 1] - values[whole]) * part)
-        return head
-
-    return cut(xs), cut(list(data.wpm)), cut(list(data.error_rate))

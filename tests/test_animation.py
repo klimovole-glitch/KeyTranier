@@ -1,10 +1,7 @@
 """Tests of the animation helpers (no window is needed)."""
 
-from datetime import datetime, timedelta
-
 import pytest
 
-from keytrainer.engine.history_service import ChartData
 from keytrainer.views.animation import (
     ease_in_out,
     ease_out,
@@ -12,7 +9,6 @@ from keytrainer.views.animation import (
     mix_colors,
     shake_offset,
 )
-from keytrainer.views.screens.history_screen import grow_series
 
 
 @pytest.mark.parametrize("curve", [ease_out, ease_in_out])
@@ -49,24 +45,3 @@ def test_shake_returns_to_place():
     first = max(abs(shake_offset(i / 100)) for i in range(0, 34))
     last = max(abs(shake_offset(i / 100)) for i in range(67, 100))
     assert first > last
-
-
-def _chart(count: int) -> ChartData:
-    start = datetime(2026, 10, 1)
-    return ChartData(
-        dates=[start + timedelta(days=i) for i in range(count)],
-        wpm=[30.0 + i for i in range(count)],
-        error_rate=[5.0] * count,
-    )
-
-
-def test_grow_series_full_and_partial():
-    """The chart line grows smoothly with an interpolated last point."""
-    data = _chart(5)
-    xs, wpm, _errors = grow_series(data, 1.0)
-    assert len(xs) == 5 and wpm[-1] == 34
-    xs, wpm, _errors = grow_series(data, 0.5)
-    assert len(xs) == 3 and wpm[-1] == 32
-    xs, wpm, _errors = grow_series(data, 0.6)
-    assert len(xs) == 4
-    assert wpm[-1] == pytest.approx(32.4)

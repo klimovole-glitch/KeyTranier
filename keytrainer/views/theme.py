@@ -93,6 +93,7 @@ _FONT_SPECS = {
     "metric": (20, False),
     "metric_big": (34, False),
     "title": (18, False),
+    "confirm": (20, False),
     "key": (12, False),
 }
 
