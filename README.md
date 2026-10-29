@@ -63,6 +63,7 @@ Windows, без Poetry:
 py -m pip install -r requirements.txt
 py -m keytrainer
 ```
+Или откройте `run.py` в VS Code и нажмите ▷ (Run Python File).
 
 С Poetry:
 ```bash
