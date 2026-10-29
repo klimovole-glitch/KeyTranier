@@ -4,6 +4,7 @@ import tkinter as tk
 from collections.abc import Callable
 
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 
 COUNT_MS = 700
@@ -36,10 +37,10 @@ class MetricsPanel(tk.Frame):
         self._values: dict[str, tk.Label] = {}
         for column, (key, caption) in enumerate(captions.items()):
             cell = theme.frame(self)
-            cell.grid(row=0, column=column, padx=6)
+            cell.grid(row=0, column=column, padx=px(6))
             value = theme.label(cell, "0", font=value_font, width=cell_width)
             value.pack()
-            theme.label(cell, caption, role="muted", font="tiny").pack(pady=(4, 0))
+            theme.label(cell, caption, role="muted", font="tiny").pack(pady=px((4, 0)))
             self._values[key] = value
 
     def set_values(self, values: dict[str, str]) -> None:

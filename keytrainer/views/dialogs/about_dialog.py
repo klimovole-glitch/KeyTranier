@@ -5,6 +5,7 @@ import tkinter as tk
 from keytrainer import __version__
 from keytrainer.config import APP_NAME
 from keytrainer.views.dialogs.base_dialog import BaseDialog
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.text_button import TextButton
 
@@ -39,7 +40,7 @@ class AboutDialog(BaseDialog):
             anchor="w"
         )
         theme.label(self.body, HELP_TEXT, role="muted", justify="left").pack(
-            anchor="w", pady=(16, 20)
+            anchor="w", pady=px((16, 20))
         )
         theme.label(
             self.body,
@@ -48,5 +49,5 @@ class AboutDialog(BaseDialog):
             font="small",
         ).pack(anchor="w")
         TextButton(self.body, theme, "закрыть", self.destroy, role="text").pack(
-            anchor="e", pady=(20, 0)
+            anchor="e", pady=px((20, 0))
         )

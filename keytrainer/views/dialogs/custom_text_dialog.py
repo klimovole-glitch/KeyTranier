@@ -6,6 +6,7 @@ from tkinter import filedialog
 
 from keytrainer.utils.text_files import read_text_file
 from keytrainer.views.dialogs.base_dialog import BaseDialog
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.text_button import TextButton
 
@@ -37,7 +38,7 @@ class CustomTextDialog(BaseDialog):
             highlightbackground="border",
             highlightcolor="muted",
         )
-        self.title_entry.pack(anchor="w", pady=(4, 14), ipady=4)
+        self.title_entry.pack(anchor="w", pady=px((4, 14)), ipady=px(4))
         self.title_entry.insert(0, "Мой текст")
         theme.label(self.body, "текст упражнения", role="muted", font="small").pack(
             anchor="w"
@@ -59,7 +60,7 @@ class CustomTextDialog(BaseDialog):
             highlightbackground="border",
             highlightcolor="muted",
         )
-        self.text.pack(pady=(4, 6))
+        self.text.pack(pady=px((4, 6)))
         self.error = theme.label(self.body, "", role="error", font="small")
         self.error.pack(anchor="w")
         if saved_titles:
@@ -70,11 +71,11 @@ class CustomTextDialog(BaseDialog):
                 font="tiny",
             ).pack(anchor="w")
         buttons = theme.frame(self.body)
-        buttons.pack(fill="x", pady=(16, 0))
+        buttons.pack(fill="x", pady=px((16, 0)))
         TextButton(buttons, theme, "загрузить TXT", self._load).pack(side="left")
         TextButton(buttons, theme, "отмена", self.destroy).pack(side="right")
         TextButton(buttons, theme, "начать", self._accept, role="text").pack(
-            side="right", padx=30
+            side="right", padx=px(30)
         )
         self.text.focus_set()
 
