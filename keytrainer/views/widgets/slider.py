@@ -9,6 +9,7 @@ import tkinter as tk
 from collections.abc import Callable
 
 from keytrainer.views.animation import HOVER_MS, Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 
 KNOB_RADIUS = 6
@@ -40,8 +41,9 @@ class Slider(tk.Canvas):
             command: Called with the new value when the user moves the knob.
             length: Width in pixels.
         """
+        length = px(length)
         super().__init__(
-            parent, width=length, height=HEIGHT, bd=0, highlightthickness=0
+            parent, width=length, height=px(HEIGHT), bd=0, highlightthickness=0
         )
         self.theme = theme
         theme.style(self, bg="bg")
@@ -50,24 +52,24 @@ class Slider(tk.Canvas):
         self.length = length
         self.value = low
         self._x = self._x_of(low)
-        self._radius = KNOB_RADIUS
+        self._radius = px(KNOB_RADIUS)
         self.animator = Animator(self)
         self.bind("<Button-1>", self._drag)
         self.bind("<B1-Motion>", self._drag)
-        self.bind("<Enter>", lambda _e: self._grow(KNOB_HOVER_RADIUS))
-        self.bind("<Leave>", lambda _e: self._grow(KNOB_RADIUS))
+        self.bind("<Enter>", lambda _e: self._grow(px(KNOB_HOVER_RADIUS)))
+        self.bind("<Leave>", lambda _e: self._grow(px(KNOB_RADIUS)))
         theme.on_change(lambda _p: self._draw())
         self._draw()
 
     @property
     def _left(self) -> int:
         """X of the line start (room for the knob)."""
-        return KNOB_HOVER_RADIUS + 1
+        return px(KNOB_HOVER_RADIUS) + 1
 
     @property
     def _right(self) -> int:
         """X of the line end."""
-        return self.length - KNOB_HOVER_RADIUS - 1
+        return self.length - px(KNOB_HOVER_RADIUS) - 1
 
     def _x_of(self, value: int) -> float:
         """Convert a value to the knob position.
@@ -79,7 +81,7 @@ class Slider(tk.Canvas):
             X coordinate.
         """
         share = (value - self.low) / (self.high - self.low)
-        return KNOB_HOVER_RADIUS + 1 + share * (self.length - 2 * KNOB_HOVER_RADIUS - 2)
+        return self._left + share * (self._right - self._left)
 
     def _value_of(self, x: float) -> int:
         """Convert a position to the nearest value.
@@ -97,28 +99,33 @@ class Slider(tk.Canvas):
     def _draw(self) -> None:
         """Draw the line, the filled part, the knob and the end values."""
         palette = self.theme.palette
+        line_y = px(LINE_Y)
         self.delete("all")
         self.create_line(
-            self._left, LINE_Y, self._right, LINE_Y, fill=palette.border, width=2
+            self._left, line_y, self._right, line_y, fill=palette.border, width=px(2)
         )
         self.create_line(
-            self._left, LINE_Y, self._x, LINE_Y, fill=palette.muted, width=2
+            self._left, line_y, self._x, line_y, fill=palette.muted, width=px(2)
         )
         r = self._radius
         self.create_oval(
             self._x - r,
-            LINE_Y - r,
+            line_y - r,
             self._x + r,
-            LINE_Y + r,
+            line_y + r,
             fill=palette.text,
             outline="",
         )
         font = self.theme.fonts["tiny"]
         self.create_text(
-            self._left, HEIGHT - 6, text=str(self.low), fill=palette.dim, font=font
+            self._left, px(HEIGHT - 6), text=str(self.low), fill=palette.dim, font=font
         )
         self.create_text(
-            self._right, HEIGHT - 6, text=str(self.high), fill=palette.dim, font=font
+            self._right,
+            px(HEIGHT - 6),
+            text=str(self.high),
+            fill=palette.dim,
+            font=font,
         )
 
     def _grow(self, radius: int) -> None:

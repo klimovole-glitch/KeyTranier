@@ -10,6 +10,7 @@ import tkinter as tk
 from collections.abc import Callable
 
 from keytrainer.views.animation import Animator, mix_colors
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 
 OPEN_MS = 180
@@ -104,24 +105,24 @@ class Dropdown:
                 text=mark + caption,
                 anchor="w",
                 bd=0,
-                padx=14,
-                pady=8,
+                padx=px(14),
+                pady=px(8),
                 cursor="hand2",
                 font=self.theme.fonts["ui"],
                 bg=palette.surface,
                 fg=palette.surface,
             )
-            row.pack(fill="x", padx=6, pady=1)
+            row.pack(fill="x", padx=px(6), pady=px(1))
             row.bind("<Enter>", lambda _e, r=row: self._hover(r, True))
             row.bind("<Leave>", lambda _e, r=row: self._hover(r, False))
             row.bind("<ButtonRelease-1>", lambda _e, c=command: self._choose(c))
             rows.append(row)
         frame.update_idletasks()
-        width = max(frame.winfo_reqwidth(), self.anchor.winfo_width() + 40)
+        width = max(frame.winfo_reqwidth(), self.anchor.winfo_width() + px(40))
         height = frame.winfo_reqheight()
-        x = self.anchor.winfo_rootx() - root.winfo_rootx() - 14
+        x = self.anchor.winfo_rootx() - root.winfo_rootx() - px(14)
         y = self.anchor.winfo_rooty() - root.winfo_rooty() + self.anchor.winfo_height()
-        frame.place(x=max(x, 0), y=y + 6, width=width, height=1)
+        frame.place(x=max(x, 0), y=y + px(6), width=width, height=1)
         frame.lift()
         self.frame = frame
         self.rows = rows

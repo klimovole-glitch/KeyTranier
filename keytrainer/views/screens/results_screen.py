@@ -6,6 +6,7 @@ from collections.abc import Callable
 from keytrainer.engine.session_service import SessionResult
 from keytrainer.labels import format_duration, format_number, plural
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.metrics_panel import MetricsPanel
 from keytrainer.views.widgets.text_button import TextButton
@@ -38,20 +39,20 @@ class ResultsScreen(tk.Frame):
         inner = theme.frame(self)
         inner.place(relx=0.5, rely=0.45, anchor="center")
         self.title = theme.label(inner, "упражнение завершено", role="muted")
-        self.title.pack(pady=(0, 40))
+        self.title.pack(pady=px((0, 40)))
         self.metrics = MetricsPanel(
             inner, theme, RESULT_CAPTIONS, value_font="metric_big", cell_width=8
         )
         self.metrics.pack()
         compare = theme.frame(inner)
-        compare.pack(pady=(50, 40))
+        compare.pack(pady=px((50, 40)))
         self.record = self._comparison(compare, "личный рекорд", 0)
         self.average = self._comparison(compare, "среднее за 10 сессий", 1)
         theme.label(
             inner, "клавиши с наибольшим числом ошибок", role="muted", font="small"
         ).pack()
         self.worst = theme.frame(inner)
-        self.worst.pack(pady=(14, 50))
+        self.worst.pack(pady=px((14, 50)))
         buttons = theme.frame(inner)
         buttons.pack()
         self.stats_button = None
@@ -65,7 +66,7 @@ class ResultsScreen(tk.Frame):
             button = TextButton(
                 buttons, theme, caption, lambda n=name: self._emit(n), role="text"
             )
-            button.grid(row=0, column=column, padx=50)
+            button.grid(row=0, column=column, padx=px(50))
             self.buttons.append(button)
             if name == "stats":
                 self.stats_button = button
@@ -92,15 +93,15 @@ class ResultsScreen(tk.Frame):
             Widgets of the block.
         """
         block = self.theme.frame(parent)
-        block.grid(row=0, column=column, padx=120)
+        block.grid(row=0, column=column, padx=px(120))
         self.theme.label(block, caption, role="muted", font="small").pack()
         row = self.theme.frame(block)
-        row.pack(pady=(6, 4))
+        row.pack(pady=px((6, 4)))
         value = self.theme.label(row, "—", font="title")
         value.pack(side="left")
         delta = self.theme.label(row, "", font="title")
-        delta.pack(side="left", padx=(24, 0))
-        line = tk.Frame(block, height=2, width=0)
+        delta.pack(side="left", padx=px((24, 0)))
+        line = tk.Frame(block, height=px(2), width=0)
         line.pack()
         return {"value": value, "delta": delta, "line": line}
 
@@ -127,7 +128,7 @@ class ResultsScreen(tk.Frame):
         self.animator.run(
             f"line{id(line)}",
             420,
-            lambda t: line.configure(width=round(30 * t)),
+            lambda t: line.configure(width=round(px(30) * t)),
             delay_ms=520,
         )
         self.animator.fade(
@@ -171,7 +172,7 @@ class ResultsScreen(tk.Frame):
                 width=3,
                 height=1,
             )
-            box.pack(side="left", padx=(30, 10), ipady=8)
+            box.pack(side="left", padx=px((30, 10)), ipady=px(8))
             self.animator.fade(
                 f"worst{index}",
                 box,

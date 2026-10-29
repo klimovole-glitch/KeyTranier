@@ -12,6 +12,7 @@ import tkinter as tk
 from keytrainer.data.keyboard_layouts import SPACE_CHAR
 from keytrainer.data.models import Key
 from keytrainer.views.animation import KEY_PRESS_MS, Animator, ease_in_out, mix_colors
+from keytrainer.views.display import px
 from keytrainer.views.theme import Palette, ThemeManager
 
 SPACE_WIDTH_UNITS = 6
@@ -83,6 +84,12 @@ class KeyboardCanvas(tk.Canvas):
             theme: Theme manager.
         """
         super().__init__(parent, bd=0, highlightthickness=0)
+        cls = type(self)
+        # sizes of the mockup, converted to screen pixels (high-DPI screens)
+        self.key_size = px(cls.key_size)
+        self.gap = px(cls.gap)
+        self.padding = px(cls.padding)
+        self.radius = px(cls.radius)
         self.theme = theme
         theme.style(self, bg="bg")
         theme.on_change(lambda _p: self.redraw())

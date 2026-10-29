@@ -34,6 +34,7 @@ from keytrainer.views.animation import (
     mix_colors,
     shake_offset,
 )
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.dropdown import Dropdown
 from keytrainer.views.widgets.keyboard_canvas import KeyboardCanvas
@@ -79,15 +80,15 @@ class TrainingScreen(tk.Frame):
         inner.place(relx=0.5, rely=0.47, anchor="center")
         self._build_params(inner)
         self.metrics = MetricsPanel(inner, theme, METRIC_CAPTIONS)
-        self.metrics.pack(pady=(26, 30))
+        self.metrics.pack(pady=px((26, 30)))
         self._build_text(inner)
         self.hint = theme.label(inner, "", role="muted", font="small")
-        self.hint.pack(pady=(18, 12))
+        self.hint.pack(pady=px((18, 12)))
         self.keyboard = KeyboardCanvas(inner, theme)
         self.keyboard.pack()
         self._build_buttons(inner)
         self.message = theme.label(inner, "", role="muted", font="small")
-        self.message.pack(pady=(10, 0))
+        self.message.pack(pady=px((10, 0)))
         self.show_metrics(None)
 
     # ------------------------------------------------------------ build
@@ -227,7 +228,7 @@ class TrainingScreen(tk.Frame):
             parent: Container.
         """
         holder = self.theme.frame(parent)
-        holder.pack(padx=SHAKE_PAD)
+        holder.pack(padx=px(SHAKE_PAD))
         self._holder = holder
         self.text = tk.Text(
             holder,
@@ -238,14 +239,14 @@ class TrainingScreen(tk.Frame):
             highlightthickness=0,
             cursor="arrow",
             font=self.theme.fonts["text"],
-            spacing2=14,
-            spacing3=14,
+            spacing2=px(14),
+            spacing3=px(14),
             takefocus=False,
         )
         self.theme.style(self.text, bg="bg", fg="dim", selectbackground="bg")
         self.text.pack()
         self.text.bind("<Button-1>", lambda _e: "break")
-        self.caret = tk.Frame(self.text, width=2, bd=0, highlightthickness=0)
+        self.caret = tk.Frame(self.text, width=px(2), bd=0, highlightthickness=0)
         self.caret.configure(bg=self.theme.palette.text)
         self.pause_cover = self.theme.label(
             holder,
@@ -301,7 +302,7 @@ class TrainingScreen(tk.Frame):
             parent: Container.
         """
         row = self.theme.frame(parent)
-        row.pack(pady=(30, 0))
+        row.pack(pady=px((30, 0)))
         self.start_button = TextButton(
             row, self.theme, "старт", lambda: self._emit("start"), role="text"
         )
@@ -314,7 +315,7 @@ class TrainingScreen(tk.Frame):
         for column, button in enumerate(
             (self.start_button, self.abort_button, self.new_button)
         ):
-            button.grid(row=0, column=column, padx=50)
+            button.grid(row=0, column=column, padx=px(50))
 
     # ----------------------------------------------------------- update
     def show_params(self, params: ExerciseParams) -> None:
@@ -343,7 +344,7 @@ class TrainingScreen(tk.Frame):
             widget.pack_forget()
         for widget in self._param_widgets:
             if visible.get(widget, params.mode in DECORATED_MODES):
-                widget.pack(side="left", padx=18)
+                widget.pack(side="left", padx=px(18))
 
     def show_text(self, text: str) -> None:
         """Show a new exercise text, nothing typed yet.
@@ -445,11 +446,11 @@ class TrainingScreen(tk.Frame):
             SHAKE_MS,
             lambda t: holder.pack_configure(
                 padx=(
-                    SHAKE_PAD + round(shake_offset(t)),
-                    SHAKE_PAD - round(shake_offset(t)),
+                    px(SHAKE_PAD) + round(shake_offset(t, px(7))),
+                    px(SHAKE_PAD) - round(shake_offset(t, px(7))),
                 )
             ),
-            done=lambda: holder.pack_configure(padx=SHAKE_PAD),
+            done=lambda: holder.pack_configure(padx=px(SHAKE_PAD)),
             easing=linear,
         )
 
