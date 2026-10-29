@@ -4,6 +4,7 @@ import tkinter as tk
 from collections.abc import Callable
 
 from keytrainer.views.dialogs.base_dialog import BaseDialog
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.text_button import TextButton
 
@@ -42,17 +43,17 @@ class ProfileNameDialog(BaseDialog):
             highlightbackground="border",
             highlightcolor="muted",
         )
-        self.entry.pack(anchor="w", pady=(6, 4), ipady=4)
+        self.entry.pack(anchor="w", pady=px((6, 4)), ipady=px(4))
         self.entry.insert(0, current_name)
         self.entry.select_range(0, "end")
         self.entry.bind("<Return>", lambda _e: self._accept())
         self.error = theme.label(self.body, "", role="error", font="tiny")
         self.error.pack(anchor="w")
         buttons = theme.frame(self.body)
-        buttons.pack(fill="x", pady=(16, 0))
+        buttons.pack(fill="x", pady=px((16, 0)))
         TextButton(buttons, theme, "отмена", self.destroy).pack(side="right")
         TextButton(buttons, theme, "сохранить", self._accept, role="text").pack(
-            side="right", padx=30
+            side="right", padx=px(30)
         )
         self.entry.focus_set()
 

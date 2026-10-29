@@ -7,17 +7,17 @@ import pytest
 
 from keytrainer.data.keyboard_layouts import LAYOUT_EN, LAYOUT_RU, row_chars
 from keytrainer.data.models import ExerciseMode
+from keytrainer.data.repositories import (
+    LayoutRepository,
+    TextRepository,
+    WordRepository,
+)
 from keytrainer.engine.exercise_generator import (
     ExerciseGenerator,
     ExerciseParams,
     RepositoryWordSource,
     clean_custom_text,
     weak_share,
-)
-from keytrainer.data.repositories import (
-    LayoutRepository,
-    TextRepository,
-    WordRepository,
 )
 
 

@@ -2,7 +2,9 @@
 
 import tkinter as tk
 
+from keytrainer.data.models import Theme
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px, set_title_bar_theme
 from keytrainer.views.theme import ThemeManager
 
 DIALOG_FADE_MS = 180
@@ -26,7 +28,7 @@ class BaseDialog(tk.Toplevel):
         self.transient(parent.winfo_toplevel())
         theme.style(self, bg="bg")
         self.body = theme.frame(self)
-        self.body.pack(fill="both", expand=True, padx=36, pady=30)
+        self.body.pack(fill="both", expand=True, padx=px(36), pady=px(30))
         self.bind("<Escape>", lambda _e: self.destroy())
 
     def show_modal(self) -> None:
@@ -36,6 +38,7 @@ class BaseDialog(tk.Toplevel):
         x = parent.winfo_rootx() + (parent.winfo_width() - self.winfo_width()) // 2
         y = parent.winfo_rooty() + (parent.winfo_height() - self.winfo_height()) // 3
         self.geometry(f"+{max(x, 0)}+{max(y, 0)}")
+        set_title_bar_theme(self, self.theme.theme == Theme.DARK)
         self._fade_in()
         self.grab_set()
         self.focus_set()

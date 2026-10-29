@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 
 OFFSET = 16
@@ -28,8 +29,8 @@ class Tooltip:
             font="small",
             bg="surface",
             justify="left",
-            padx=14,
-            pady=10,
+            padx=px(14),
+            pady=px(10),
         )
         self._animator = Animator(self._label)
 
@@ -42,8 +43,8 @@ class Tooltip:
             text: Tooltip text.
         """
         self._label.configure(text=text)
-        x = x_root - self._container.winfo_rootx() + OFFSET
-        y = y_root - self._container.winfo_rooty() + OFFSET
+        x = x_root - self._container.winfo_rootx() + px(OFFSET)
+        y = y_root - self._container.winfo_rooty() + px(OFFSET)
         self._label.place(x=x, y=y)
         self._label.lift()
         if not self._visible:

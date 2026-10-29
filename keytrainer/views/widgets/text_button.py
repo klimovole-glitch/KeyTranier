@@ -9,6 +9,7 @@ import tkinter as tk
 from collections.abc import Callable
 
 from keytrainer.views.animation import HOVER_MS, Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import Palette, ThemeManager
 
 
@@ -38,7 +39,9 @@ class TextButton(tk.Label):
             font: Font name.
             bg: Palette field of the background.
         """
-        super().__init__(parent, text=text, bd=0, padx=4, pady=2, cursor="hand2")
+        super().__init__(
+            parent, text=text, bd=0, padx=px(4), pady=px(2), cursor="hand2"
+        )
         self._theme = theme
         self._command = command
         self._role = role
