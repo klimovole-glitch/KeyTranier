@@ -21,7 +21,8 @@ class HeatmapCanvas(KeyboardCanvas):
     overrides only the fill and the caption of a key.
     """
 
-    key_size = 50
+    key_size = 54
+    reveal_ms = 460
 
     def __init__(self, parent: tk.Misc, theme: ThemeManager) -> None:
         """Create an empty heatmap.
@@ -33,8 +34,10 @@ class HeatmapCanvas(KeyboardCanvas):
         super().__init__(parent, theme)
         self.data: HeatmapData | None = None
         self.on_hover: Callable[[KeyCell | None, int, int], None] | None = None
-        self.tag_bind("key", "<Motion>", self._motion)
-        self.tag_bind("key", "<Leave>", lambda _e: self._emit_hover(None, 0, 0))
+        self.tag_bind("key", "<Motion>", self._motion, add="+")
+        self.tag_bind(
+            "key", "<Leave>", lambda _e: self._emit_hover(None, 0, 0), add="+"
+        )
 
     def show(self, data: HeatmapData, keys: list[Key]) -> None:
         """Draw new statistics.
@@ -43,9 +46,27 @@ class HeatmapCanvas(KeyboardCanvas):
             data: Heatmap data.
             keys: Keys of the layout.
         """
+        old_fills = dict(self._fills)
         self.data = data
         digits_used = any(c.attempts for c in data.cells.values() if c.key.row_num == 0)
         self.set_keys(keys, show_digits=digits_used)
+        self._reveal(old_fills)
+
+    def _reveal(self, old_fills: dict[str, str]) -> None:
+        """Let the colors flow over the keyboard from left to right.
+
+        On the first show keys start grey; after a filter change every key
+        flows from its previous color to the new one.
+
+        Args:
+            old_fills: Key colors before the redraw.
+        """
+        palette = self.theme.palette
+        for char, key in self._by_char.items():
+            start = old_fills.get(char, palette.heat_empty)
+            self._paint(char, start)
+            delay = int(key.pos_x * 26 + key.pos_y * 34)
+            self.fade_key(char, start, self.reveal_ms, delay_ms=delay)
 
     def color_for(self, cell: KeyCell, palette: Palette) -> str:
         """Color of a key on the scale (grey if there is too little data).
