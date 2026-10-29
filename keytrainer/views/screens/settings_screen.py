@@ -2,13 +2,16 @@
 
 import tkinter as tk
 from collections.abc import Callable
-from tkinter import ttk
 
 from keytrainer.data.keyboard_layouts import LAYOUT_EN, LAYOUT_IDS, LAYOUT_RU
 from keytrainer.data.models import ExerciseMode, Theme, User
 from keytrainer.engine.profile_service import FONT_SIZE_RANGE, ProfileInfo
 from keytrainer.labels import LAYOUT_SHORT, LAYOUT_TITLES, MODE_TITLES, plural
+from keytrainer.views.animation import Animator
 from keytrainer.views.theme import ThemeManager
+from keytrainer.views.widgets.dropdown import Dropdown
+from keytrainer.views.widgets.message import show_animated_message
+from keytrainer.views.widgets.slider import Slider
 from keytrainer.views.widgets.text_button import TextButton
 
 LAYOUT_BY_ID = {layout_id: name for name, layout_id in LAYOUT_IDS.items()}
@@ -102,24 +105,46 @@ class SettingsScreen(tk.Frame):
         )
         row = self.theme.frame(parent)
         row.pack(anchor="w")
+        field = self.theme.frame(row)
+        field.pack(side="left")
         self.name_entry = tk.Entry(
-            row, width=28, bd=0, highlightthickness=1, font=self.theme.fonts["ui"]
+            field, width=28, bd=0, highlightthickness=0, font=self.theme.fonts["ui"]
         )
-        self.theme.style(
-            self.name_entry,
-            bg="bg",
-            fg="text",
-            insertbackground="text",
-            highlightbackground="border",
-            highlightcolor="muted",
-        )
-        self.name_entry.pack(side="left", ipady=4)
+        self.theme.style(self.name_entry, bg="bg", fg="text", insertbackground="text")
+        self.name_entry.pack(ipady=4)
+        self.name_line = tk.Frame(field, height=1, bd=0)
+        self.name_line.configure(bg=self.theme.palette.border)
+        self.name_line.pack(fill="x")
+        self._line_animator = Animator(self.name_line)
+        self._name_error = False
+        self.name_entry.bind("<FocusIn>", lambda _e: self._underline(True))
+        self.name_entry.bind("<FocusOut>", lambda _e: self._underline(False))
+        self.theme.on_change(lambda _p: self._underline(False, animate=False))
         self.name_entry.bind("<Return>", lambda _e: self._create())
         TextButton(row, self.theme, "создать профиль", self._create, role="text").pack(
             side="left", padx=30
         )
         self.name_error = self.theme.label(parent, "", role="error", font="tiny")
         self.name_error.pack(anchor="w", pady=(4, 0))
+
+    def _underline(self, focused: bool, animate: bool = True) -> None:
+        """Color the line under the name entry (states «фокус» and «ошибка»).
+
+        Args:
+            focused: Whether the entry has the keyboard focus.
+            animate: Change the color smoothly.
+        """
+        palette = self.theme.palette
+        if self._name_error:
+            color = palette.error
+        else:
+            color = palette.text if focused else palette.border
+        if animate:
+            self._line_animator.fade(
+                "line", self.name_line, "bg", self.name_line.cget("bg"), color, 180
+            )
+        else:
+            self.name_line.configure(bg=color)
 
     def _create(self) -> None:
         """Report the entered name to the controller."""
@@ -143,38 +168,14 @@ class SettingsScreen(tk.Frame):
         self.font_label = self.theme.label(row, "", width=6, anchor="w")
         self.font_label.pack(side="left", padx=10)
         low, high = FONT_SIZE_RANGE
-        self.font_scale = ttk.Scale(
+        self.font_scale = Slider(
             row,
-            from_=low,
-            to=high,
-            orient="horizontal",
-            length=260,
-            style="Font.Horizontal.TScale",
-            command=lambda v: self._emit("draft", font_size=round(float(v))),
+            self.theme,
+            low,
+            high,
+            lambda v: self._emit("draft", font_size=v),
         )
-        self.theme.on_change(self._style_scale)
-        self._style_scale()
-        self.font_scale.pack(side="left")
-
-    def _style_scale(self, _palette: object = None) -> None:
-        """Color the font size slider (ttk widgets use styles, not options).
-
-        Args:
-            _palette: Ignored; the current palette is used.
-        """
-        palette = self.theme.palette
-        style = ttk.Style(self)
-        if style.theme_use() != "clam":
-            style.theme_use("clam")
-        style.configure(
-            "Font.Horizontal.TScale",
-            background=palette.text,
-            troughcolor=palette.border,
-            bordercolor=palette.bg,
-            lightcolor=palette.text,
-            darkcolor=palette.text,
-            sliderthickness=12,
-        )
+        self.font_scale.pack(side="left", pady=(10, 0))
 
     def _build_defaults(self, parent: tk.Misc) -> None:
         """Default layout, mode, finger hint and auto-pause.
@@ -196,19 +197,10 @@ class SettingsScreen(tk.Frame):
         row = self._row(parent, "режим")
         self.mode_button = TextButton(row, self.theme, "", self._mode_menu, role="text")
         self.mode_button.pack(side="left", padx=10)
-        self.menu = tk.Menu(self, tearoff=False, font=self.theme.fonts["ui"])
-        self.theme.style(
-            self.menu,
-            bg="surface",
-            fg="text",
-            activebackground="surface_active",
-            activeforeground="text",
-        )
-        for mode in (ExerciseMode.KEYS, ExerciseMode.WORDS, ExerciseMode.TEXT):
-            self.menu.add_command(
-                label=MODE_TITLES[mode],
-                command=lambda m=mode: self._emit("draft", default_mode=m),
-            )
+        self._mode_items = [
+            (MODE_TITLES[mode], lambda m=mode: self._emit("draft", default_mode=m))
+            for mode in (ExerciseMode.KEYS, ExerciseMode.WORDS, ExerciseMode.TEXT)
+        ]
         self.switches = {}
         for field, caption in (
             ("show_finger_hint", "подсказка пальцев"),
@@ -227,10 +219,8 @@ class SettingsScreen(tk.Frame):
 
     def _mode_menu(self) -> None:
         """Open the list of default modes."""
-        button = self.mode_button
-        self.menu.tk_popup(
-            button.winfo_rootx(), button.winfo_rooty() + button.winfo_height()
-        )
+        current = self.mode_button.cget("text")
+        Dropdown(self.mode_button, self.theme, self._mode_items, current).open()
 
     # ----------------------------------------------------------- update
     def show_profiles(self, profiles: list[ProfileInfo], active_id: int) -> None:
@@ -289,7 +279,7 @@ class SettingsScreen(tk.Frame):
         for value, button in self.theme_buttons.items():
             button.set_state(selected=user.theme == value)
         self.font_label.configure(text=f"{user.font_size} px")
-        if round(float(self.font_scale.get())) != user.font_size:
+        if self.font_scale.get() != user.font_size:
             self.font_scale.set(user.font_size)
         layout = LAYOUT_BY_ID.get(user.layout_id or 1, LAYOUT_RU)
         for name, button in self.layout_buttons.items():
@@ -302,6 +292,8 @@ class SettingsScreen(tk.Frame):
         """Empty the new profile entry."""
         self.name_entry.delete(0, "end")
         self.name_error.configure(text="")
+        self._name_error = False
+        self._underline(False)
 
     def show_name_error(self, text: str) -> None:
         """Show a validation error under the entry (state "ошибка").
@@ -310,7 +302,9 @@ class SettingsScreen(tk.Frame):
             text: Error text.
         """
         self.name_error.configure(text=text)
-        self.name_entry.configure(highlightbackground=self.theme.palette.error)
+        self._name_error = True
+        self._underline(True)
+        show_animated_message(self.name_error, self.theme, text, is_error=True)
 
     def show_message(self, text: str, is_error: bool = False) -> None:
         """Show a message next to the buttons.
@@ -319,7 +313,4 @@ class SettingsScreen(tk.Frame):
             text: Message.
             is_error: Color as an error.
         """
-        palette = self.theme.palette
-        self.message.configure(
-            text=text, fg=palette.error if is_error else palette.muted
-        )
+        show_animated_message(self.message, self.theme, text, is_error)
