@@ -2,11 +2,13 @@
 
 The mockups have no framed buttons: an action is a word that brightens on
 hover, a chosen option is underlined, an unavailable one is dimmed.
+The text color changes smoothly instead of jumping.
 """
 
 import tkinter as tk
 from collections.abc import Callable
 
+from keytrainer.views.animation import HOVER_MS, Animator
 from keytrainer.views.theme import Palette, ThemeManager
 
 
@@ -46,6 +48,8 @@ class TextButton(tk.Label):
         self._hover = False
         self.selected = False
         self.enabled = True
+        self._animator = Animator(self)
+        theme.style(self, bg=bg)  # background follows a smooth theme change
         self.bind("<Enter>", lambda _e: self._set_hover(True))
         self.bind("<Leave>", lambda _e: self._set_hover(False))
         self.bind("<Button-1>", self._click)
@@ -59,7 +63,7 @@ class TextButton(tk.Label):
             value: ``True`` while the mouse is over the button.
         """
         self._hover = value
-        self.refresh()
+        self.refresh(animate=True)
 
     def _click(self, _event: tk.Event) -> None:
         """Run the command if the button is enabled.
@@ -91,27 +95,54 @@ class TextButton(tk.Label):
             self.enabled = enabled
         if selected is not None:
             self.selected = selected
-        self.refresh()
+        self.refresh(animate=True)
 
-    def refresh(self, _palette: Palette | None = None) -> None:
+    def target_color(self) -> str:
+        """Text color for the current state.
+
+        Returns:
+            Hex color.
+        """
+        palette = self._theme.palette
+        if not self.enabled:
+            return palette.dim
+        if self._hover or self.selected:
+            return getattr(palette, self._hover_role)
+        return getattr(palette, self._role)
+
+    def fade_in(self, delay_ms: int = 0, duration_ms: int = 260) -> None:
+        """Appear from the background color (menu items, result buttons).
+
+        Args:
+            delay_ms: Pause before the start (staggered lists).
+            duration_ms: Length of the animation.
+        """
+        start = getattr(self._theme.palette, self._bg)
+        self._animator.fade(
+            "color", self, "fg", start, self.target_color(), duration_ms, delay_ms
+        )
+
+    def refresh(self, _palette: Palette | None = None, animate: bool = False) -> None:
         """Repaint according to the state and the current palette.
 
         Args:
             _palette: Ignored; the current palette is taken from the manager.
+            animate: Change the text color smoothly (hover, selection).
         """
         if not self.winfo_exists():
             return  # the button was destroyed (menu rebuilt)
         palette = self._theme.palette
-        if not self.enabled:
-            color = palette.dim
-        elif self._hover or self.selected:
-            color = getattr(palette, self._hover_role)
-        else:
-            color = getattr(palette, self._role)
+        color = self.target_color()
         font = "underlined" if self.selected and self._font == "ui" else self._font
         self.configure(
-            fg=color,
             bg=getattr(palette, self._bg),
             font=self._theme.fonts[font],
             cursor="hand2" if self.enabled else "arrow",
         )
+        if animate:
+            current = self.cget("fg")
+            if current.startswith("#") and len(current) == 7:
+                self._animator.fade("color", self, "fg", current, color, HOVER_MS)
+                return
+        self._animator.cancel("color")
+        self.configure(fg=color)
