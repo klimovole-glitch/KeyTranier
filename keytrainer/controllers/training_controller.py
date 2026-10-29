@@ -11,6 +11,7 @@ from collections.abc import Callable
 from dataclasses import replace
 from datetime import datetime
 
+from keytrainer.controllers.app_state import AppState
 from keytrainer.data.keyboard_layouts import (
     FINGER_NAMES,
     LAYOUT_EN,
@@ -28,7 +29,6 @@ from keytrainer.engine.exercise_generator import (
 )
 from keytrainer.engine.session_service import SessionResult, SessionService
 from keytrainer.engine.typing_session import SessionState, TypingSession
-from keytrainer.controllers.app_state import AppState
 from keytrainer.views.dialogs.custom_text_dialog import CustomTextDialog
 from keytrainer.views.screens.results_screen import ResultsScreen
 from keytrainer.views.screens.training_screen import TrainingScreen

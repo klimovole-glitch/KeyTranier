@@ -10,6 +10,7 @@ from keytrainer.engine.analytics_engine import (
     Metric,
     heat_color,
 )
+from keytrainer.views.display import px
 from keytrainer.views.theme import Palette, ThemeManager
 from keytrainer.views.widgets.keyboard_canvas import KeyboardCanvas
 
@@ -110,7 +111,7 @@ class HeatmapCanvas(KeyboardCanvas):
         center = (x0 + x1) / 2
         self.create_text(
             center,
-            y0 + 18,
+            y0 + px(18),
             text=key.key_char,
             fill=palette.text,
             font=self.theme.fonts["key"],
@@ -119,7 +120,7 @@ class HeatmapCanvas(KeyboardCanvas):
         caption = value_caption(cell, self.data.metric) if cell else ""
         self.create_text(
             center,
-            y1 - 11,
+            y1 - px(11),
             text=caption,
             fill=palette.muted,
             font=self.theme.fonts["tiny"],

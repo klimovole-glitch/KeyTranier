@@ -2,13 +2,14 @@
 
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
 
 from keytrainer.controllers.app_state import AppState
 from keytrainer.engine.csv_exporter import export_sessions
 from keytrainer.engine.history_service import HistoryData, HistoryService
 from keytrainer.labels import plural
 from keytrainer.utils.background import run_in_background
+from keytrainer.views.dialogs.confirm_dialog import ask_confirm
 from keytrainer.views.screens.history_screen import HistoryScreen
 
 
@@ -94,7 +95,7 @@ class HistoryController:
             self.view.show_message("выберите сессию в таблице", is_error=True)
             return
         question = f"Удалить {plural(len(ids), 'сессию', 'сессии', 'сессий')}?"
-        if not messagebox.askyesno("Удаление", question, parent=self.root):
+        if not ask_confirm(self.root, self.view.theme, "Удаление", question):
             return
         deleted = self.service.delete(ids)
         self.refresh()

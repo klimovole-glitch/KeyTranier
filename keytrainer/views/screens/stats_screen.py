@@ -14,6 +14,7 @@ from keytrainer.engine.analytics_engine import (
 )
 from keytrainer.labels import format_number
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.heatmap_canvas import HeatmapCanvas
 from keytrainer.views.widgets.text_button import TextButton
@@ -56,7 +57,7 @@ class StatsScreen(tk.Frame):
         left = theme.frame(body)
         left.grid(row=0, column=0, sticky="n")
         right = theme.frame(body)
-        right.grid(row=0, column=1, sticky="n", padx=(70, 0), pady=(150, 0))
+        right.grid(row=0, column=1, sticky="n", padx=px((70, 0)), pady=px((150, 0)))
 
         self.metric_buttons = self._option_row(
             left, "метрика:", METRIC_TITLES, "metric"
@@ -66,13 +67,13 @@ class StatsScreen(tk.Frame):
             left, "раскладка:", {LAYOUT_RU: "RU", LAYOUT_EN: "EN"}, "layout"
         )
         self.title = theme.label(left, "", role="muted", font="small")
-        self.title.pack(pady=(26, 14))
+        self.title.pack(pady=px((26, 14)))
         self.heatmap = HeatmapCanvas(left, theme)
         self.heatmap.pack()
         self.heatmap.on_hover = self._on_hover
         self._build_legend(left)
         self.status = theme.label(left, "", role="muted", font="small")
-        self.status.pack(anchor="w", pady=(10, 0))
+        self.status.pack(anchor="w", pady=px((10, 0)))
         self._build_top(right)
         self.tooltip = Tooltip(self, theme)
         theme.on_change(lambda _p: self._redraw_legend())
@@ -104,14 +105,14 @@ class StatsScreen(tk.Frame):
             Value -> button.
         """
         row = self.theme.frame(parent)
-        row.pack(pady=3)
-        self.theme.label(row, caption, role="muted").pack(side="left", padx=(0, 20))
+        row.pack(pady=px(3))
+        self.theme.label(row, caption, role="muted").pack(side="left", padx=px((0, 20)))
         buttons = {}
         for value, title in options.items():
             button = TextButton(
                 row, self.theme, title, lambda v=value: self._emit(event, v)
             )
-            button.pack(side="left", padx=12)
+            button.pack(side="left", padx=px(12))
             buttons[value] = button
         return buttons
 
@@ -122,19 +123,19 @@ class StatsScreen(tk.Frame):
             parent: Container.
         """
         row = self.theme.frame(parent)
-        row.pack(anchor="w", pady=(18, 0))
+        row.pack(anchor="w", pady=px((18, 0)))
         self.legend_low = self.theme.label(row, "0 %", role="muted", font="tiny")
         self.legend_low.pack(side="left")
         self.legend = tk.Canvas(
-            row, width=LEGEND_WIDTH, height=8, bd=0, highlightthickness=0
+            row, width=px(LEGEND_WIDTH), height=px(8), bd=0, highlightthickness=0
         )
         self.theme.style(self.legend, bg="bg")
-        self.legend.pack(side="left", padx=8)
+        self.legend.pack(side="left", padx=px(8))
         self.legend_high = self.theme.label(row, "30 %+", role="muted", font="tiny")
         self.legend_high.pack(side="left")
-        self.grey_box = tk.Frame(row, width=10, height=10)
+        self.grey_box = tk.Frame(row, width=px(10), height=px(10))
         self.theme.style(self.grey_box, bg="heat_empty")
-        self.grey_box.pack(side="left", padx=(40, 8))
+        self.grey_box.pack(side="left", padx=px((40, 8)))
         self.theme.label(
             row, "меньше 5 нажатий — недостаточно данных", role="muted", font="tiny"
         ).pack(side="left")
@@ -144,7 +145,7 @@ class StatsScreen(tk.Frame):
         """Paint the gradient of the color scale."""
         palette = self.theme.palette
         self.legend.delete("all")
-        step = LEGEND_WIDTH / LEGEND_STEPS
+        step = px(LEGEND_WIDTH) / LEGEND_STEPS
         for index in range(LEGEND_STEPS):
             color = heat_color(
                 index / (LEGEND_STEPS - 1),
@@ -152,7 +153,7 @@ class StatsScreen(tk.Frame):
                 palette.heat_value,
             )
             self.legend.create_rectangle(
-                index * step, 0, (index + 1) * step + 1, 8, fill=color, width=0
+                index * step, 0, (index + 1) * step + 1, px(8), fill=color, width=0
             )
 
     def _build_top(self, parent: tk.Misc) -> None:
@@ -165,7 +166,7 @@ class StatsScreen(tk.Frame):
             anchor="w"
         )
         self.top_frame = self.theme.frame(parent)
-        self.top_frame.pack(anchor="w", pady=(12, 30))
+        self.top_frame.pack(anchor="w", pady=px((12, 30)))
         self.train_button = TextButton(
             parent,
             self.theme,
@@ -244,9 +245,9 @@ class StatsScreen(tk.Frame):
             ).pack(anchor="w")
         for rank, cell in enumerate(data.top, start=1):
             row = self.theme.frame(self.top_frame)
-            row.pack(anchor="w", pady=6)
+            row.pack(anchor="w", pady=px(6))
             self.theme.label(row, str(rank), role="muted", font="small").pack(
-                side="left", padx=(0, 16)
+                side="left", padx=px((0, 16))
             )
             box = tk.Label(
                 row,
@@ -257,9 +258,9 @@ class StatsScreen(tk.Frame):
                 bg=self.heatmap.color_for(cell, self.theme.palette),
                 fg=self.theme.palette.text,
             )
-            box.pack(side="left", ipady=8)
+            box.pack(side="left", ipady=px(8))
             info = self.theme.frame(row)
-            info.pack(side="left", padx=(16, 0))
+            info.pack(side="left", padx=px((16, 0)))
             self.theme.label(info, f"{format_number(cell.error_rate)} %").pack(
                 anchor="w"
             )

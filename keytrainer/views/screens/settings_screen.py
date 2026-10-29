@@ -8,6 +8,7 @@ from keytrainer.data.models import ExerciseMode, Theme, User
 from keytrainer.engine.profile_service import FONT_SIZE_RANGE, ProfileInfo
 from keytrainer.labels import LAYOUT_SHORT, LAYOUT_TITLES, MODE_TITLES, plural
 from keytrainer.views.animation import Animator
+from keytrainer.views.display import px
 from keytrainer.views.theme import ThemeManager
 from keytrainer.views.widgets.dropdown import Dropdown
 from keytrainer.views.widgets.message import show_animated_message
@@ -33,7 +34,7 @@ class SettingsScreen(tk.Frame):
         self.callbacks: dict[str, Callable] = {}
         body = theme.frame(self)
         body.place(relx=0.08, rely=0.04, relwidth=0.84, relheight=0.92)
-        theme.label(body, "настройки", font="title").pack(anchor="w", pady=(0, 24))
+        theme.label(body, "настройки", font="title").pack(anchor="w", pady=px((0, 24)))
         self._section(body, "профили")
         self.profiles = theme.frame(body)
         self.profiles.pack(anchor="w", fill="x")
@@ -43,9 +44,9 @@ class SettingsScreen(tk.Frame):
         self._section(body, "по умолчанию")
         self._build_defaults(body)
         bottom = theme.frame(body)
-        bottom.pack(fill="x", pady=(24, 0))
+        bottom.pack(fill="x", pady=px((24, 0)))
         TextButton(bottom, theme, "сбросить", lambda: self._emit("reset")).pack(
-            side="right", padx=(40, 60)
+            side="right", padx=px((40, 60))
         )
         TextButton(
             bottom, theme, "сохранить", lambda: self._emit("save"), role="text"
@@ -74,7 +75,7 @@ class SettingsScreen(tk.Frame):
             caption: Caption text.
         """
         self.theme.label(parent, caption, role="muted", font="tiny").pack(
-            anchor="w", pady=(22, 8)
+            anchor="w", pady=px((22, 8))
         )
 
     def _row(self, parent: tk.Misc, caption: str) -> tk.Frame:
@@ -88,7 +89,7 @@ class SettingsScreen(tk.Frame):
             Frame for the controls.
         """
         row = self.theme.frame(parent)
-        row.pack(anchor="w", pady=3)
+        row.pack(anchor="w", pady=px(3))
         self.theme.label(row, caption, role="muted", width=20, anchor="w").pack(
             side="left"
         )
@@ -101,7 +102,7 @@ class SettingsScreen(tk.Frame):
             parent: Container.
         """
         self.theme.label(parent, "имя нового профиля", role="muted", font="tiny").pack(
-            anchor="w", pady=(18, 4)
+            anchor="w", pady=px((18, 4))
         )
         row = self.theme.frame(parent)
         row.pack(anchor="w")
@@ -111,7 +112,7 @@ class SettingsScreen(tk.Frame):
             field, width=28, bd=0, highlightthickness=0, font=self.theme.fonts["ui"]
         )
         self.theme.style(self.name_entry, bg="bg", fg="text", insertbackground="text")
-        self.name_entry.pack(ipady=4)
+        self.name_entry.pack(ipady=px(4))
         self.name_line = tk.Frame(field, height=1, bd=0)
         self.name_line.configure(bg=self.theme.palette.border)
         self.name_line.pack(fill="x")
@@ -122,10 +123,10 @@ class SettingsScreen(tk.Frame):
         self.theme.on_change(lambda _p: self._underline(False, animate=False))
         self.name_entry.bind("<Return>", lambda _e: self._create())
         TextButton(row, self.theme, "создать профиль", self._create, role="text").pack(
-            side="left", padx=30
+            side="left", padx=px(30)
         )
         self.name_error = self.theme.label(parent, "", role="error", font="tiny")
-        self.name_error.pack(anchor="w", pady=(4, 0))
+        self.name_error.pack(anchor="w", pady=px((4, 0)))
 
     def _underline(self, focused: bool, animate: bool = True) -> None:
         """Color the line under the name entry (states «фокус» and «ошибка»).
@@ -162,11 +163,11 @@ class SettingsScreen(tk.Frame):
             button = TextButton(
                 row, self.theme, title, lambda v=value: self._emit("draft", theme=v)
             )
-            button.pack(side="left", padx=10)
+            button.pack(side="left", padx=px(10))
             self.theme_buttons[value] = button
         row = self._row(parent, "размер шрифта")
         self.font_label = self.theme.label(row, "", width=6, anchor="w")
-        self.font_label.pack(side="left", padx=10)
+        self.font_label.pack(side="left", padx=px(10))
         low, high = FONT_SIZE_RANGE
         self.font_scale = Slider(
             row,
@@ -175,7 +176,7 @@ class SettingsScreen(tk.Frame):
             high,
             lambda v: self._emit("draft", font_size=v),
         )
-        self.font_scale.pack(side="left", pady=(10, 0))
+        self.font_scale.pack(side="left", pady=px((10, 0)))
 
     def _build_defaults(self, parent: tk.Misc) -> None:
         """Default layout, mode, finger hint and auto-pause.
@@ -192,11 +193,11 @@ class SettingsScreen(tk.Frame):
                 LAYOUT_SHORT[name],
                 lambda n=name: self._emit("draft", layout_id=LAYOUT_IDS[n]),
             )
-            button.pack(side="left", padx=10)
+            button.pack(side="left", padx=px(10))
             self.layout_buttons[name] = button
         row = self._row(parent, "режим")
         self.mode_button = TextButton(row, self.theme, "", self._mode_menu, role="text")
-        self.mode_button.pack(side="left", padx=10)
+        self.mode_button.pack(side="left", padx=px(10))
         self._mode_items = [
             (MODE_TITLES[mode], lambda m=mode: self._emit("draft", default_mode=m))
             for mode in (ExerciseMode.KEYS, ExerciseMode.WORDS, ExerciseMode.TEXT)
@@ -214,7 +215,7 @@ class SettingsScreen(tk.Frame):
                 lambda f=field: self._emit("switch", f),
                 role="text",
             )
-            button.pack(side="left", padx=10)
+            button.pack(side="left", padx=px(10))
             self.switches[field] = button
 
     def _mode_menu(self) -> None:
@@ -236,7 +237,7 @@ class SettingsScreen(tk.Frame):
             user = info.user
             active = user.id == active_id
             row = self.theme.frame(self.profiles)
-            row.pack(anchor="w", fill="x", pady=4)
+            row.pack(anchor="w", fill="x", pady=px(4))
             self.theme.label(
                 row,
                 user.user_name,
@@ -268,7 +269,7 @@ class SettingsScreen(tk.Frame):
                     lambda e=event, i=user.id: self._emit(e, i),
                     role=role,
                     hover_role="text" if role != "error" else "error",
-                ).pack(side="left", padx=14)
+                ).pack(side="left", padx=px(14))
 
     def show_draft(self, user: User) -> None:
         """Show settings that are being edited (not saved yet).

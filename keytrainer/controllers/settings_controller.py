@@ -2,15 +2,17 @@
 
 import tkinter as tk
 from dataclasses import replace
-from tkinter import messagebox
 
 from keytrainer.controllers.app_state import AppState
 from keytrainer.data.exceptions import DataAccessError
 from keytrainer.data.models import User
 from keytrainer.engine.profile_service import ProfileService
 from keytrainer.labels import plural
+from keytrainer.views.dialogs.confirm_dialog import ask_confirm
 from keytrainer.views.dialogs.profile_name_dialog import ProfileNameDialog
 from keytrainer.views.screens.settings_screen import SettingsScreen
+
+APPEARANCE_DELAY_MS = 250
 
 
 class SettingsController:
@@ -37,6 +39,7 @@ class SettingsController:
         self.profiles = profiles
         self.draft: User = replace(state.user)
         self._visible = False
+        self._appearance_job: str | None = None
         view.callbacks.update(
             create=self.create,
             rename=self.rename,
@@ -114,7 +117,7 @@ class SettingsController:
             f"Удалить профиль «{info.user.user_name}»?\n"
             f"Вместе с ним будут удалены {sessions} и статистика клавиш."
         )
-        if not messagebox.askyesno("Удаление профиля", question, parent=self.root):
+        if not ask_confirm(self.root, self.view.theme, "Удаление профиля", question):
             return
         try:
             active = self.profiles.delete(user_id, self.state.user.id)
@@ -134,6 +137,40 @@ class SettingsController:
             **changes: Fields of :class:`User`.
         """
         self.draft = replace(self.draft, **changes)
+        self.view.show_draft(self.draft)
+        if "theme" in changes or "font_size" in changes:
+            self._apply_appearance_later()
+
+    def _apply_appearance_later(self) -> None:
+        """Apply the theme and the font size a moment after the last change.
+
+        The slider sends many values while it is dragged; only the last one
+        is saved, so the window is not repainted dozens of times.
+        """
+        if self._appearance_job is not None:
+            self.root.after_cancel(self._appearance_job)
+        self._appearance_job = self.root.after(
+            APPEARANCE_DELAY_MS, self._apply_appearance
+        )
+
+    def _apply_appearance(self) -> None:
+        """Save the theme and the font size at once and repaint the window.
+
+        Other edited settings stay in the draft until «сохранить».
+        """
+        self._appearance_job = None
+        user, pending = self.state.user, self.draft
+        if (user.theme, user.font_size) == (pending.theme, pending.font_size):
+            return
+        try:
+            self.profiles.save_settings(
+                replace(user, theme=pending.theme, font_size=pending.font_size)
+            )
+        except DataAccessError as error:
+            self.view.show_message(str(error), is_error=True)
+            return
+        self.state.reload_user()  # repaints the window, refreshes this screen
+        self.draft = pending
         self.view.show_draft(self.draft)
 
     def toggle(self, field: str) -> None:
@@ -158,6 +195,7 @@ class SettingsController:
         """Put default values into the draft."""
         self.draft = self.profiles.with_defaults(self.draft)
         self.view.show_draft(self.draft)
+        self._apply_appearance_later()
         self.view.show_message("значения по умолчанию — нажмите «сохранить»")
 
     # ------------------------------------------------- ScreenController
@@ -194,4 +232,4 @@ class SettingsController:
         Returns:
             Hint text.
         """
-        return "изменения применяются после «сохранить»"
+        return "тема и шрифт меняются сразу, остальное — после «сохранить»"
