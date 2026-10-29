@@ -126,6 +126,9 @@ class DimLayer:
         if self.window is not None and self.window.winfo_exists():
             self.window.destroy()
         self.window = None
+        # the clicked layer was the active window; give the keyboard back,
+        # otherwise Windows activates another program and typing stops
+        self.root.focus_force()
 
     def _fade(self, target: float, duration_ms: int = FADE_MS, done=None) -> None:
         """Change the opacity smoothly.
