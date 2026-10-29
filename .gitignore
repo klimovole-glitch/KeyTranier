@@ -5,6 +5,7 @@ __pycache__/
 build/
 dist/
 *.spec
+!keytrainer.spec
 # runtime files of the application
 keytrainer.db
 keytrainer.db.bak
