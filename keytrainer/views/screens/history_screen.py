@@ -5,9 +5,14 @@ from collections.abc import Callable, Sequence
 from datetime import datetime
 from tkinter import ttk
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.dates import DateFormatter, date2num
-from matplotlib.figure import Figure
+try:  # the chart needs matplotlib; without it the program still works
+    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+    from matplotlib.dates import DateFormatter, date2num
+    from matplotlib.figure import Figure
+
+    HAS_MATPLOTLIB = True
+except ImportError:  # pragma: no cover - depends on the installation
+    HAS_MATPLOTLIB = False
 
 from keytrainer.data.models import Session
 from keytrainer.engine.history_service import ChartData, HistorySummary
@@ -110,6 +115,17 @@ class HistoryScreen(tk.Frame):
         Args:
             parent: Container.
         """
+        if not HAS_MATPLOTLIB:
+            self.figure = None
+            self.theme.label(
+                parent,
+                "график недоступен: установите matplotlib —\n"
+                "py -m pip install -r requirements.txt",
+                role="muted",
+                font="small",
+                height=6,
+            ).pack()
+            return
         self.figure = Figure(figsize=(8.6, 2.3), dpi=100)
         self.axis_wpm = self.figure.add_subplot(111)
         self.axis_errors = self.axis_wpm.twinx()
@@ -195,6 +211,8 @@ class HistoryScreen(tk.Frame):
             gripcount=0,
             **flat,
         )
+        if self.figure is None:
+            return
         self.figure.set_facecolor(palette.bg)
         self.canvas.get_tk_widget().configure(bg=palette.bg)
         self._draw_chart()
@@ -229,6 +247,8 @@ class HistoryScreen(tk.Frame):
 
     def _draw_chart(self) -> None:
         """Draw the chart with the colors of the current theme."""
+        if self.figure is None:
+            return
         palette = self.theme.palette
         wpm_axis, err_axis = self.axis_wpm, self.axis_errors
         for axis in (wpm_axis, err_axis):
