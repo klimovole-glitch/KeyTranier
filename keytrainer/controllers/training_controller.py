@@ -397,6 +397,11 @@ class TrainingController:
             self._schedule_tick()
         result = self.typing.press(char)
         self.view.mark(result.position, result.is_correct)
+        self.view.key_feedback(
+            base_key_char(char, self.params.layout_name), result.is_correct
+        )
+        if not result.is_correct:
+            self.view.error_feedback()
         if result.finished:
             self._finish(completed=True)
             return
@@ -545,7 +550,8 @@ class ResultsController:
         self._show("stats")
 
     def on_show(self) -> None:
-        """Nothing to prepare."""
+        """Start the appearance of the result buttons."""
+        self.view.on_shown()
 
     def on_hide(self) -> None:
         """Nothing to clean up."""

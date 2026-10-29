@@ -4,6 +4,10 @@ From top to bottom: exercise parameters, live metrics, exercise text with a
 caret, next-key hint, on-screen keyboard, buttons and a message line.
 The screen does not know how exercises are made: every action is reported
 through a callback set by :class:`TrainingController`.
+
+Animations (Figma «СПЕЦИФИКАЦИЯ»): the caret blinks and slides between
+letters in 0.09 s; after an error it turns red for 0.26 s and the text
+shakes for 0.22 s; a new text and the pause fade in and out.
 """
 
 import tkinter as tk
@@ -19,7 +23,19 @@ from keytrainer.labels import (
     format_duration,
     format_number,
 )
+from keytrainer.views.animation import (
+    CARET_BLINK_MS,
+    CARET_ERROR_MS,
+    CARET_SLIDE_MS,
+    FADE_MS,
+    SHAKE_MS,
+    Animator,
+    linear,
+    mix_colors,
+    shake_offset,
+)
 from keytrainer.views.theme import ThemeManager
+from keytrainer.views.widgets.dropdown import Dropdown
 from keytrainer.views.widgets.keyboard_canvas import KeyboardCanvas
 from keytrainer.views.widgets.metrics_panel import MetricsPanel
 from keytrainer.views.widgets.text_button import TextButton
@@ -36,6 +52,9 @@ METRIC_CAPTIONS = {
 DECORATED_MODES = (ExerciseMode.WORDS, ExerciseMode.WEAK_KEYS)
 TEXT_WIDTH_CHARS = 46
 TEXT_LINES = 3
+SHAKE_PAD = 10
+BLINK_AFTER_MS = 650
+PAUSE_DIM = 0.22
 
 
 class TrainingScreen(tk.Frame):
@@ -52,6 +71,10 @@ class TrainingScreen(tk.Frame):
         self.theme = theme
         theme.style(self, bg="bg")
         self.callbacks: dict[str, Callable] = {}
+        self.animator = Animator(self)
+        self._params: ExerciseParams | None = None
+        self._text_alpha = 1.0
+        self._caret_xy: tuple[int, int] | None = None
         inner = theme.frame(self)
         inner.place(relx=0.5, rely=0.47, anchor="center")
         self._build_params(inner)
@@ -91,7 +114,7 @@ class TrainingScreen(tk.Frame):
             row,
             self.theme,
             "",
-            lambda: self._popup(self._mode_menu, self.mode_button),
+            lambda: self._popup(self._mode_items, self.mode_button, self._mode_title()),
             role="text",
         )
         self.layout_button = TextButton(
@@ -101,13 +124,17 @@ class TrainingScreen(tk.Frame):
             row,
             self.theme,
             "",
-            lambda: self._popup(self._level_menu, self.level_button),
+            lambda: self._popup(
+                self._level_items, self.level_button, self._level_title()
+            ),
         )
         self.length_button = TextButton(
             row,
             self.theme,
             "",
-            lambda: self._popup(self._length_menu, self.length_button),
+            lambda: self._popup(
+                self._length_items, self.length_button, self._length_title()
+            ),
         )
         self.option_buttons = {
             name: TextButton(
@@ -142,42 +169,56 @@ class TrainingScreen(tk.Frame):
             (f"{seconds} секунд", lambda s=seconds: self._emit("length", None, s))
             for seconds in TIME_LIMITS
         ]
-        self._mode_menu = self._menu(modes)
-        self._level_menu = self._menu(levels)
-        self._length_menu = self._menu(lengths)
+        self._mode_items = modes
+        self._level_items = levels
+        self._length_items = lengths
 
-    def _menu(self, items: list[tuple[str, Callable]]) -> tk.Menu:
-        """Create a themed drop-down menu.
+    def _mode_title(self) -> str | None:
+        """Caption of the chosen mode for the check mark.
+
+        Returns:
+            Caption or ``None`` before the first exercise.
+        """
+        return MODE_TITLES[self._params.mode] if self._params else None
+
+    def _level_title(self) -> str | None:
+        """Caption of the chosen key level.
+
+        Returns:
+            Caption or ``None``.
+        """
+        if self._params is None:
+            return None
+        level = self._params.level
+        return f"{level}: {KEY_LEVEL_TITLES.get(level, '')}"
+
+    def _length_title(self) -> str | None:
+        """Caption of the chosen length.
+
+        Returns:
+            Caption or ``None``.
+        """
+        if self._params is None:
+            return None
+        if self._params.time_limit_sec:
+            return f"{self._params.time_limit_sec} секунд"
+        return f"{self._params.word_count} слов"
+
+    def _popup(
+        self,
+        items: list[tuple[str, Callable]],
+        anchor: tk.Widget,
+        selected: str | None,
+    ) -> None:
+        """Open a drop-down list under a parameter.
 
         Args:
             items: Captions and commands.
-
-        Returns:
-            Menu ready for ``tk_popup``.
+            anchor: Parameter button.
+            selected: Caption of the current value.
         """
-        menu = tk.Menu(self, tearoff=False, bd=0, font=self.theme.fonts["ui"])
-        self.theme.style(
-            menu,
-            bg="surface",
-            fg="text",
-            activebackground="surface_active",
-            activeforeground="text",
-        )
-        for caption, command in items:
-            menu.add_command(label=caption, command=command)
-        return menu
-
-    @staticmethod
-    def _popup(menu: tk.Menu, anchor: tk.Widget) -> None:
-        """Open a menu under a widget.
-
-        Args:
-            menu: Menu to open.
-            anchor: Widget the menu is attached to.
-        """
-        menu.tk_popup(
-            anchor.winfo_rootx(), anchor.winfo_rooty() + anchor.winfo_height()
-        )
+        if getattr(anchor, "enabled", True):
+            Dropdown(anchor, self.theme, items, selected).open()
 
     def _build_text(self, parent: tk.Misc) -> None:
         """Create the exercise text area with a caret and a pause cover.
@@ -186,7 +227,8 @@ class TrainingScreen(tk.Frame):
             parent: Container.
         """
         holder = self.theme.frame(parent)
-        holder.pack()
+        holder.pack(padx=SHAKE_PAD)
+        self._holder = holder
         self.text = tk.Text(
             holder,
             width=TEXT_WIDTH_CHARS,
@@ -203,10 +245,11 @@ class TrainingScreen(tk.Frame):
         self.theme.style(self.text, bg="bg", fg="dim", selectbackground="bg")
         self.text.pack()
         self.text.bind("<Button-1>", lambda _e: "break")
-        self.caret = self.theme.frame(self.text, role="text", width=2)
+        self.caret = tk.Frame(self.text, width=2, bd=0, highlightthickness=0)
+        self.caret.configure(bg=self.theme.palette.text)
         self.pause_cover = self.theme.label(
             holder,
-            "пауза — нажмите любую клавишу или щелкните, чтобы продолжить",
+            "пауза · нажмите любую клавишу",
             role="muted",
         )
         self.pause_cover.bind("<Button-1>", lambda _e: self._emit("resume"))
@@ -214,10 +257,42 @@ class TrainingScreen(tk.Frame):
         self._color_tags()
 
     def _color_tags(self) -> None:
-        """Set colors of the text tags from the palette."""
+        """Set colors of the text and its tags from the palette."""
+        self._set_text_alpha(self._text_alpha)
+        self.caret.configure(bg=self.theme.palette.text)
+
+    def _set_text_alpha(self, alpha: float) -> None:
+        """Blend the whole exercise text with the background.
+
+        Args:
+            alpha: 1 — normal colors, 0 — invisible.
+        """
+        self._text_alpha = alpha
         palette = self.theme.palette
-        self.text.tag_configure("correct", foreground=palette.text)
-        self.text.tag_configure("error", foreground=palette.error)
+        bg = palette.bg
+        self.text.configure(fg=mix_colors(bg, palette.dim, alpha))
+        self.text.tag_configure(
+            "correct", foreground=mix_colors(bg, palette.text, alpha)
+        )
+        self.text.tag_configure(
+            "error", foreground=mix_colors(bg, palette.error, alpha)
+        )
+
+    def _fade_text(self, end: float, duration_ms: int = FADE_MS, done=None) -> None:
+        """Fade the exercise text in or out.
+
+        Args:
+            end: Final alpha.
+            duration_ms: Length of the animation.
+            done: Called at the end.
+        """
+        start = self._text_alpha
+        self.animator.run(
+            "text",
+            duration_ms,
+            lambda t: self._set_text_alpha(start + (end - start) * t),
+            done,
+        )
 
     def _build_buttons(self, parent: tk.Misc) -> None:
         """Create the start, abort and new exercise buttons.
@@ -248,6 +323,7 @@ class TrainingScreen(tk.Frame):
         Args:
             params: Current exercise parameters.
         """
+        self._params = params
         self.mode_button.configure(text=MODE_TITLES[params.mode])
         self.layout_button.configure(text=LAYOUT_TITLES[params.layout_name])
         self.level_button.configure(text=f"уровень {params.level}")
@@ -280,7 +356,10 @@ class TrainingScreen(tk.Frame):
         self.text.insert("1.0", text)
         self.text.configure(state="disabled")
         self.text.yview_moveto(0)
+        self._caret_xy = None
         self.move_caret(0)
+        self._set_text_alpha(0.0)
+        self._fade_text(1.0, 320)
 
     def mark(self, position: int, is_correct: bool | None) -> None:
         """Color one character after a key press or Backspace.
@@ -299,6 +378,8 @@ class TrainingScreen(tk.Frame):
     def move_caret(self, position: int) -> None:
         """Move the caret before a character and scroll to its line.
 
+        Within a line the caret slides; on a new line it jumps.
+
         Args:
             position: Index of the next character.
         """
@@ -306,11 +387,80 @@ class TrainingScreen(tk.Frame):
         self.text.see(index)
         self.text.update_idletasks()
         box = self.text.bbox(index)
-        if box:
-            x, y, _w, height = box
-            self.caret.place(x=x - 1, y=y, height=height)
-        else:
+        if not box:
             self.caret.place_forget()
+            self._caret_xy = None
+            return
+        x, y, _w, height = box
+        x -= 1
+        old = self._caret_xy
+        self._caret_xy = (x, y)
+        self._caret_solid()
+        if old is None or old[1] != y:
+            self.animator.cancel("caret")
+            self.caret.place(x=x, y=y, height=height)
+            return
+        start_x = old[0]
+        self.animator.run(
+            "caret",
+            CARET_SLIDE_MS,
+            lambda t: self.caret.place_configure(x=round(start_x + (x - start_x) * t)),
+        )
+
+    def _caret_solid(self) -> None:
+        """Show the caret without blinking while the user types."""
+        self.animator.cancel("blink")
+        if not self.animator.is_running("caret_error"):
+            self.caret.configure(bg=self.theme.palette.text)
+        self.animator.later("blink_start", BLINK_AFTER_MS, self._start_blink)
+
+    def _start_blink(self) -> None:
+        """Blink the caret after a pause in typing."""
+        state = {"on": True}
+
+        def tick() -> None:
+            state["on"] = not state["on"]
+            palette = self.theme.palette
+            self.animator.fade(
+                "caret_fade",
+                self.caret,
+                "bg",
+                self.caret.cget("bg"),
+                palette.text if state["on"] else palette.bg,
+                160,
+            )
+
+        self.animator.repeat("blink", CARET_BLINK_MS, tick)
+
+    def error_feedback(self) -> None:
+        """Red caret for 0.26 s and a short shake of the text (typing error)."""
+        palette = self.theme.palette
+        self.animator.cancel("caret_fade")
+        self.animator.fade(
+            "caret_error", self.caret, "bg", palette.error, palette.text, CARET_ERROR_MS
+        )
+        holder = self._holder
+        self.animator.run(
+            "shake",
+            SHAKE_MS,
+            lambda t: holder.pack_configure(
+                padx=(
+                    SHAKE_PAD + round(shake_offset(t)),
+                    SHAKE_PAD - round(shake_offset(t)),
+                )
+            ),
+            done=lambda: holder.pack_configure(padx=SHAKE_PAD),
+            easing=linear,
+        )
+
+    def key_feedback(self, key_char: str | None, is_correct: bool) -> None:
+        """Animate the pressed key on the keyboard.
+
+        Args:
+            key_char: Base character of the pressed key.
+            is_correct: Whether the press was correct.
+        """
+        self.keyboard.press(key_char, is_correct)
 
     def show_metrics(self, snapshot: SessionSnapshot | None) -> None:
         """Show live metrics.
@@ -387,11 +537,19 @@ class TrainingScreen(tk.Frame):
         Args:
             visible: ``True`` to show the pause cover.
         """
+        palette = self.theme.palette
         if visible:
+            self.animator.cancel("blink")
+            self._fade_text(PAUSE_DIM)
             self.pause_cover.place(relx=0.5, rely=0.5, anchor="center")
             self.pause_cover.lift()
+            self.animator.fade(
+                "pause", self.pause_cover, "fg", palette.bg, palette.muted, 260
+            )
         else:
+            self.animator.cancel("pause")
             self.pause_cover.place_forget()
+            self._fade_text(1.0)
 
     def show_message(self, text: str, is_error: bool = False) -> None:
         """Show a short message under the buttons.
@@ -401,6 +559,9 @@ class TrainingScreen(tk.Frame):
             is_error: Color the message as an error.
         """
         palette = self.theme.palette
-        self.message.configure(
-            text=text, fg=palette.error if is_error else palette.muted
-        )
+        color = palette.error if is_error else palette.muted
+        self.message.configure(text=text)
+        if text:
+            self.animator.fade("message", self.message, "fg", palette.bg, color, 240)
+        else:
+            self.animator.cancel("message")
