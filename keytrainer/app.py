@@ -9,6 +9,7 @@ from tkinter import messagebox
 
 from keytrainer.config import APP_NAME, DB_PATH, SETTINGS_PATH, setup_logging
 from keytrainer.controllers.app_state import AppState
+from keytrainer.controllers.history_controller import HistoryController
 from keytrainer.controllers.stats_controller import StatsController
 from keytrainer.controllers.training_controller import (
     ResultsController,
@@ -29,10 +30,12 @@ from keytrainer.engine.exercise_generator import (
     ExerciseGenerator,
     RepositoryWordSource,
 )
+from keytrainer.engine.history_service import HistoryService
 from keytrainer.engine.session_service import SessionService
 from keytrainer.labels import LAYOUT_TITLES
 from keytrainer.views.dialogs.about_dialog import AboutDialog
 from keytrainer.views.main_window import MainWindow
+from keytrainer.views.screens.history_screen import HistoryScreen
 from keytrainer.views.screens.results_screen import ResultsScreen
 from keytrainer.views.screens.stats_screen import StatsScreen
 from keytrainer.views.screens.training_screen import TrainingScreen
@@ -97,6 +100,7 @@ class Application:
         )
         self._build_training(ExerciseGenerator(source))
         self._build_stats()
+        self._build_history_and_settings()
         self.state.subscribe(self._on_user_changed)
         self._on_user_changed(user)
 
@@ -138,6 +142,15 @@ class Application:
             self.root, view, self.state, analytics, self.training, self.window.show
         )
         self.window.add_screen("stats", "статистика", view, controller)
+
+    def _build_history_and_settings(self) -> None:
+        """Create the history screen (settings are added in the next branch)."""
+        content = self.window.content
+        history_view = HistoryScreen(content, self.theme)
+        history = HistoryController(
+            self.root, history_view, self.state, HistoryService(self.repos.sessions)
+        )
+        self.window.add_screen("history", "история", history_view, history)
 
     def _show_results(self, result) -> None:
         """Open the results card.
