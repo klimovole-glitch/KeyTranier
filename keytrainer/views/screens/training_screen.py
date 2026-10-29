@@ -56,6 +56,7 @@ TEXT_LINES = 3
 SHAKE_PAD = 10
 BLINK_AFTER_MS = 650
 PAUSE_DIM = 0.22
+MIN_SPEED_SEC = 2.0
 
 
 class TrainingScreen(tk.Frame):
@@ -479,9 +480,12 @@ class TrainingScreen(tk.Frame):
                 accuracy="—",
             )
         else:
+            # in the first seconds 3 letters in 0.5 s give "120 wpm";
+            # the speed is shown when there is enough time to measure it
+            early = snapshot.elapsed_sec < MIN_SPEED_SEC
             values = {
-                "wpm": f"{snapshot.wpm:.0f}",
-                "cpm": f"{snapshot.cpm:.0f}",
+                "wpm": "—" if early else f"{snapshot.wpm:.0f}",
+                "cpm": "—" if early else f"{snapshot.cpm:.0f}",
                 "errors": str(snapshot.errors),
                 "error_rate": f"{format_number(snapshot.error_rate)} %",
                 "time": format_duration(snapshot.elapsed_sec),
