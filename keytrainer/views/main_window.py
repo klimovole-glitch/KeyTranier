@@ -103,7 +103,7 @@ class MainWindow:
         self.profile_name = theme.label(profile, "", font="ui", bg="surface")
         self.profile_name.pack(anchor="w", pady=px((6, 4)))
         self.profile_details = theme.label(
-            profile, "", role="muted", font="tiny", bg="surface"
+            profile, "", role="muted", font="tiny", bg="surface", justify="left"
         )
         self.profile_details.pack(anchor="w")
         self.menu.bind("<Leave>", self._menu_leave)
@@ -218,7 +218,7 @@ class MainWindow:
             details: Layout and theme, e.g. "EN · QWERTY · тёмная тема".
         """
         self.profile_name.configure(text=name)
-        self.profile_details.configure(text=details)
+        self.profile_details.configure(text=details.replace("   ·   ", "\n"))
 
     def _dim_area(self) -> tuple[int, int, int, int]:
         """Part of the window to the right of the menu (it is darkened).
