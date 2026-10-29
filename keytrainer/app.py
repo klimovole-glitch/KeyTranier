@@ -10,6 +10,7 @@ from tkinter import messagebox
 from keytrainer.config import APP_NAME, DB_PATH, SETTINGS_PATH, setup_logging
 from keytrainer.controllers.app_state import AppState
 from keytrainer.controllers.history_controller import HistoryController
+from keytrainer.controllers.settings_controller import SettingsController
 from keytrainer.controllers.stats_controller import StatsController
 from keytrainer.controllers.training_controller import (
     ResultsController,
@@ -31,12 +32,14 @@ from keytrainer.engine.exercise_generator import (
     RepositoryWordSource,
 )
 from keytrainer.engine.history_service import HistoryService
+from keytrainer.engine.profile_service import ProfileService
 from keytrainer.engine.session_service import SessionService
 from keytrainer.labels import LAYOUT_TITLES
 from keytrainer.views.dialogs.about_dialog import AboutDialog
 from keytrainer.views.main_window import MainWindow
 from keytrainer.views.screens.history_screen import HistoryScreen
 from keytrainer.views.screens.results_screen import ResultsScreen
+from keytrainer.views.screens.settings_screen import SettingsScreen
 from keytrainer.views.screens.stats_screen import StatsScreen
 from keytrainer.views.screens.training_screen import TrainingScreen
 from keytrainer.views.theme import ThemeManager
@@ -144,13 +147,21 @@ class Application:
         self.window.add_screen("stats", "статистика", view, controller)
 
     def _build_history_and_settings(self) -> None:
-        """Create the history screen (settings are added in the next branch)."""
+        """Create the history and settings screens."""
         content = self.window.content
         history_view = HistoryScreen(content, self.theme)
         history = HistoryController(
             self.root, history_view, self.state, HistoryService(self.repos.sessions)
         )
         self.window.add_screen("history", "история", history_view, history)
+        settings_view = SettingsScreen(content, self.theme)
+        settings = SettingsController(
+            self.root,
+            settings_view,
+            self.state,
+            ProfileService(self.repos.users, self.repos.sessions),
+        )
+        self.window.add_screen("settings", "настройки", settings_view, settings)
 
     def _show_results(self, result) -> None:
         """Open the results card.
