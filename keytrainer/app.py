@@ -17,6 +17,7 @@ from keytrainer.controllers.training_controller import (
     TrainingController,
 )
 from keytrainer.data.database import Database, InitStatus
+from keytrainer.data.models import Theme
 from keytrainer.data.repositories import (
     KeyRepository,
     KeyStatRepository,
@@ -36,6 +37,12 @@ from keytrainer.engine.profile_service import ProfileService
 from keytrainer.engine.session_service import SessionService
 from keytrainer.labels import LAYOUT_TITLES
 from keytrainer.views.dialogs.about_dialog import AboutDialog
+from keytrainer.views.display import (
+    init_scale,
+    prepare_display,
+    px,
+    set_title_bar_theme,
+)
 from keytrainer.views.main_window import MainWindow
 from keytrainer.views.screens.history_screen import HistoryScreen
 from keytrainer.views.screens.results_screen import ResultsScreen
@@ -180,6 +187,7 @@ class Application:
             user: Active profile.
         """
         self.theme.set_theme(user.theme, user.font_size)
+        set_title_bar_theme(self.root, user.theme == Theme.DARK)
         self._update_status()
 
     def _update_status(self) -> None:
@@ -218,10 +226,16 @@ def main() -> None:
     setup_logging()
     database = Database(DB_PATH)
     status = database.initialize()
+    prepare_display()  # sharp text on 125-200 % screens, bundled font
     root = tk.Tk()
+    init_scale(root)
     root.title(APP_NAME)
-    root.geometry("1280x820")
-    root.minsize(1024, 720)
+    width, height = px(1280), px(820)
+    # never larger than the screen (laptops with big scaling)
+    width = min(width, root.winfo_screenwidth() - px(40))
+    height = min(height, root.winfo_screenheight() - px(80))
+    root.geometry(f"{width}x{height}")
+    root.minsize(min(px(1024), width), min(px(720), height))
     app = Application(root, database)
     app.start()
     if status in RECOVERY_MESSAGES:
