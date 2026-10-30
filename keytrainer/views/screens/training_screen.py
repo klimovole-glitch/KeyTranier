@@ -83,6 +83,9 @@ class TrainingScreen(tk.Frame):
         self.metrics = MetricsPanel(inner, theme, METRIC_CAPTIONS)
         self.metrics.pack(pady=px((26, 30)))
         self._build_text(inner)
+        # under the text and aligned with its right edge
+        self.source = theme.label(self._holder, "", role="dim", font="small")
+        self.source.pack(anchor="e", pady=px((4, 0)))
         self.hint = theme.label(inner, "", role="muted", font="small")
         self.hint.pack(pady=px((18, 12)))
         self.keyboard = KeyboardCanvas(inner, theme)
@@ -363,6 +366,20 @@ class TrainingScreen(tk.Frame):
         self._set_text_alpha(0.0)
         self._fade_text(1.0, 320)
 
+    def show_source(self, source: str) -> None:
+        """Show the author and the work under a connected text.
+
+        Args:
+            source: Title from the library, e.g. "Л. Н. Толстой - Война и мир";
+                empty for other modes.
+        """
+        self.source.configure(text=format_source(source))
+        if source:
+            palette = self.theme.palette
+            self.animator.fade(
+                "source", self.source, "fg", palette.bg, palette.dim, 600
+            )
+
     def mark(self, position: int, is_correct: bool | None) -> None:
         """Color one character after a key press or Backspace.
 
@@ -570,3 +587,20 @@ class TrainingScreen(tk.Frame):
             self.animator.fade("message", self.message, "fg", palette.bg, color, 240)
         else:
             self.animator.cancel("message")
+
+
+def format_source(title: str) -> str:
+    """Make a caption for a text from its library title.
+
+    Args:
+        title: "Author - Work" or just a title of a text.
+
+    Returns:
+        "— Л. Н. Толстой, «Война и мир»", "«Утро в городе»" or "".
+    """
+    if not title:
+        return ""
+    author, sep, work = title.partition(" - ")
+    if sep:
+        return f"— {author}, «{work}»"
+    return f"«{title}»"

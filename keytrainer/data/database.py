@@ -19,7 +19,7 @@ from enum import Enum
 from pathlib import Path
 
 from keytrainer.config import RESOURCES_DIR
-from keytrainer.data.seed import seed_reference_data
+from keytrainer.data.seed import seed_reference_data, sync_builtin_library
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +116,8 @@ class Database:
 
         with self.connection() as conn:
             conn.executescript(SCHEMA_PATH.read_text("utf-8"))
-            seed_reference_data(conn, self._resources_dir)
+            if not seed_reference_data(conn, self._resources_dir):
+                sync_builtin_library(conn, self._resources_dir)
 
         self.make_backup()
         logger.info("Database initialized: %s", status.value)
