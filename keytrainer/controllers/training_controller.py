@@ -292,6 +292,7 @@ class TrainingController:
         view = self.view
         view.show_params(self.params)
         view.show_text(self.exercise.text)
+        view.show_source(self.exercise.source)
         view.show_metrics(None)
         view.show_pause(False)
         view.set_running(False)

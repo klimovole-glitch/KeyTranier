@@ -54,8 +54,10 @@ class WordSource(Protocol):
     def get_words(self, layout_name: str) -> list[str]:
         """Return dictionary words of a layout."""
 
-    def get_random_text(self, layout_name: str) -> str | None:
-        """Return a random built-in text or ``None``."""
+    def get_random_text(
+        self, layout_name: str, exclude_title: str | None = None
+    ) -> tuple[str, str] | None:
+        """Return ``(title, content)`` of a random built-in text or ``None``."""
 
 
 @dataclass(frozen=True)
@@ -81,6 +83,7 @@ class Exercise:
     text: str
     params: ExerciseParams
     warnings: tuple[str, ...] = ()
+    source: str = ""  # author and title of a connected text
 
 
 def normalize_params(params: ExerciseParams) -> tuple[ExerciseParams, list[str]]:
@@ -126,6 +129,25 @@ def clean_custom_text(text: str, layout_name: str) -> tuple[str, int]:
     return cleaned, len(text) - len(kept)
 
 
+def sentence_starts(words: list[str]) -> list[int]:
+    """Indexes of words that begin a sentence.
+
+    A sentence begins with the first word and after a word that ends with
+    ".", "!" or "?" (closing quotes and brackets are allowed after them).
+
+    Args:
+        words: Words of a text.
+
+    Returns:
+        Indexes of first words of sentences (at least ``[0]``).
+    """
+    starts = [0]
+    for index, word in enumerate(words[:-1]):
+        if word.rstrip("\"')").endswith((".", "!", "?")):
+            starts.append(index + 1)
+    return starts
+
+
 class ExerciseGenerator:
     """Builds exercise texts for all five modes."""
 
@@ -138,6 +160,8 @@ class ExerciseGenerator:
         """
         self._source = source
         self._rng = rng or random.Random()
+        self._last_title: str | None = None  # do not give one text twice in a row
+        self._last_source = ""
 
     def generate(self, params: ExerciseParams) -> Exercise:
         """Generate an exercise.
@@ -149,6 +173,7 @@ class ExerciseGenerator:
             Exercise text with warnings about corrected parameters.
         """
         params, warnings = normalize_params(params)
+        self._last_source = ""
         builders = {
             ExerciseMode.KEYS: self._keys_text,
             ExerciseMode.WORDS: self._words_text,
@@ -162,7 +187,10 @@ class ExerciseGenerator:
             text = self._words_text(replace(params, mode=ExerciseMode.WORDS), [])
         for message in warnings:
             logger.warning(message)
-        return Exercise(text=text, params=params, warnings=tuple(warnings))
+        source = self._last_source if params.mode == ExerciseMode.TEXT else ""
+        return Exercise(
+            text=text, params=params, warnings=tuple(warnings), source=source
+        )
 
     # ---------------------------------------------------------- helpers
     def _target_words(self, params: ExerciseParams) -> int:
@@ -251,24 +279,34 @@ class ExerciseGenerator:
         return self._decorate(words, params)
 
     def _connected_text(self, params: ExerciseParams, warnings: list[str]) -> str:
-        """Mode TEXT: a fragment of a built-in text.
+        """Mode TEXT: a fragment of a built-in text (mostly classic literature).
+
+        The fragment starts at a random sentence, so even one text gives
+        different exercises; the previous text is not repeated.
 
         Args:
             params: Normalized parameters.
             warnings: List for messages.
 
         Returns:
-            Text cut to the requested number of words (repeated if short).
+            Text cut to the requested number of words (continued from the
+            beginning if the rest of the text is short).
         """
-        text = self._source.get_random_text(params.layout_name)
-        if not text:
+        found = self._source.get_random_text(params.layout_name, self._last_title)
+        if not found:
             warnings.append("Библиотека текстов пуста")
             return ""
+        title, text = found
+        self._last_title = title
+        self._last_source = title
         words = text.split()
+        starts = sentence_starts(words)
+        start = self._rng.choice(starts)
+        ordered = words[start:] + words[:start]
         count = self._target_words(params)
-        while len(words) < count:
-            words += text.split()
-        return " ".join(words[:count])
+        while len(ordered) < count:
+            ordered += words
+        return " ".join(ordered[:count])
 
     def _custom_text(self, params: ExerciseParams, warnings: list[str]) -> str:
         """Mode CUSTOM: the user's own text.
@@ -394,18 +432,21 @@ class RepositoryWordSource:
             )
         return self._cache[layout_name]
 
-    def get_random_text(self, layout_name: str) -> str | None:
+    def get_random_text(
+        self, layout_name: str, exclude_title: str | None = None
+    ) -> tuple[str, str] | None:
         """Return a random built-in text of a layout.
 
         Args:
             layout_name: Layout name.
+            exclude_title: Title of the previous text (not repeated).
 
         Returns:
-            Text content or ``None``.
+            ``(title, content)`` or ``None``.
         """
         layout_id = self._layout_id(layout_name)
-        text = self._texts.get_random(layout_id) if layout_id else None
-        return text.content if text else None
+        text = self._texts.get_random(layout_id, exclude_title) if layout_id else None
+        return (text.title, text.content) if text else None
 
 
 def main() -> None:

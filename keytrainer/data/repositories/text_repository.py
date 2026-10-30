@@ -98,20 +98,27 @@ class TextRepository(BaseRepository[Text]):
             (layout_id, int(custom)),
         )
 
-    def get_random(self, layout_id: int) -> Text | None:
+    def get_random(
+        self, layout_id: int, exclude_title: str | None = None
+    ) -> Text | None:
         """Pick a random built-in text for the "Connected text" mode.
 
         Args:
             layout_id: Layout id.
+            exclude_title: Title of the previous text, so the same text is not
+                given twice in a row (ignored if it is the only one).
 
         Returns:
             Random text or ``None`` if the library is empty.
         """
-        return self._fetch_one(
+        text = self._fetch_one(
             "SELECT * FROM tbl_texts WHERE layout_id = ? AND is_custom = 0 "
-            "ORDER BY RANDOM() LIMIT 1",
-            (layout_id,),
+            "AND title != ? ORDER BY RANDOM() LIMIT 1",
+            (layout_id, exclude_title or ""),
         )
+        if text is None and exclude_title:
+            return self.get_random(layout_id)
+        return text
 
     def update(self, text: Text) -> bool:
         """Change title and content of a text.
