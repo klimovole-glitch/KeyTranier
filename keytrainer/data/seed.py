@@ -118,3 +118,56 @@ def seed_reference_data(
         ),
     )
     return True
+
+
+def sync_builtin_library(
+    conn: sqlite3.Connection, resources_dir: Path = RESOURCES_DIR
+) -> int:
+    """Bring built-in words and texts of an existing database up to date.
+
+    The library grows between versions: new dictionary words are added;
+    texts are matched by title, new ones are added and removed ones are
+    deleted. User texts (``is_custom = 1``) are never touched.
+
+    Args:
+        conn: Open connection; the caller commits the transaction.
+        resources_dir: Folder with text files.
+
+    Returns:
+        Number of added texts.
+    """
+    added = 0
+    for name in (LAYOUT_RU, LAYOUT_EN):
+        layout_id = LAYOUT_IDS[name]
+        suffix = _LANG_SUFFIX[name]
+        conn.executemany(
+            "INSERT OR IGNORE INTO tbl_words (layout_id, word) VALUES (?, ?)",
+            [
+                (layout_id, word)
+                for word in load_words(resources_dir / f"words_{suffix}.txt")
+            ],
+        )
+        texts = dict(parse_texts(resources_dir / f"texts_{suffix}.txt"))
+        stored = {
+            row[0]
+            for row in conn.execute(
+                "SELECT title FROM tbl_texts WHERE layout_id = ? AND is_custom = 0",
+                (layout_id,),
+            )
+        }
+        new = [(layout_id, t, texts[t]) for t in texts if t not in stored]
+        conn.executemany(
+            "INSERT INTO tbl_texts (layout_id, title, content, is_custom) "
+            "VALUES (?, ?, ?, 0)",
+            new,
+        )
+        for title in stored - texts.keys():
+            conn.execute(
+                "DELETE FROM tbl_texts WHERE layout_id = ? AND is_custom = 0 "
+                "AND title = ?",
+                (layout_id, title),
+            )
+        added += len(new)
+    if added:
+        logger.info("Built-in library updated: %d texts added", added)
+    return added
