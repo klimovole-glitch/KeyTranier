@@ -1,1 +1,0 @@
-"""Tests of KeyTrainer Analytics."""

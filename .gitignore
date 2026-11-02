@@ -3,7 +3,6 @@ __pycache__/
 .venv/
 .pytest_cache/
 build/
-dist/
 *.spec
 !keytrainer.spec
 # runtime files of the application

@@ -246,3 +246,7 @@ def main() -> None:
             300, lambda: messagebox.showwarning(APP_NAME, RECOVERY_MESSAGES[status])
         )
     root.mainloop()
+
+
+if __name__ == "__main__":
+    main()

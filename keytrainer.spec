@@ -1,26 +1,44 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller build file: `pyinstaller keytrainer.spec`
-# Result: dist/KeyTrainer.exe (one file, no console window).
-# The database, the log and settings.json are created next to the .exe.
+
 
 a = Analysis(
-    ["keytrainer/__main__.py"],
-    pathex=["."],
-    datas=[
-        ("keytrainer/resources", "keytrainer/resources"),
-        ("keytrainer/data/schema.sql", "keytrainer/data"),
-    ],
-    hiddenimports=["matplotlib.backends.backend_tkagg"],
-    excludes=["pytest"],
+    ['keytrainer/app.py'],
+    pathex=[],
+    binaries=[],
+    datas=[('keytrainer/resources', 'keytrainer/resources'), ('keytrainer/data/schema.sql', 'keytrainer/data')],
+    hiddenimports=['sqlite3'],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
 )
 pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
+    [],
+    exclude_binaries=True,
+    name='KeyTrainer',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)
+coll = COLLECT(
+    exe,
     a.binaries,
     a.datas,
-    name="KeyTrainer",
-    console=False,
-    upx=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='KeyTrainer',
 )
