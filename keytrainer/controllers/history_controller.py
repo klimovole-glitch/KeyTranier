@@ -1,4 +1,4 @@
-"""Controller of the history screen: loading, sorting, deletion, CSV export."""
+"""Controller of the history screen: loading, sorting, deletion, CSV export and import."""
 
 import tkinter as tk
 from pathlib import Path
@@ -6,7 +6,11 @@ from tkinter import filedialog
 
 from keytrainer.controllers.app_state import AppState
 from keytrainer.engine.csv_exporter import export_sessions
-from keytrainer.engine.history_service import HistoryData, HistoryService
+from keytrainer.engine.history_service import (
+    HistoryData,
+    HistoryService,
+    ImportSummary,
+)
 from keytrainer.labels import plural
 from keytrainer.utils.background import run_in_background
 from keytrainer.views.dialogs.confirm_dialog import ask_confirm
@@ -40,7 +44,10 @@ class HistoryController:
         self.data: HistoryData | None = None
         self._request = 0
         view.callbacks.update(
-            sort=self.sort, delete=self.delete_selected, export=self.export
+            sort=self.sort,
+            delete=self.delete_selected,
+            export=self.export,
+            import_csv=self.import_csv,
         )
 
     def refresh(self) -> None:
@@ -134,6 +141,44 @@ class HistoryController:
             ),
             lambda error: self.view.show_message(
                 f"не удалось сохранить файл: {error}", is_error=True
+            ),
+        )
+
+    def import_csv(self) -> None:
+        """Add sessions from a CSV file to the history of the profile."""
+        name = filedialog.askopenfilename(
+            parent=self.root,
+            filetypes=[("CSV (Excel)", "*.csv"), ("Все файлы", "*.*")],
+        )
+        if not name:
+            return
+        user = self.state.user
+        self.view.show_message("импорт…")
+        run_in_background(
+            self.root,
+            lambda: self.service.import_csv(Path(name), user.id, user.layout_id),
+            self._on_imported,
+            lambda error: self.view.show_message(
+                f"не удалось импортировать: {error}", is_error=True
+            ),
+        )
+
+    def _on_imported(self, summary: ImportSummary) -> None:
+        """Reload the table and tell what was imported.
+
+        Args:
+            summary: Counts of added, duplicate and unreadable rows.
+        """
+        text = f"добавлено: {plural(summary.added, 'сессия', 'сессии', 'сессий')}"
+        if summary.duplicates:
+            text += f", уже были: {summary.duplicates}"
+        if summary.invalid:
+            text += f", пропущено строк с ошибками: {summary.invalid}"
+        self.refresh()
+        self.root.after(
+            50,
+            lambda: self.view.show_message(
+                text, is_error=summary.added == 0 and summary.invalid > 0
             ),
         )
 
