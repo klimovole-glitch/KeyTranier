@@ -126,10 +126,17 @@ class HistoryScreen(tk.Frame):
             lambda: self._emit("delete"),
             role="error",
             hover_role="error",
-        ).pack(side="left", padx=px(70))
+        ).pack(side="left", padx=px(40))
+        TextButton(
+            buttons,
+            theme,
+            "импорт из csv",
+            lambda: self._emit("import_csv"),
+            role="text",
+        ).pack(side="left", padx=px(40))
         TextButton(
             buttons, theme, "экспорт в csv", lambda: self._emit("export"), role="text"
-        ).pack(side="left", padx=px(70))
+        ).pack(side="left", padx=px(40))
         self.message = theme.label(body, "", role="muted", font="small")
         self.message.pack(pady=px((12, 0)))
         theme.on_change(self._on_theme)
