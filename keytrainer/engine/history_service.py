@@ -3,9 +3,11 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 
 from keytrainer.data.models import Session
 from keytrainer.data.repositories import SessionRepository
+from keytrainer.engine.csv_importer import read_sessions
 from keytrainer.engine.metrics import moving_average
 
 SMOOTHING_WINDOW = 5  # N of the moving average (ТЗ, п. 4.3.1)
@@ -32,6 +34,15 @@ class ChartData:
 
 
 @dataclass(frozen=True)
+class ImportSummary:
+    """Result of the CSV import shown to the user."""
+
+    added: int
+    duplicates: int
+    invalid: int
+
+
+@dataclass(frozen=True)
 class HistoryData:
     """Everything the history screen shows."""
 
@@ -41,7 +52,7 @@ class HistoryData:
 
 
 class HistoryService:
-    """Reads and deletes sessions of a profile."""
+    """Reads, imports and deletes sessions of a profile."""
 
     def __init__(self, sessions: SessionRepository) -> None:
         """Store the repository.
@@ -69,6 +80,43 @@ class HistoryService:
             sessions=tuple(sessions),
             summary=summarize(sessions),
             chart=chart_data(sessions),
+        )
+
+    def import_csv(
+        self, path: Path, user_id: int, layout_id: int | None
+    ) -> ImportSummary:
+        """Add sessions from a CSV file; already existing ones are skipped.
+
+        A session is a duplicate if the profile already has a session with
+        the same start (to the minute, as in the file) and the same mode.
+
+        Args:
+            path: CSV file written by the export.
+            user_id: Profile that receives the sessions.
+            layout_id: Layout of the profile.
+
+        Returns:
+            Counts of added, duplicate and unreadable rows.
+
+        Raises:
+            ValidationError: The file is not a KeyTrainer history.
+        """
+        result = read_sessions(path, user_id, layout_id)
+        known = {
+            (s.started_at[:16], s.exercise_mode)
+            for s in self._sessions.get_by_user(user_id)
+        }
+        fresh: list[Session] = []
+        for session in result.sessions:
+            key = (session.started_at[:16], session.exercise_mode)
+            if key not in known:
+                known.add(key)
+                fresh.append(session)
+        self._sessions.create_many(fresh)
+        return ImportSummary(
+            added=len(fresh),
+            duplicates=len(result.sessions) - len(fresh),
+            invalid=result.invalid,
         )
 
     def delete(self, session_ids: Sequence[int]) -> int:

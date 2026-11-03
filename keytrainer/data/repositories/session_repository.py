@@ -101,6 +101,25 @@ class SessionRepository(BaseRepository[Session]):
         session.id = session_id
         return session_id
 
+    def create_many(self, sessions: Sequence[Session]) -> int:
+        """Save many sessions without key statistics in ONE transaction.
+
+        Args:
+            sessions: Sessions to save (used by the CSV import).
+
+        Returns:
+            Number of saved sessions.
+        """
+        with self._db.connection() as conn:
+            conn.executemany(
+                "INSERT INTO tbl_sessions (user_id, layout_id, started_at, "
+                "exercise_mode, text_length, duration_sec, wpm, cpm, error_rate, "
+                "errors_count, is_completed) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [self._session_values(s) for s in sessions],
+            )
+        return len(sessions)
+
     def get_by_user(
         self,
         user_id: int,
