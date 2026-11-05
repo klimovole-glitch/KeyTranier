@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.repositories.text_repository &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.repositories.text_repository</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.data.repositories.text_repository</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Репозиторий для ``tbl_texts``.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.data.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.models</span> <span class="kn">import</span> <span class="n">Text</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.repositories.base</span> <span class="kn">import</span> <span class="n">BaseRepository</span>
+
+<span class="n">MAX_TEXT_LENGTH</span> <span class="o">=</span> <span class="mi">10_000</span>
+
+
+<div class="viewcode-block" id="TextRepository">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository">[документация]</a>
+<span class="k">class</span> <span class="nc">TextRepository</span><span class="p">(</span><span class="n">BaseRepository</span><span class="p">[</span><span class="n">Text</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Операции CRUD для встроенных и пользовательских текстов.&quot;&quot;&quot;</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;tbl_texts&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_to_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Преобразовать строку в :class:`Text`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: Строка ``tbl_texts``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Сущность текста.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="n">layout_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;layout_id&quot;</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">],</span>
+            <span class="n">is_custom</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;is_custom&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Проверить заголовок и содержимое текста.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            title: Заголовок текста.</span>
+<span class="sd">            content: Тело текста.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Заголовок и содержимое без лишних пробелов; пробельные символы</span>
+<span class="sd">            сворачиваются в одиночные пробелы.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Если поле пустое или текст слишком длинный.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Название и текст не могут быть пустыми&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MAX_TEXT_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Текст длиннее </span><span class="si">{</span><span class="n">MAX_TEXT_LENGTH</span><span class="si">}</span><span class="s2"> символов, сократите его&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span>
+
+<div class="viewcode-block" id="TextRepository.create">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.create">[документация]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_custom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Добавить текст (по умолчанию — пользовательский для режима «Свой текст»).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_id: Язык текста.</span>
+<span class="sd">            title: Заголовок.</span>
+<span class="sd">            content: Тело текста.</span>
+<span class="sd">            is_custom: ``True`` для текстов, добавленных пользователем.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Созданный текст.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO tbl_texts (layout_id, title, content, is_custom) &quot;</span>
+            <span class="s2">&quot;VALUES (?, ?, ?, ?)&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">is_custom</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">is_custom</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextRepository.get_by_layout">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.get_by_layout">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_by_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">custom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Text</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Прочитать тексты одного языка.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_id: Идентификатор раскладки.</span>
+<span class="sd">            custom: ``True`` — только пользовательские тексты, ``False`` — только</span>
+<span class="sd">                встроенные, ``None`` — все тексты.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список текстов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">custom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all</span><span class="p">(</span>
+                <span class="s2">&quot;SELECT * FROM tbl_texts WHERE layout_id = ? ORDER BY id&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">layout_id</span><span class="p">,)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT * FROM tbl_texts WHERE layout_id = ? AND is_custom = ? &quot;</span>
+            <span class="s2">&quot;ORDER BY id&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">custom</span><span class="p">)),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextRepository.get_random">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.get_random">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_random</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">exclude_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Выбрать случайный встроенный текст для режима «Связный текст».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_id: Идентификатор раскладки.</span>
+<span class="sd">            exclude_title: Заголовок предыдущего текста, чтобы один и тот же текст</span>
+<span class="sd">                не выдавался дважды подряд (игнорируется, если он единственный).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Случайный текст или ``None``, если библиотека пуста.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_one</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT * FROM tbl_texts WHERE layout_id = ? AND is_custom = 0 &quot;</span>
+            <span class="s2">&quot;AND title != ? ORDER BY RANDOM() LIMIT 1&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">exclude_title</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclude_title</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_random</span><span class="p">(</span><span class="n">layout_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="TextRepository.update">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.update">[документация]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Изменить заголовок и содержимое текста.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Текст с существующим id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если текст обновлён.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
+            <span class="s2">&quot;UPDATE tbl_texts SET title = ?, content = ? WHERE id = ?&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

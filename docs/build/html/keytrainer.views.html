@@ -1,0 +1,990 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views package &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=9bfe3ffa"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="keytrainer.views.dialogs package" href="keytrainer.views.dialogs.html" />
+    <link rel="prev" title="keytrainer.utils package" href="keytrainer.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">keytrainer</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="keytrainer.html">keytrainer package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="keytrainer.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.controllers.html">keytrainer.controllers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.html">keytrainer.data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.engine.html">keytrainer.engine package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.utils.html">keytrainer.utils package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">keytrainer.views package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.app">keytrainer.app module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.config">keytrainer.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.labels">keytrainer.labels module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">keytrainer</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.html">keytrainer package</a></li>
+      <li class="breadcrumb-item active">keytrainer.views package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/keytrainer.views.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="keytrainer-views-package">
+<h1>keytrainer.views package<a class="headerlink" href="#keytrainer-views-package" title="Ссылка на этот заголовок"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Ссылка на этот заголовок"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="keytrainer.views.dialogs.html">keytrainer.views.dialogs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs.about_dialog">keytrainer.views.dialogs.about_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.about_dialog.AboutDialog"><code class="docutils literal notranslate"><span class="pre">AboutDialog</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs.base_dialog">keytrainer.views.dialogs.base_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.base_dialog.BaseDialog"><code class="docutils literal notranslate"><span class="pre">BaseDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.base_dialog.BaseDialog.show_modal"><code class="docutils literal notranslate"><span class="pre">BaseDialog.show_modal()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs.confirm_dialog">keytrainer.views.dialogs.confirm_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ConfirmOverlay"><code class="docutils literal notranslate"><span class="pre">ConfirmOverlay</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ConfirmOverlay.ask"><code class="docutils literal notranslate"><span class="pre">ConfirmOverlay.ask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ask_confirm"><code class="docutils literal notranslate"><span class="pre">ask_confirm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs.custom_text_dialog">keytrainer.views.dialogs.custom_text_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.custom_text_dialog.CustomTextDialog"><code class="docutils literal notranslate"><span class="pre">CustomTextDialog</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs.profile_name_dialog">keytrainer.views.dialogs.profile_name_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.dialogs.html#keytrainer.views.dialogs.profile_name_dialog.ProfileNameDialog"><code class="docutils literal notranslate"><span class="pre">ProfileNameDialog</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.dialogs.html#module-keytrainer.views.dialogs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="keytrainer.views.screens.html">keytrainer.views.screens package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens.history_screen">keytrainer.views.screens.history_screen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen"><code class="docutils literal notranslate"><span class="pre">HistoryScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.selected_dates"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.selected_dates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.selected_ids"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.selected_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.show_chart"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.show_chart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.show_message"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.show_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.show_sessions"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.show_sessions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.show_sort"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.show_sort()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.HistoryScreen.show_summary"><code class="docutils literal notranslate"><span class="pre">HistoryScreen.show_summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.install_matplotlib"><code class="docutils literal notranslate"><span class="pre">install_matplotlib()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.row_values"><code class="docutils literal notranslate"><span class="pre">row_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.set_date_axis"><code class="docutils literal notranslate"><span class="pre">set_date_axis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.history_screen.use_bundled_font"><code class="docutils literal notranslate"><span class="pre">use_bundled_font()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens.results_screen">keytrainer.views.screens.results_screen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen"><code class="docutils literal notranslate"><span class="pre">ResultsScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.on_shown"><code class="docutils literal notranslate"><span class="pre">ResultsScreen.on_shown()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.set_stats_available"><code class="docutils literal notranslate"><span class="pre">ResultsScreen.set_stats_available()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.show_result"><code class="docutils literal notranslate"><span class="pre">ResultsScreen.show_result()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens.settings_screen">keytrainer.views.screens.settings_screen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen"><code class="docutils literal notranslate"><span class="pre">SettingsScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.clear_new_name"><code class="docutils literal notranslate"><span class="pre">SettingsScreen.clear_new_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_draft"><code class="docutils literal notranslate"><span class="pre">SettingsScreen.show_draft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_message"><code class="docutils literal notranslate"><span class="pre">SettingsScreen.show_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_name_error"><code class="docutils literal notranslate"><span class="pre">SettingsScreen.show_name_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_profiles"><code class="docutils literal notranslate"><span class="pre">SettingsScreen.show_profiles()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens.stats_screen">keytrainer.views.screens.stats_screen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.StatsScreen"><code class="docutils literal notranslate"><span class="pre">StatsScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.StatsScreen.show_data"><code class="docutils literal notranslate"><span class="pre">StatsScreen.show_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.StatsScreen.show_error"><code class="docutils literal notranslate"><span class="pre">StatsScreen.show_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.StatsScreen.show_filters"><code class="docutils literal notranslate"><span class="pre">StatsScreen.show_filters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.StatsScreen.show_loading"><code class="docutils literal notranslate"><span class="pre">StatsScreen.show_loading()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.stats_screen.tooltip_text"><code class="docutils literal notranslate"><span class="pre">tooltip_text()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens.training_screen">keytrainer.views.screens.training_screen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen"><code class="docutils literal notranslate"><span class="pre">TrainingScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.error_feedback"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.error_feedback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.key_feedback"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.key_feedback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.mark"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.mark()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.move_caret"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.move_caret()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.set_keyboard"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.set_keyboard()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.set_running"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.set_running()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_message"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_metrics"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_metrics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_next_key"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_next_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_params"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_pause"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_pause()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_source"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_source()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_text"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.TrainingScreen.show_time_left"><code class="docutils literal notranslate"><span class="pre">TrainingScreen.show_time_left()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.screens.html#keytrainer.views.screens.training_screen.format_source"><code class="docutils literal notranslate"><span class="pre">format_source()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.screens.html#module-keytrainer.views.screens">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="keytrainer.views.widgets.html">keytrainer.views.widgets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.dim_layer">keytrainer.views.widgets.dim_layer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dim_layer.DimLayer"><code class="docutils literal notranslate"><span class="pre">DimLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dim_layer.DimLayer.hide"><code class="docutils literal notranslate"><span class="pre">DimLayer.hide()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dim_layer.DimLayer.place"><code class="docutils literal notranslate"><span class="pre">DimLayer.place()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dim_layer.DimLayer.show"><code class="docutils literal notranslate"><span class="pre">DimLayer.show()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dim_layer.transparency_supported"><code class="docutils literal notranslate"><span class="pre">transparency_supported()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.dropdown">keytrainer.views.widgets.dropdown module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown"><code class="docutils literal notranslate"><span class="pre">Dropdown</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.active"><code class="docutils literal notranslate"><span class="pre">Dropdown.active</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.close"><code class="docutils literal notranslate"><span class="pre">Dropdown.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.close_active"><code class="docutils literal notranslate"><span class="pre">Dropdown.close_active()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.open"><code class="docutils literal notranslate"><span class="pre">Dropdown.open()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.heatmap_canvas">keytrainer.views.widgets.heatmap_canvas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.color_for"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.color_for()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.draw_key_text"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.draw_key_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.key_fill"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.key_fill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.key_size"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.key_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.reveal_ms"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.reveal_ms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.show"><code class="docutils literal notranslate"><span class="pre">HeatmapCanvas.show()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.value_caption"><code class="docutils literal notranslate"><span class="pre">value_caption()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.keyboard_canvas">keytrainer.views.widgets.keyboard_canvas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.draw_key_text"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.draw_key_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.fade_key"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.fade_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.flash"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.flash()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.gap"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.gap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.highlight"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.highlight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.key_box"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.key_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.key_fill"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.key_fill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.key_outline"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.key_outline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.key_size"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.key_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.key_text_color"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.key_text_color()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.padding"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.padding</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.press"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.press()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.radius"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.radius</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.redraw"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.redraw()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.set_keys"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.set_keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.target_fill"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.target_fill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.unit"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.unit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.KeyboardCanvas.visible_keys"><code class="docutils literal notranslate"><span class="pre">KeyboardCanvas.visible_keys()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.keyboard_canvas.rounded_rect"><code class="docutils literal notranslate"><span class="pre">rounded_rect()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.message">keytrainer.views.widgets.message module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.message.show_animated_message"><code class="docutils literal notranslate"><span class="pre">show_animated_message()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.metrics_panel">keytrainer.views.widgets.metrics_panel module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.metrics_panel.MetricsPanel"><code class="docutils literal notranslate"><span class="pre">MetricsPanel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.metrics_panel.MetricsPanel.count_up"><code class="docutils literal notranslate"><span class="pre">MetricsPanel.count_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.metrics_panel.MetricsPanel.set_values"><code class="docutils literal notranslate"><span class="pre">MetricsPanel.set_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.slider">keytrainer.views.widgets.slider module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.slider.Slider"><code class="docutils literal notranslate"><span class="pre">Slider</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.slider.Slider.get"><code class="docutils literal notranslate"><span class="pre">Slider.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.slider.Slider.set"><code class="docutils literal notranslate"><span class="pre">Slider.set()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.slim_scrollbar">keytrainer.views.widgets.slim_scrollbar module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.slim_scrollbar.SlimScrollbar"><code class="docutils literal notranslate"><span class="pre">SlimScrollbar</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.slim_scrollbar.SlimScrollbar.set"><code class="docutils literal notranslate"><span class="pre">SlimScrollbar.set()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.text_button">keytrainer.views.widgets.text_button module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton"><code class="docutils literal notranslate"><span class="pre">TextButton</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton.fade_in"><code class="docutils literal notranslate"><span class="pre">TextButton.fade_in()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton.refresh"><code class="docutils literal notranslate"><span class="pre">TextButton.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton.set_command"><code class="docutils literal notranslate"><span class="pre">TextButton.set_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton.set_state"><code class="docutils literal notranslate"><span class="pre">TextButton.set_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.text_button.TextButton.target_color"><code class="docutils literal notranslate"><span class="pre">TextButton.target_color()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets.tooltip">keytrainer.views.widgets.tooltip module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.tooltip.Tooltip"><code class="docutils literal notranslate"><span class="pre">Tooltip</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.tooltip.Tooltip.hide"><code class="docutils literal notranslate"><span class="pre">Tooltip.hide()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.views.widgets.html#keytrainer.views.widgets.tooltip.Tooltip.show"><code class="docutils literal notranslate"><span class="pre">Tooltip.show()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.views.widgets.html#module-keytrainer.views.widgets">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Ссылка на этот заголовок"></a></h2>
+</section>
+<section id="module-keytrainer.views.animation">
+<span id="keytrainer-views-animation-module"></span><h2>keytrainer.views.animation module<a class="headerlink" href="#module-keytrainer.views.animation" title="Ссылка на этот заголовок"></a></h2>
+<p>Небольшие помощники анимации для Tkinter (без дополнительных библиотек).</p>
+<p>В Tkinter нет встроенных анимаций, поэтому каждая анимация — это цепочка
+вызовов <code class="docutils literal notranslate"><span class="pre">after()</span></code> примерно 60 раз в секунду. <a class="reference internal" href="#keytrainer.views.animation.Animator" title="keytrainer.views.animation.Animator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Animator</span></code></a> хранит
+одну запущенную анимацию на имя: запуск новой с тем же именем останавливает
+старую, поэтому при быстром наборе не накапливаются сотни таймеров.</p>
+<p>Длительности взяты со страницы Figma «СПЕЦИФИКАЦИЯ»: нажатие клавиши
+длится 0,1 с, каретка скользит 0,09 с, ошибка трясёт текст 0,22 с, а
+боковая панель выезжает за 0,38 с.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">Animator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Запускает именованные анимации поверх <code class="docutils literal notranslate"><span class="pre">after()</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.cancel"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.cancel" title="Link to this definition"></a></dt>
+<dd><p>Остановить анимацию (последний нарисованный кадр остаётся на экране).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Имя анимации.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.cancel_all">
+<span class="sig-name descname"><span class="pre">cancel_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.cancel_all"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.cancel_all" title="Link to this definition"></a></dt>
+<dd><p>Остановить все анимации этого аниматора.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.fade">
+<span class="sig-name descname"><span class="pre">fade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tk.Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">220</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.fade"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.fade" title="Link to this definition"></a></dt>
+<dd><p>Плавно изменить параметр цвета виджета.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Имя анимации.</p></li>
+<li><p><strong>widget</strong> – Перекрашиваемый виджет.</p></li>
+<li><p><strong>option</strong> – Имя параметра, например <code class="docutils literal notranslate"><span class="pre">&quot;fg&quot;</span></code>.</p></li>
+<li><p><strong>start</strong> – Первый цвет.</p></li>
+<li><p><strong>end</strong> – Последний цвет.</p></li>
+<li><p><strong>duration_ms</strong> – Длительность анимации.</p></li>
+<li><p><strong>delay_ms</strong> – Пауза перед началом.</p></li>
+<li><p><strong>done</strong> – Вызывается после последнего кадра.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.is_running">
+<span class="sig-name descname"><span class="pre">is_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.is_running"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.is_running" title="Link to this definition"></a></dt>
+<dd><p>Проверить, выполняется ли анимация.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Имя анимации.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, пока она выполняется.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.later">
+<span class="sig-name descname"><span class="pre">later</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.later"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.later" title="Link to this definition"></a></dt>
+<dd><p>Вызвать <code class="docutils literal notranslate"><span class="pre">callback</span></code> один раз после задержки (отменяется по имени).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Имя анимации.</p></li>
+<li><p><strong>delay_ms</strong> – Задержка.</p></li>
+<li><p><strong>callback</strong> – Вызываемая функция.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.repeat">
+<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.repeat"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.repeat" title="Link to this definition"></a></dt>
+<dd><p>Вызывать <code class="docutils literal notranslate"><span class="pre">tick</span></code> каждые <code class="docutils literal notranslate"><span class="pre">interval_ms</span></code> до отмены (мигание).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Имя анимации.</p></li>
+<li><p><strong>interval_ms</strong> – Интервал между вызовами.</p></li>
+<li><p><strong>tick</strong> – Вызываемая функция.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.animation.Animator.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name:</span> <span class="pre">str,</span> <span class="pre">duration_ms:</span> <span class="pre">int,</span> <span class="pre">step:</span> <span class="pre">Callable[[float],</span> <span class="pre">None],</span> <span class="pre">done:</span> <span class="pre">Callable[[],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">easing:</span> <span class="pre">Callable[[float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ease_out&gt;,</span> <span class="pre">delay_ms:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">frame_ms:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">16</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#Animator.run"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.Animator.run" title="Link to this definition"></a></dt>
+<dd><p>Запустить анимацию, заменив анимацию с тем же именем.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Имя анимации (одна анимация на имя).</p></li>
+<li><p><strong>duration_ms</strong> – Длительность анимации.</p></li>
+<li><p><strong>step</strong> – Вызывается на каждом кадре со сглаженным прогрессом 0..1.</p></li>
+<li><p><strong>done</strong> – Вызывается один раз после последнего кадра.</p></li>
+<li><p><strong>easing</strong> – Кривая сглаживания.</p></li>
+<li><p><strong>delay_ms</strong> – Пауза перед первым кадром (анимации со сдвигом).</p></li>
+<li><p><strong>frame_ms</strong> – Интервал между кадрами (больше для тяжёлых перерисовок).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.ease_in_out">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">ease_in_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#ease_in_out"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.ease_in_out" title="Link to this definition"></a></dt>
+<dd><p>Кубическая кривая ease-in-out: мягкий старт и мягкая остановка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> – Прогресс от 0 до 1.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сглаженный прогресс от 0 до 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.ease_out">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">ease_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#ease_out"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.ease_out" title="Link to this definition"></a></dt>
+<dd><p>Кубическая кривая ease-out: быстрый старт, мягкая остановка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> – Прогресс от 0 до 1.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сглаженный прогресс от 0 до 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.lerp">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">lerp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#lerp"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.lerp" title="Link to this definition"></a></dt>
+<dd><p>Линейная интерполяция между двумя числами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – Значение при <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>end</strong> – Значение при <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">1</span></code>.</p></li>
+<li><p><strong>t</strong> – Прогресс от 0 до 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Промежуточное значение.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.linear">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#linear"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.linear" title="Link to this definition"></a></dt>
+<dd><p>Линейная кривая (для тряски, у которой своя форма).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> – Прогресс от 0 до 1.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Тот же прогресс.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.mix_colors">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">mix_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#mix_colors"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.mix_colors" title="Link to this definition"></a></dt>
+<dd><p>Смешать два шестнадцатеричных цвета.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – Цвет при <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code> (<code class="docutils literal notranslate"><span class="pre">#rrggbb</span></code>).</p></li>
+<li><p><strong>end</strong> – Цвет при <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">1</span></code> (<code class="docutils literal notranslate"><span class="pre">#rrggbb</span></code>).</p></li>
+<li><p><strong>t</strong> – Прогресс от 0 до 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Шестнадцатеричный цвет между <code class="docutils literal notranslate"><span class="pre">start</span></code> и <code class="docutils literal notranslate"><span class="pre">end</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.animation.shake_offset">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.animation.</span></span><span class="sig-name descname"><span class="pre">shake_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waves</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/animation.html#shake_offset"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.animation.shake_offset" title="Link to this definition"></a></dt>
+<dd><p>Горизонтальное смещение затухающей тряски.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – Прогресс от 0 до 1.</p></li>
+<li><p><strong>amplitude</strong> – Смещение первого размаха в пикселях.</p></li>
+<li><p><strong>waves</strong> – Число полных размахов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Смещение в пикселях (0 в начале и в конце).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.display">
+<span id="keytrainer-views-display-module"></span><h2>keytrainer.views.display module<a class="headerlink" href="#module-keytrainer.views.display" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.display.init_scale">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.display.</span></span><span class="sig-name descname"><span class="pre">init_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/display.html#init_scale"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.display.init_scale" title="Link to this definition"></a></dt>
+<dd><p>Измерить масштаб экрана, когда главное окно уже существует.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>root</strong> – Главное окно.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0 при 100 %, 1.5 при 150 % и так далее.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Коэффициент масштаба</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.display.prepare_display">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.display.</span></span><span class="sig-name descname"><span class="pre">prepare_display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/display.html#prepare_display"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.display.prepare_display" title="Link to this definition"></a></dt>
+<dd><p>Объявить поддержку DPI и зарегистрировать встроенные шрифты (вызывать до <code class="docutils literal notranslate"><span class="pre">Tk()</span></code>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.display.px">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.display.</span></span><span class="sig-name descname"><span class="pre">px</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/display.html#px"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.display.px" title="Link to this definition"></a></dt>
+<dd><p>Преобразовать размер из макета в пиксели экрана.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Число или кортеж чисел (<code class="docutils literal notranslate"><span class="pre">padx=(30,</span> <span class="pre">0)</span></code>).</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Масштабированное значение той же формы.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.display.scale">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.display.</span></span><span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/keytrainer/views/display.html#scale"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.display.scale" title="Link to this definition"></a></dt>
+<dd><p>Текущий коэффициент масштаба экрана.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Коэффициент, измеренный <a class="reference internal" href="#keytrainer.views.display.init_scale" title="keytrainer.views.display.init_scale"><code class="xref py py-func docutils literal notranslate"><span class="pre">init_scale()</span></code></a> (до неё — 1.0).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.display.set_title_bar_theme">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.display.</span></span><span class="sig-name descname"><span class="pre">set_title_bar_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/display.html#set_title_bar_theme"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.display.set_title_bar_theme" title="Link to this definition"></a></dt>
+<dd><p>Покрасить заголовок окна Windows в тёмный или светлый цвет под тему.</p>
+<p>Windows 10 (20H1+) и 11 поддерживают тёмный заголовок через
+<code class="docutils literal notranslate"><span class="pre">DwmSetWindowAttribute</span></code>; в других системах ничего не происходит.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> – Окно верхнего уровня.</p></li>
+<li><p><strong>dark</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> для тёмной темы.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.main_window">
+<span id="keytrainer-views-main-window-module"></span><h2>keytrainer.views.main_window module<a class="headerlink" href="#module-keytrainer.views.main_window" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.main_window.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Владеет компоновкой корневого окна и переключает экраны.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.add_screen">
+<span class="sig-name descname"><span class="pre">add_screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tk.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.views.main_window.ScreenController" title="keytrainer.views.main_window.ScreenController"><span class="pre">ScreenController</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_menu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.add_screen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.add_screen" title="Link to this definition"></a></dt>
+<dd><p>Зарегистрировать экран.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Внутреннее имя («training»).</p></li>
+<li><p><strong>title</strong> – Подпись в боковом меню.</p></li>
+<li><p><strong>frame</strong> – Виджет экрана (дочерний к <code class="xref py py-attr docutils literal notranslate"><span class="pre">content</span></code>).</p></li>
+<li><p><strong>controller</strong> – Контроллер, получающий клавиши и события показа.</p></li>
+<li><p><strong>in_menu</strong> – Есть ли у экрана пункт меню.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.has_screen">
+<span class="sig-name descname"><span class="pre">has_screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.has_screen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.has_screen" title="Link to this definition"></a></dt>
+<dd><p>Проверить, что экран зарегистрирован.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Имя экрана.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если он существует.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.hide_menu">
+<span class="sig-name descname"><span class="pre">hide_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.hide_menu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.hide_menu" title="Link to this definition"></a></dt>
+<dd><p>Задвинуть боковое меню обратно.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.refresh_status_hint">
+<span class="sig-name descname"><span class="pre">refresh_status_hint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.refresh_status_hint"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.refresh_status_hint" title="Link to this definition"></a></dt>
+<dd><p>Показать горячие клавиши текущего экрана.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.set_profile">
+<span class="sig-name descname"><span class="pre">set_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">details</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.set_profile"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.set_profile" title="Link to this definition"></a></dt>
+<dd><p>Показать активный профиль внизу меню.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Имя профиля.</p></li>
+<li><p><strong>details</strong> – Раскладка и тема, например «EN · QWERTY · тёмная тема».</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.set_status">
+<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.set_status"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.set_status" title="Link to this definition"></a></dt>
+<dd><p>Показать профиль и раскладку в строке состояния.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Левая часть строки состояния.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.show"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.show" title="Link to this definition"></a></dt>
+<dd><p>Показать экран и скрыть остальные.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Имя экрана.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.show_menu">
+<span class="sig-name descname"><span class="pre">show_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.show_menu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.show_menu" title="Link to this definition"></a></dt>
+<dd><p>Выдвинуть боковое меню (0,38 с).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.MainWindow.toggle_menu">
+<span class="sig-name descname"><span class="pre">toggle_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#MainWindow.toggle_menu"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.MainWindow.toggle_menu" title="Link to this definition"></a></dt>
+<dd><p>Открыть или закрыть боковое меню.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.main_window.</span></span><span class="sig-name descname"><span class="pre">Screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tk.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.views.main_window.ScreenController" title="keytrainer.views.main_window.ScreenController"><span class="pre">ScreenController</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_menu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#Screen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.Screen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Зарегистрированный экран.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen.controller">
+<span class="sig-name descname"><span class="pre">controller</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#keytrainer.views.main_window.ScreenController" title="keytrainer.views.main_window.ScreenController"><span class="pre">ScreenController</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#keytrainer.views.main_window.Screen.controller" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tk.Frame</span></em><a class="headerlink" href="#keytrainer.views.main_window.Screen.frame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen.in_menu">
+<span class="sig-name descname"><span class="pre">in_menu</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#keytrainer.views.main_window.Screen.in_menu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.main_window.Screen.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.Screen.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.main_window.Screen.title" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.main_window.</span></span><span class="sig-name descname"><span class="pre">ScreenController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>Что главное окно ожидает от контроллера экрана.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController.handle_key">
+<span class="sig-name descname"><span class="pre">handle_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController.handle_key"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController.handle_key" title="Link to this definition"></a></dt>
+<dd><p>Обработать нажатие клавиши; вернуть <code class="docutils literal notranslate"><span class="pre">True</span></code>, если оно обработано.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController.handle_key_release">
+<span class="sig-name descname"><span class="pre">handle_key_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController.handle_key_release"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController.handle_key_release" title="Link to this definition"></a></dt>
+<dd><p>Обработать отпускание клавиши.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController.on_hide">
+<span class="sig-name descname"><span class="pre">on_hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController.on_hide"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController.on_hide" title="Link to this definition"></a></dt>
+<dd><p>Вызывается, когда показан другой экран.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController.on_show">
+<span class="sig-name descname"><span class="pre">on_show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController.on_show"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController.on_show" title="Link to this definition"></a></dt>
+<dd><p>Вызывается, когда экран становится видимым.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.main_window.ScreenController.status_hint">
+<span class="sig-name descname"><span class="pre">status_hint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/views/main_window.html#ScreenController.status_hint"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.main_window.ScreenController.status_hint" title="Link to this definition"></a></dt>
+<dd><p>Вернуть подсказки горячих клавиш для правой части строки состояния.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.theme">
+<span id="keytrainer-views-theme-module"></span><h2>keytrainer.views.theme module<a class="headerlink" href="#module-keytrainer.views.theme" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.theme.</span></span><span class="sig-name descname"><span class="pre">Palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_active</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">border</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/theme.html#Palette"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.Palette" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Цвета одной темы (шестнадцатеричные строки).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.bg">
+<span class="sig-name descname"><span class="pre">bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.border">
+<span class="sig-name descname"><span class="pre">border</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.border" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.dim">
+<span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.dim" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.heat_empty">
+<span class="sig-name descname"><span class="pre">heat_empty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.heat_empty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.heat_saturation">
+<span class="sig-name descname"><span class="pre">heat_saturation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.heat_saturation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.heat_value">
+<span class="sig-name descname"><span class="pre">heat_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.heat_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.muted">
+<span class="sig-name descname"><span class="pre">muted</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.muted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.selection">
+<span class="sig-name descname"><span class="pre">selection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.selection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.success">
+<span class="sig-name descname"><span class="pre">success</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.success" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.surface">
+<span class="sig-name descname"><span class="pre">surface</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.surface" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.surface_active">
+<span class="sig-name descname"><span class="pre">surface_active</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.surface_active" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.views.theme.Palette.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#keytrainer.views.theme.Palette.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.theme.</span></span><span class="sig-name descname"><span class="pre">ThemeManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Theme" title="keytrainer.data.models.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Хранит текущую палитру и шрифты и перекрашивает виджеты при смене.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bg'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Frame</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager.frame"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager.frame" title="Link to this definition"></a></dt>
+<dd><p>Создать рамку, залитую цветом палитры.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> – Родительский виджет.</p></li>
+<li><p><strong>role</strong> – Поле палитры для фона.</p></li>
+<li><p><strong>**options</strong> – Остальные параметры Frame.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Новая рамка.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ui'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bg'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Label</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager.label"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager.label" title="Link to this definition"></a></dt>
+<dd><p>Создать метку с темой.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> – Родительский виджет.</p></li>
+<li><p><strong>text</strong> – Подпись.</p></li>
+<li><p><strong>role</strong> – Поле палитры для цвета текста.</p></li>
+<li><p><strong>font</strong> – Имя шрифта из <code class="xref py py-attr docutils literal notranslate"><span class="pre">fonts</span></code>.</p></li>
+<li><p><strong>bg</strong> – Поле палитры для фона.</p></li>
+<li><p><strong>**options</strong> – Остальные параметры Label.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Новая метка.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager.on_change">
+<span class="sig-name descname"><span class="pre">on_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#keytrainer.views.theme.Palette" title="keytrainer.views.theme.Palette"><span class="pre">Palette</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager.on_change"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager.on_change" title="Link to this definition"></a></dt>
+<dd><p>Подписаться на смену темы (для холстов и графиков).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> – Функция, принимающая новую палитру.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager.set_theme">
+<span class="sig-name descname"><span class="pre">set_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Theme" title="keytrainer.data.models.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager.set_theme"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager.set_theme" title="Link to this definition"></a></dt>
+<dd><p>Переключить палитру и размер шрифта упражнения.</p>
+<p>Цвета обычных виджетов плавно перетекают из старой палитры в новую;
+холсты и график перерисовываются один раз в конце.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theme</strong> – Новая тема.</p></li>
+<li><p><strong>font_size</strong> – Новый размер текста упражнения.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.theme.ThemeManager.style">
+<span class="sig-name descname"><span class="pre">style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">roles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Misc</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#ThemeManager.style"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.ThemeManager.style" title="Link to this definition"></a></dt>
+<dd><p>Покрасить виджет сейчас и при каждой смене темы.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget</strong> – Любой виджет Tk.</p></li>
+<li><p><strong>**roles</strong> – Параметр виджета -&gt; поле палитры, например <code class="docutils literal notranslate"><span class="pre">bg=&quot;bg&quot;,</span> <span class="pre">fg=&quot;text&quot;</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Тот же виджет (для цепочек вызовов).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.theme.pick_mono_family">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.theme.</span></span><span class="sig-name descname"><span class="pre">pick_mono_family</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/views/theme.html#pick_mono_family"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.theme.pick_mono_family" title="Link to this definition"></a></dt>
+<dd><p>Выбрать первый установленный моноширинный шрифт.</p>
+<p>Tkinter не умеет загружать шрифт из файла, поэтому JetBrains Mono должен
+быть установлен в ОС; иначе используется похожий системный шрифт.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>root</strong> – Любой виджет (шрифты запрашиваются у Tk).</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Название семейства шрифта.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-keytrainer.views" title="Ссылка на этот заголовок"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="keytrainer.utils.html" class="btn btn-neutral float-left" title="keytrainer.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="keytrainer.views.dialogs.html" class="btn btn-neutral float-right" title="keytrainer.views.dialogs package" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

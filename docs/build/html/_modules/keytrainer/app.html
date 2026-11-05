@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.app &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.app</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.app</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Сборка приложения (ТЗ, п. 4.1.1, многослойная архитектура).</span>
+
+<span class="sd">Порядок: база данных -&gt; репозитории -&gt; движок -&gt; контроллеры -&gt; представления.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.config</span> <span class="kn">import</span> <span class="n">APP_NAME</span><span class="p">,</span> <span class="n">DB_PATH</span><span class="p">,</span> <span class="n">SETTINGS_PATH</span><span class="p">,</span> <span class="n">setup_logging</span>
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.app_state</span> <span class="kn">import</span> <span class="n">AppState</span>
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.history_controller</span> <span class="kn">import</span> <span class="n">HistoryController</span>
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.settings_controller</span> <span class="kn">import</span> <span class="n">SettingsController</span>
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.stats_controller</span> <span class="kn">import</span> <span class="n">StatsController</span>
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.training_controller</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ResultsController</span><span class="p">,</span>
+    <span class="n">TrainingController</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.database</span> <span class="kn">import</span> <span class="n">Database</span><span class="p">,</span> <span class="n">InitStatus</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.models</span> <span class="kn">import</span> <span class="n">Theme</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.repositories</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">KeyRepository</span><span class="p">,</span>
+    <span class="n">KeyStatRepository</span><span class="p">,</span>
+    <span class="n">LayoutRepository</span><span class="p">,</span>
+    <span class="n">SessionRepository</span><span class="p">,</span>
+    <span class="n">TextRepository</span><span class="p">,</span>
+    <span class="n">UserRepository</span><span class="p">,</span>
+    <span class="n">WordRepository</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.analytics_engine</span> <span class="kn">import</span> <span class="n">AnalyticsEngine</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.exercise_generator</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExerciseGenerator</span><span class="p">,</span>
+    <span class="n">RepositoryWordSource</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.history_service</span> <span class="kn">import</span> <span class="n">HistoryService</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.profile_service</span> <span class="kn">import</span> <span class="n">ProfileService</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.session_service</span> <span class="kn">import</span> <span class="n">SessionService</span>
+<span class="kn">from</span> <span class="nn">keytrainer.labels</span> <span class="kn">import</span> <span class="n">LAYOUT_TITLES</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.dialogs.about_dialog</span> <span class="kn">import</span> <span class="n">AboutDialog</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.display</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">init_scale</span><span class="p">,</span>
+    <span class="n">prepare_display</span><span class="p">,</span>
+    <span class="n">px</span><span class="p">,</span>
+    <span class="n">set_title_bar_theme</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.main_window</span> <span class="kn">import</span> <span class="n">MainWindow</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.history_screen</span> <span class="kn">import</span> <span class="n">HistoryScreen</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.results_screen</span> <span class="kn">import</span> <span class="n">ResultsScreen</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.settings_screen</span> <span class="kn">import</span> <span class="n">SettingsScreen</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.stats_screen</span> <span class="kn">import</span> <span class="n">StatsScreen</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.training_screen</span> <span class="kn">import</span> <span class="n">TrainingScreen</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.theme</span> <span class="kn">import</span> <span class="n">ThemeManager</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">RECOVERY_MESSAGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">InitStatus</span><span class="o">.</span><span class="n">RESTORED_FROM_BACKUP</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;База данных была повреждена и восстановлена из резервной копии. &quot;</span>
+        <span class="s2">&quot;Поврежденный файл сохранен рядом с программой.&quot;</span>
+    <span class="p">),</span>
+    <span class="n">InitStatus</span><span class="o">.</span><span class="n">RECREATED</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;База данных была повреждена, резервной копии нет. Создана новая база; &quot;</span>
+        <span class="s2">&quot;поврежденный файл сохранен рядом с программой.&quot;</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Repositories">
+<a class="viewcode-back" href="../../keytrainer.html#keytrainer.app.Repositories">[документация]</a>
+<span class="k">class</span> <span class="nc">Repositories</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Все репозитории программы, создаются один раз.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="n">Database</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать репозитории поверх одной базы данных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            database: Инициализированная база данных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layouts</span> <span class="o">=</span> <span class="n">LayoutRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">KeyRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">UserRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">WordRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="n">TextRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sessions</span> <span class="o">=</span> <span class="n">SessionRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_stats</span> <span class="o">=</span> <span class="n">KeyStatRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Application">
+<a class="viewcode-back" href="../../keytrainer.html#keytrainer.app.Application">[документация]</a>
+<span class="k">class</span> <span class="nc">Application</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Создаёт окно и связывает контроллеры с представлениями.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="n">Database</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать всё, что нужно программе.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Корневое окно Tk.</span>
+<span class="sd">            database: Инициализированная база данных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repos</span> <span class="o">=</span> <span class="n">Repositories</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">AppState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">users</span><span class="p">,</span> <span class="n">SETTINGS_PATH</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">ThemeManager</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">MainWindow</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">on_about</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_about</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">report_callback_exception</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_error</span>
+
+        <span class="n">source</span> <span class="o">=</span> <span class="n">RepositoryWordSource</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">layouts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">words</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">texts</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span> <span class="o">=</span> <span class="n">SessionService</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">sessions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">layouts</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_training</span><span class="p">(</span><span class="n">ExerciseGenerator</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_stats</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_history_and_settings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_user_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_user_changed</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_training</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">:</span> <span class="n">ExerciseGenerator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать экраны тренировки и результатов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            generator: Генератор упражнений.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training_view</span> <span class="o">=</span> <span class="n">TrainingScreen</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="n">TrainingController</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">training_view</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+            <span class="n">generator</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_view</span> <span class="o">=</span> <span class="n">ResultsScreen</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ResultsController</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">on_finished</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">on_layout_changed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_layout</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">add_screen</span><span class="p">(</span>
+            <span class="s2">&quot;training&quot;</span><span class="p">,</span> <span class="s2">&quot;тренировка&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">add_screen</span><span class="p">(</span>
+            <span class="s2">&quot;results&quot;</span><span class="p">,</span> <span class="s2">&quot;результаты&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_view</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">in_menu</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать экран статистики (тепловая карта и проблемные клавиши).&quot;&quot;&quot;</span>
+        <span class="n">analytics</span> <span class="o">=</span> <span class="n">AnalyticsEngine</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">key_stats</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">sessions</span>
+        <span class="p">)</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">StatsScreen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="n">StatsController</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">analytics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">add_screen</span><span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;статистика&quot;</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">controller</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_history_and_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать экраны истории и настроек.&quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">content</span>
+        <span class="n">history_view</span> <span class="o">=</span> <span class="n">HistoryScreen</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">HistoryController</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">history_view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">HistoryService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">add_screen</span><span class="p">(</span><span class="s2">&quot;history&quot;</span><span class="p">,</span> <span class="s2">&quot;история&quot;</span><span class="p">,</span> <span class="n">history_view</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
+        <span class="n">settings_view</span> <span class="o">=</span> <span class="n">SettingsScreen</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">SettingsController</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">settings_view</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+            <span class="n">ProfileService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">sessions</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">add_screen</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;настройки&quot;</span><span class="p">,</span> <span class="n">settings_view</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_show_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Открыть карточку результатов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: Данные завершённой сессии.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_view</span><span class="o">.</span><span class="n">set_stats_available</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">has_screen</span><span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_view</span><span class="o">.</span><span class="n">show_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_user_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Применить тему профиля и обновить строку состояния.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Активный профиль.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">set_title_bar_theme</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">theme</span> <span class="o">==</span> <span class="n">Theme</span><span class="o">.</span><span class="n">DARK</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Показать профиль и раскладку в строке состояния.&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">LAYOUT_TITLES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">]</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;профиль: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">   ·   </span><span class="si">{</span><span class="n">layout</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="s2">&quot;тёмная тема&quot;</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">theme</span> <span class="o">==</span> <span class="n">Theme</span><span class="o">.</span><span class="n">DARK</span> <span class="k">else</span> <span class="s2">&quot;светлая тема&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_profile</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layout</span><span class="si">}</span><span class="s2">   ·   </span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Application.show_about">
+<a class="viewcode-back" href="../../keytrainer.html#keytrainer.app.Application.show_about">[документация]</a>
+    <span class="k">def</span> <span class="nf">show_about</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open &quot;О программе&quot;.&quot;&quot;&quot;</span>
+        <span class="n">AboutDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span><span class="o">.</span><span class="n">show_modal</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Application.start">
+<a class="viewcode-back" href="../../keytrainer.html#keytrainer.app.Application.start">[документация]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Показать первый экран и сгенерировать первое упражнение.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;training&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">focus_force</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_report_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Записать непредвиденную ошибку в журнал и показать её понятными словами (ТЗ, п. 4.1.4).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exc_type: Класс исключения.</span>
+<span class="sd">            exc_value: Исключение.</span>
+<span class="sd">            traceback: Трассировка стека.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unhandled error&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">))</span>
+        <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span>
+            <span class="n">APP_NAME</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Произошла ошибка: </span><span class="si">{</span><span class="n">exc_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Подробности записаны в keytrainer.log&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../keytrainer.html#keytrainer.app.main">[документация]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Запустить программу.&quot;&quot;&quot;</span>
+    <span class="n">setup_logging</span><span class="p">()</span>
+    <span class="n">database</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="n">DB_PATH</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+    <span class="n">prepare_display</span><span class="p">()</span>  <span class="c1"># чёткий текст при масштабе экрана 125-200 %, встроенный шрифт</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">init_scale</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">APP_NAME</span><span class="p">)</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">px</span><span class="p">(</span><span class="mi">1280</span><span class="p">),</span> <span class="n">px</span><span class="p">(</span><span class="mi">820</span><span class="p">)</span>
+    <span class="c1"># не больше экрана (ноутбуки с большим масштабированием)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">winfo_screenwidth</span><span class="p">()</span> <span class="o">-</span> <span class="n">px</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">winfo_screenheight</span><span class="p">()</span> <span class="o">-</span> <span class="n">px</span><span class="p">(</span><span class="mi">80</span><span class="p">))</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">minsize</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">px</span><span class="p">(</span><span class="mi">1024</span><span class="p">),</span> <span class="n">width</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">px</span><span class="p">(</span><span class="mi">720</span><span class="p">),</span> <span class="n">height</span><span class="p">))</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">database</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">RECOVERY_MESSAGES</span><span class="p">:</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span>
+            <span class="mi">300</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span><span class="n">APP_NAME</span><span class="p">,</span> <span class="n">RECOVERY_MESSAGES</span><span class="p">[</span><span class="n">status</span><span class="p">])</span>
+        <span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

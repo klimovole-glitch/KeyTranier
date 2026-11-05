@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.widgets.heatmap_canvas &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.widgets.heatmap_canvas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.views.widgets.heatmap_canvas</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Тепловая карта клавиатуры (ТЗ, п. 4.2.1; Figma: рисунок 8).&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.data.models</span> <span class="kn">import</span> <span class="n">Key</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.analytics_engine</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HeatmapData</span><span class="p">,</span>
+    <span class="n">KeyCell</span><span class="p">,</span>
+    <span class="n">Metric</span><span class="p">,</span>
+    <span class="n">heat_color</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.display</span> <span class="kn">import</span> <span class="n">px</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.theme</span> <span class="kn">import</span> <span class="n">Palette</span><span class="p">,</span> <span class="n">ThemeManager</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.widgets.keyboard_canvas</span> <span class="kn">import</span> <span class="n">KeyboardCanvas</span>
+
+
+<div class="viewcode-block" id="HeatmapCanvas">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas">[документация]</a>
+<span class="k">class</span> <span class="nc">HeatmapCanvas</span><span class="p">(</span><span class="n">KeyboardCanvas</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Клавиатура, клавиши которой окрашены по доле ошибок или времени реакции.</span>
+
+<span class="sd">    Наследует отрисовку клавиш от :class:`KeyboardCanvas` (DRY) и</span>
+<span class="sd">    переопределяет только заливку и подпись клавиши.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">key_size</span> <span class="o">=</span> <span class="mi">54</span>
+    <span class="n">reveal_ms</span> <span class="o">=</span> <span class="mi">460</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать пустую тепловую карту.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Родительский виджет.</span>
+<span class="sd">            theme: Менеджер тем.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span> <span class="n">HeatmapData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_hover</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">KeyCell</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag_bind</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;Motion&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motion</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag_bind</span><span class="p">(</span>
+            <span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;Leave&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit_hover</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">add</span><span class="o">=</span><span class="s2">&quot;+&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="HeatmapCanvas.show">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.show">[документация]</a>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">HeatmapData</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Key</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Нарисовать новую статистику.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: Данные тепловой карты.</span>
+<span class="sd">            keys: Клавиши раскладки.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_fills</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fills</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">digits_used</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">attempts</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">row_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">show_digits</span><span class="o">=</span><span class="n">digits_used</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reveal</span><span class="p">(</span><span class="n">old_fills</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_reveal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_fills</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Пустить цвета по клавиатуре слева направо.</span>
+
+<span class="sd">        При первом показе клавиши начинают серыми; после смены фильтра каждая</span>
+<span class="sd">        клавиша перетекает из прежнего цвета в новый.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            old_fills: Цвета клавиш до перерисовки.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="k">for</span> <span class="n">char</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_char</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">old_fills</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">heat_empty</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_paint</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">pos_x</span> <span class="o">*</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="n">pos_y</span> <span class="o">*</span> <span class="mi">34</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fade_key</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reveal_ms</span><span class="p">,</span> <span class="n">delay_ms</span><span class="o">=</span><span class="n">delay</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeatmapCanvas.color_for">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.color_for">[документация]</a>
+    <span class="k">def</span> <span class="nf">color_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">KeyCell</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Цвет клавиши на шкале (серый, если данных слишком мало).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: Статистика клавиши.</span>
+<span class="sd">            palette: Текущая палитра.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Шестнадцатеричный цвет.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">palette</span><span class="o">.</span><span class="n">heat_empty</span>
+        <span class="k">return</span> <span class="n">heat_color</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">heat_saturation</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">heat_value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HeatmapCanvas.key_fill">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.key_fill">[документация]</a>
+    <span class="k">def</span> <span class="nf">key_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Key</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Залить клавишу её тепловым цветом.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: Красимая клавиша.</span>
+<span class="sd">            palette: Текущая палитра.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Шестнадцатеричный цвет.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">key_char</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_for</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span> <span class="k">if</span> <span class="n">cell</span> <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">heat_empty</span></div>
+
+
+<div class="viewcode-block" id="HeatmapCanvas.draw_key_text">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.HeatmapCanvas.draw_key_text">[документация]</a>
+    <span class="k">def</span> <span class="nf">draw_key_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Key</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Нарисовать символ и значение под ним («27%», «412», «&lt;5»).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: Клавиша.</span>
+<span class="sd">            box: Прямоугольник клавиши.</span>
+<span class="sd">            palette: Текущая палитра.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">box</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">key_char</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;key:</span><span class="si">{</span><span class="nb">ord</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">key_char</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_text</span><span class="p">(</span>
+            <span class="n">center</span><span class="p">,</span>
+            <span class="n">y0</span> <span class="o">+</span> <span class="n">px</span><span class="p">(</span><span class="mi">18</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">key_char</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">caption</span> <span class="o">=</span> <span class="n">value_caption</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">metric</span><span class="p">)</span> <span class="k">if</span> <span class="n">cell</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_text</span><span class="p">(</span>
+            <span class="n">center</span><span class="p">,</span>
+            <span class="n">y1</span> <span class="o">-</span> <span class="n">px</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">caption</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">muted</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span><span class="p">[</span><span class="s2">&quot;tiny&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Найти клавишу под указателем и сообщить о ней.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие движения Tk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_withtag</span><span class="p">(</span><span class="s2">&quot;current&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gettags</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;key:&quot;</span><span class="p">):</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="mi">4</span><span class="p">:])))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_emit_hover</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span><span class="p">)</span>
+                <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_emit_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">KeyCell</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Передать экрану клавишу, над которой находится указатель.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: Клавиша под указателем или ``None``.</span>
+<span class="sd">            x: X указателя (экранный).</span>
+<span class="sd">            y: Y указателя (экранный).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_hover</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_hover</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="value_caption">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.heatmap_canvas.value_caption">[документация]</a>
+<span class="k">def</span> <span class="nf">value_caption</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">KeyCell</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Короткое значение, написанное на клавише.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cell: Статистика клавиши.</span>
+<span class="sd">        metric: Выбранная метрика.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        «&lt;5» при слишком малом количестве данных, иначе «27%» или «412».</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cell</span><span class="o">.</span><span class="n">enough_data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;5&quot;</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="n">Metric</span><span class="o">.</span><span class="n">ERROR_RATE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">error_rate</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">avg_latency_ms</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">avg_latency_ms</span> <span class="k">else</span> <span class="s2">&quot;—&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

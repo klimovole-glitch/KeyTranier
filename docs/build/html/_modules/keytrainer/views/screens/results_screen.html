@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.screens.results_screen &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.screens.results_screen</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.views.screens.results_screen</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Карточка результатов, показываемая после упражнения (Figma: рисунок 7).&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.engine.session_service</span> <span class="kn">import</span> <span class="n">SessionResult</span>
+<span class="kn">from</span> <span class="nn">keytrainer.labels</span> <span class="kn">import</span> <span class="n">format_duration</span><span class="p">,</span> <span class="n">format_number</span><span class="p">,</span> <span class="n">plural</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.animation</span> <span class="kn">import</span> <span class="n">Animator</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.display</span> <span class="kn">import</span> <span class="n">px</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.theme</span> <span class="kn">import</span> <span class="n">ThemeManager</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.widgets.metrics_panel</span> <span class="kn">import</span> <span class="n">MetricsPanel</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.widgets.text_button</span> <span class="kn">import</span> <span class="n">TextButton</span>
+
+<span class="n">RESULT_CAPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;wpm&quot;</span><span class="p">:</span> <span class="s2">&quot;wpm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cpm&quot;</span><span class="p">:</span> <span class="s2">&quot;cpm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="s2">&quot;ошибки&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;error_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;% ошибок&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;время&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="ResultsScreen">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen">[документация]</a>
+<span class="k">class</span> <span class="nc">ResultsScreen</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Итоговые метрики, сравнение с рекордом и средним, худшие клавиши.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Построить виджеты.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Область содержимого главного окна.</span>
+<span class="sd">            theme: Менеджер тем.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="n">theme</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animator</span> <span class="o">=</span> <span class="n">Animator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttons</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TextButton</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">inner</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">inner</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">relx</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rely</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="s2">&quot;упражнение завершено&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;muted&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">MetricsPanel</span><span class="p">(</span>
+            <span class="n">inner</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="n">RESULT_CAPTIONS</span><span class="p">,</span> <span class="n">value_font</span><span class="o">=</span><span class="s2">&quot;metric_big&quot;</span><span class="p">,</span> <span class="n">cell_width</span><span class="o">=</span><span class="mi">8</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="n">compare</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+        <span class="n">compare</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comparison</span><span class="p">(</span><span class="n">compare</span><span class="p">,</span> <span class="s2">&quot;личный рекорд&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comparison</span><span class="p">(</span><span class="n">compare</span><span class="p">,</span> <span class="s2">&quot;среднее за 10 сессий&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span>
+            <span class="n">inner</span><span class="p">,</span> <span class="s2">&quot;клавиши с наибольшим числом ошибок&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;muted&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">&quot;small&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worst</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worst</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats_button</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;repeat&quot;</span><span class="p">,</span> <span class="s2">&quot;повторить&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="s2">&quot;новое упражнение&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;к статистике&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">TextButton</span><span class="p">(</span>
+                <span class="n">buttons</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;text&quot;</span>
+            <span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">buttons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;stats&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stats_button</span> <span class="o">=</span> <span class="n">button</span>
+
+    <span class="k">def</span> <span class="nf">_emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Вызвать обратный вызов контроллера.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Имя обратного вызова.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать блок «подпись / значение / разница / цветная линия».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">            caption: Подпись блока.</span>
+<span class="sd">            column: Столбец сетки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Виджеты блока.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">block</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">120</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;muted&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="s2">&quot;—&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+        <span class="n">value</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+        <span class="n">delta</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="n">line</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_show_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Заполнить блок сравнения.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            block: Виджеты из :meth:`_comparison`.</span>
+<span class="sd">            base: Значение для сравнения, ``None``, если сессий нет.</span>
+<span class="sd">            current: WPM завершённой сессии.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">block</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;—&quot;</span><span class="p">)</span>
+            <span class="n">block</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">block</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">bg</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">base</span><span class="p">)</span>
+        <span class="n">block</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> wpm&quot;</span><span class="p">)</span>
+        <span class="n">block</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diff</span><span class="si">:</span><span class="s2">+d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">success</span> <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">error</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">block</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">]</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;line</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="mi">420</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">px</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="p">)),</span>
+            <span class="n">delay_ms</span><span class="o">=</span><span class="mi">520</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;delta</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">block</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">],</span> <span class="s2">&quot;fg&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">bg</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">520</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ResultsScreen.show_result">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.show_result">[документация]</a>
+    <span class="k">def</span> <span class="nf">show_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SessionResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Показать результат завершённого упражнения.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: Данные, подготовленные ``SessionService``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;новый личный рекорд!&quot;</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_record</span> <span class="k">else</span> <span class="s2">&quot;упражнение завершено&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">count_up</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;wpm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">wpm</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;cpm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">cpm</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">errors_count</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">))),</span>
+                <span class="s2">&quot;error_rate&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">error_rate</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">format_number</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2"> %&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">duration_sec</span><span class="p">,</span> <span class="n">format_duration</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;fg&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">bg</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">muted</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_comparison</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">best_wpm_before</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">wpm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_comparison</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">average</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">avg_wpm_last</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">wpm</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">worst</span><span class="o">.</span><span class="n">winfo_children</span><span class="p">():</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">worst_keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worst</span><span class="p">,</span> <span class="s2">&quot;ошибок нет&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">worst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">worst_keys</span><span class="p">):</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">worst</span><span class="p">,</span>
+                <span class="n">worst</span><span class="o">.</span><span class="n">key_char</span><span class="p">,</span>
+                <span class="n">role</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span>
+                <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;surface&quot;</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">ipady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;worst</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">box</span><span class="p">,</span>
+                <span class="s2">&quot;bg&quot;</span><span class="p">,</span>
+                <span class="n">palette</span><span class="o">.</span><span class="n">bg</span><span class="p">,</span>
+                <span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span>
+                <span class="mi">320</span><span class="p">,</span>
+                <span class="mi">700</span> <span class="o">+</span> <span class="n">index</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="n">plural</span><span class="p">(</span><span class="n">worst</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="s2">&quot;ошибка&quot;</span><span class="p">,</span> <span class="s2">&quot;ошибки&quot;</span><span class="p">,</span> <span class="s2">&quot;ошибок&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worst</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;muted&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsScreen.on_shown">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.on_shown">[документация]</a>
+    <span class="k">def</span> <span class="nf">on_shown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Показать кнопки одну за другой.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">button</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttons</span><span class="p">):</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="n">delay_ms</span><span class="o">=</span><span class="mi">800</span> <span class="o">+</span> <span class="n">index</span> <span class="o">*</span> <span class="mi">90</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsScreen.set_stats_available">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.results_screen.ResultsScreen.set_stats_available">[документация]</a>
+    <span class="k">def</span> <span class="nf">set_stats_available</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">available</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Включить «к статистике», когда экран статистики существует.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            available: Зарегистрирован ли экран статистики.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_button</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats_button</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">available</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

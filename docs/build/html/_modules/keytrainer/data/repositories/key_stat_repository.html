@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.repositories.key_stat_repository &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.repositories.key_stat_repository</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.data.repositories.key_stat_repository</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Репозиторий для ``tbl_key_stats`` (статистика клавиш в сессии).&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.data.models</span> <span class="kn">import</span> <span class="n">KeyStat</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.repositories.base</span> <span class="kn">import</span> <span class="n">BaseRepository</span>
+
+
+<div class="viewcode-block" id="KeyAggregate">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">KeyAggregate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Сводка по одной клавише за много сессий (входные данные тепловой карты).&quot;&quot;&quot;</span>
+
+    <span class="n">key_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">attempts</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">avg_latency_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="KeyStatRepository">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository">[документация]</a>
+<span class="k">class</span> <span class="nc">KeyStatRepository</span><span class="p">(</span><span class="n">BaseRepository</span><span class="p">[</span><span class="n">KeyStat</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Операции CRUD и агрегация статистики по клавишам.&quot;&quot;&quot;</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;tbl_key_stats&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_to_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyStat</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Преобразовать строку в :class:`KeyStat`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: Строка ``tbl_key_stats``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Сущность KeyStat.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">KeyStat</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;session_id&quot;</span><span class="p">],</span>
+            <span class="n">key_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;key_id&quot;</span><span class="p">],</span>
+            <span class="n">attempts</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">],</span>
+            <span class="n">errors</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">],</span>
+            <span class="n">avg_latency_ms</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;avg_latency_ms&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="KeyStatRepository.create">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.create">[документация]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stat</span><span class="p">:</span> <span class="n">KeyStat</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyStat</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Добавить статистику одной клавиши в существующую сессию.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stat: Статистика с заданным ``session_id``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Статистика с идентификатором, присвоенным базой данных.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO tbl_key_stats &quot;</span>
+            <span class="s2">&quot;(session_id, key_id, attempts, errors, avg_latency_ms) &quot;</span>
+            <span class="s2">&quot;VALUES (?, ?, ?, ?, ?)&quot;</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">key_id</span><span class="p">,</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">attempts</span><span class="p">,</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">avg_latency_ms</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">stat</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+        <span class="k">return</span> <span class="n">stat</span></div>
+
+
+<div class="viewcode-block" id="KeyStatRepository.get_by_session">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.get_by_session">[документация]</a>
+    <span class="k">def</span> <span class="nf">get_by_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyStat</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Прочитать статистику всех клавиш одной сессии.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_id: Идентификатор сессии.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список статистики.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT * FROM tbl_key_stats WHERE session_id = ? ORDER BY key_id&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">session_id</span><span class="p">,),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeyStatRepository.update">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.update">[документация]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stat</span><span class="p">:</span> <span class="n">KeyStat</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Перезаписать счётчики записи статистики.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stat: Статистика с существующим id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если запись обновлена.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
+            <span class="s2">&quot;UPDATE tbl_key_stats SET attempts = ?, errors = ?, avg_latency_ms = ? &quot;</span>
+            <span class="s2">&quot;WHERE id = ?&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">attempts</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">avg_latency_ms</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="KeyStatRepository.aggregate">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.aggregate">[документация]</a>
+    <span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">since</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyAggregate</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Просуммировать статистику каждой клавиши по сессиям периода.</span>
+
+<span class="sd">        Средняя задержка взвешивается по числу попыток, поэтому сессия</span>
+<span class="sd">        со 100 нажатиями весит больше, чем сессия с 2 нажатиями.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">            layout_id: Раскладка, клавиши которой агрегируются.</span>
+<span class="sd">            since: Дата и время начала периода в формате ISO, ``None`` — всё время.</span>
+<span class="sd">            session_id: Только эта сессия (период «последняя сессия»).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            По одному агрегату на каждую клавишу, нажатую хотя бы раз.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;SELECT ks.key_id, SUM(ks.attempts) AS attempts, &quot;</span>
+            <span class="s2">&quot;SUM(ks.errors) AS errors, &quot;</span>
+            <span class="s2">&quot;SUM(ks.avg_latency_ms * ks.attempts) / SUM(ks.attempts) AS latency &quot;</span>
+            <span class="s2">&quot;FROM tbl_key_stats ks &quot;</span>
+            <span class="s2">&quot;JOIN tbl_sessions s ON s.id = ks.session_id &quot;</span>
+            <span class="s2">&quot;WHERE s.user_id = ? AND s.layout_id = ?&quot;</span>
+        <span class="p">)</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">user_id</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">since</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND s.started_at &gt;= ?&quot;</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">since</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">session_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND s.id = ?&quot;</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; GROUP BY ks.key_id&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">KeyAggregate</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;key_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;latency&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

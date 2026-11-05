@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.controllers.history_controller &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.controllers.history_controller</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.controllers.history_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Контроллер экрана истории: загрузка, сортировка, удаление, экспорт и импорт CSV.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.controllers.app_state</span> <span class="kn">import</span> <span class="n">AppState</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.csv_exporter</span> <span class="kn">import</span> <span class="n">export_sessions</span>
+<span class="kn">from</span> <span class="nn">keytrainer.engine.history_service</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HistoryData</span><span class="p">,</span>
+    <span class="n">HistoryService</span><span class="p">,</span>
+    <span class="n">ImportSummary</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keytrainer.labels</span> <span class="kn">import</span> <span class="n">plural</span>
+<span class="kn">from</span> <span class="nn">keytrainer.utils.background</span> <span class="kn">import</span> <span class="n">run_in_background</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.dialogs.confirm_dialog</span> <span class="kn">import</span> <span class="n">ask_confirm</span>
+<span class="kn">from</span> <span class="nn">keytrainer.views.screens.history_screen</span> <span class="kn">import</span> <span class="n">HistoryScreen</span>
+
+
+<div class="viewcode-block" id="HistoryController">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController">[документация]</a>
+<span class="k">class</span> <span class="nc">HistoryController</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Читает историю в фоновом потоке и обрабатывает действия с таблицей.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">,</span>
+        <span class="n">view</span><span class="p">:</span> <span class="n">HistoryScreen</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">AppState</span><span class="p">,</span>
+        <span class="n">service</span><span class="p">:</span> <span class="n">HistoryService</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Связать представление с сервисом истории.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Корневое окно Tk.</span>
+<span class="sd">            view: Экран истории.</span>
+<span class="sd">            state: Активный профиль.</span>
+<span class="sd">            service: Сервис истории.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span> <span class="o">=</span> <span class="s2">&quot;started_at&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">descending</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span> <span class="n">HistoryData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">sort</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">delete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_selected</span><span class="p">,</span>
+            <span class="n">export</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">,</span>
+            <span class="n">import_csv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">import_csv</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="HistoryController.refresh">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.refresh">[документация]</a>
+    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Перезагрузить историю в фоновом потоке.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span>
+        <span class="n">user_id</span><span class="p">,</span> <span class="n">order_by</span><span class="p">,</span> <span class="n">descending</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">descending</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_sort</span><span class="p">(</span><span class="n">order_by</span><span class="p">,</span> <span class="n">descending</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;загрузка…&quot;</span><span class="p">)</span>
+        <span class="n">run_in_background</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">order_by</span><span class="p">,</span> <span class="n">descending</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_data</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">error</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ошибка: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_on_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">HistoryData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Показать загруженные данные, если не был сделан более новый запрос.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request: Номер запроса.</span>
+<span class="sd">            data: Загруженная история.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">request</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_summary</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_chart</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">chart</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_sessions</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">sessions</span> <span class="k">else</span> <span class="s2">&quot;история пуста&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HistoryController.sort">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.sort">[документация]</a>
+    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Сортировать по столбцу; повторный щелчок меняет направление.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            column: Имя столбца (белый список ``SessionRepository``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">descending</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">descending</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">descending</span> <span class="o">=</span> <span class="n">column</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.delete_selected">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.delete_selected">[документация]</a>
+    <span class="k">def</span> <span class="nf">delete_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Удалить выбранные сессии после подтверждения.&quot;&quot;&quot;</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;выберите сессию в таблице&quot;</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;удалить запись от </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_dates</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">?&quot;</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="s2">&quot;Сессия будет удалена из истории и графика.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;удалить </span><span class="si">{</span><span class="n">plural</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;запись&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;записи&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;записей&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">?&quot;</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="s2">&quot;Сессии будут удалены из истории и графика.&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ask_confirm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">deleted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span>
+            <span class="mi">50</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;удалено: </span><span class="si">{</span><span class="n">plural</span><span class="p">(</span><span class="n">deleted</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессия&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессии&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессий&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.export">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.export">[документация]</a>
+    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Сохранить историю профиля в файл CSV.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;нечего экспортировать&quot;</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">defaultextension</span><span class="o">=</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span>
+            <span class="n">filetypes</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CSV (Excel)&quot;</span><span class="p">,</span> <span class="s2">&quot;*.csv&quot;</span><span class="p">)],</span>
+            <span class="n">initialfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;история_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sessions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;экспорт…&quot;</span><span class="p">)</span>
+        <span class="n">run_in_background</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">export_sessions</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">sessions</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">count</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;сохранено </span><span class="si">{</span><span class="n">plural</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессия&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессии&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессий&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">error</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;не удалось сохранить файл: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.import_csv">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.import_csv">[документация]</a>
+    <span class="k">def</span> <span class="nf">import_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Добавить сессии из файла CSV в историю профиля.&quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilename</span><span class="p">(</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">filetypes</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;CSV (Excel)&quot;</span><span class="p">,</span> <span class="s2">&quot;*.csv&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Все файлы&quot;</span><span class="p">,</span> <span class="s2">&quot;*.*&quot;</span><span class="p">)],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;импорт…&quot;</span><span class="p">)</span>
+        <span class="n">run_in_background</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">import_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">layout_id</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_imported</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">error</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;не удалось импортировать: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_on_imported</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summary</span><span class="p">:</span> <span class="n">ImportSummary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Перезагрузить таблицу и сообщить, что было импортировано.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            summary: Количество добавленных, повторяющихся и нечитаемых строк.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;добавлено: </span><span class="si">{</span><span class="n">plural</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">added</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессия&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессии&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;сессий&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">summary</span><span class="o">.</span><span class="n">duplicates</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, уже были: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">duplicates</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">summary</span><span class="o">.</span><span class="n">invalid</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, пропущено строк с ошибками: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">invalid</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span>
+            <span class="mi">50</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="n">text</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="n">summary</span><span class="o">.</span><span class="n">added</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">summary</span><span class="o">.</span><span class="n">invalid</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------- ScreenController</span>
+<div class="viewcode-block" id="HistoryController.on_show">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.on_show">[документация]</a>
+    <span class="k">def</span> <span class="nf">on_show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Перезагружать историю при каждом открытии экрана.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.on_hide">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.on_hide">[документация]</a>
+    <span class="k">def</span> <span class="nf">on_hide</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Очищать нечего.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.handle_key">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.handle_key">[документация]</a>
+    <span class="k">def</span> <span class="nf">handle_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Клавиша Delete удаляет выбранные сессии.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если клавиша обработана.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span> <span class="o">==</span> <span class="s2">&quot;Delete&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_selected</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.handle_key_release">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.handle_key_release">[документация]</a>
+    <span class="k">def</span> <span class="nf">handle_key_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Отпускание клавиш здесь не нужно.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="HistoryController.status_hint">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.history_controller.HistoryController.status_hint">[документация]</a>
+    <span class="k">def</span> <span class="nf">status_hint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Подсказки экрана истории.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст подсказки.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;щелчок по заголовку — сортировка   ·   delete — удалить&quot;</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

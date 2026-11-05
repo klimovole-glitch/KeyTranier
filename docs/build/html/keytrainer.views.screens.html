@@ -1,0 +1,640 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.screens package &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=9bfe3ffa"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="keytrainer.views.widgets package" href="keytrainer.views.widgets.html" />
+    <link rel="prev" title="keytrainer.views.dialogs package" href="keytrainer.views.dialogs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">keytrainer</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="keytrainer.html">keytrainer package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="keytrainer.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.controllers.html">keytrainer.controllers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.html">keytrainer.data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.engine.html">keytrainer.engine package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.utils.html">keytrainer.utils package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="keytrainer.views.html">keytrainer.views package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.app">keytrainer.app module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.config">keytrainer.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer.labels">keytrainer.labels module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.html#module-keytrainer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">keytrainer</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.html">keytrainer package</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.views.html">keytrainer.views package</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.screens package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/keytrainer.views.screens.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="keytrainer-views-screens-package">
+<h1>keytrainer.views.screens package<a class="headerlink" href="#keytrainer-views-screens-package" title="Ссылка на этот заголовок"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Ссылка на этот заголовок"></a></h2>
+</section>
+<section id="module-keytrainer.views.screens.history_screen">
+<span id="keytrainer-views-screens-history-screen-module"></span><h2>keytrainer.views.screens.history_screen module<a class="headerlink" href="#module-keytrainer.views.screens.history_screen" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.history_screen.</span></span><span class="sig-name descname"><span class="pre">HistoryScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.views.html#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></p>
+<p>Пассивное представление вкладки истории.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.selected_dates">
+<span class="sig-name descname"><span class="pre">selected_dates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.selected_dates"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.selected_dates" title="Link to this definition"></a></dt>
+<dd><p>Даты выбранных сессий в том виде, как они показаны в таблице.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Тексты первого столбца.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.selected_ids">
+<span class="sig-name descname"><span class="pre">selected_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.selected_ids"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.selected_ids" title="Link to this definition"></a></dt>
+<dd><p>Идентификаторы выбранных сессий.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Идентификаторы сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.show_chart">
+<span class="sig-name descname"><span class="pre">show_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.history_service.ChartData" title="keytrainer.engine.history_service.ChartData"><span class="pre">ChartData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.show_chart"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.show_chart" title="Link to this definition"></a></dt>
+<dd><p>Нарисовать линию WPM и пунктирную линию доли ошибок.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Сглаженные ряды.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.show_message">
+<span class="sig-name descname"><span class="pre">show_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.show_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.show_message" title="Link to this definition"></a></dt>
+<dd><p>Показать сообщение под кнопками.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Сообщение.</p></li>
+<li><p><strong>is_error</strong> – Окрасить как ошибку.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.show_sessions">
+<span class="sig-name descname"><span class="pre">show_sessions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sessions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.show_sessions"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.show_sessions" title="Link to this definition"></a></dt>
+<dd><p>Заполнять таблицу порциями, чтобы 10 000 строк не подвесили окно.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sessions</strong> – Сессии в порядке отображения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.show_sort">
+<span class="sig-name descname"><span class="pre">show_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.show_sort"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.show_sort" title="Link to this definition"></a></dt>
+<dd><p>Поставить стрелку на отсортированном столбце.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> – Отсортированный столбец.</p></li>
+<li><p><strong>descending</strong> – Направление.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.HistoryScreen.show_summary">
+<span class="sig-name descname"><span class="pre">show_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.history_service.HistorySummary" title="keytrainer.engine.history_service.HistorySummary"><span class="pre">HistorySummary</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#HistoryScreen.show_summary"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.HistoryScreen.show_summary" title="Link to this definition"></a></dt>
+<dd><p>Заполнить числа над графиком.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>summary</strong> – Сводка по истории.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.install_matplotlib">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.history_screen.</span></span><span class="sig-name descname"><span class="pre">install_matplotlib</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#install_matplotlib"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.install_matplotlib" title="Link to this definition"></a></dt>
+<dd><p>Установить matplotlib через pip в тот Python, который запускает программу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – pip завершился с ошибкой.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.row_values">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.history_screen.</span></span><span class="sig-name descname"><span class="pre">row_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#row_values"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.row_values" title="Link to this definition"></a></dt>
+<dd><p>Отформатировать сессию для таблицы.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session</strong> – Сессия.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Тексты ячеек в порядке <code class="xref py py-data docutils literal notranslate"><span class="pre">COLUMNS</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.set_date_axis">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.history_screen.</span></span><span class="sig-name descname"><span class="pre">set_date_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dates</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#set_date_axis"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.set_date_axis" title="Link to this definition"></a></dt>
+<dd><p>Подписать ось времени: дни или часы, если все сессии в один день.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> – Ось matplotlib.</p></li>
+<li><p><strong>dates</strong> – Даты точек.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.history_screen.use_bundled_font">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.history_screen.</span></span><span class="sig-name descname"><span class="pre">use_bundled_font</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/history_screen.html#use_bundled_font"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.history_screen.use_bundled_font" title="Link to this definition"></a></dt>
+<dd><p>Рисовать подписи графика шрифтом JetBrains Mono, как и остальное окно.</p>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.screens.results_screen">
+<span id="keytrainer-views-screens-results-screen-module"></span><h2>keytrainer.views.screens.results_screen module<a class="headerlink" href="#module-keytrainer.views.screens.results_screen" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.screens.results_screen.ResultsScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.results_screen.</span></span><span class="sig-name descname"><span class="pre">ResultsScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.views.html#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/screens/results_screen.html#ResultsScreen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.results_screen.ResultsScreen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></p>
+<p>Итоговые метрики, сравнение с рекордом и средним, худшие клавиши.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.results_screen.ResultsScreen.on_shown">
+<span class="sig-name descname"><span class="pre">on_shown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/results_screen.html#ResultsScreen.on_shown"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.results_screen.ResultsScreen.on_shown" title="Link to this definition"></a></dt>
+<dd><p>Показать кнопки одну за другой.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.results_screen.ResultsScreen.set_stats_available">
+<span class="sig-name descname"><span class="pre">set_stats_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">available</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/results_screen.html#ResultsScreen.set_stats_available"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.results_screen.ResultsScreen.set_stats_available" title="Link to this definition"></a></dt>
+<dd><p>Включить «к статистике», когда экран статистики существует.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>available</strong> – Зарегистрирован ли экран статистики.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.results_screen.ResultsScreen.show_result">
+<span class="sig-name descname"><span class="pre">show_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.session_service.SessionResult" title="keytrainer.engine.session_service.SessionResult"><span class="pre">SessionResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/results_screen.html#ResultsScreen.show_result"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.results_screen.ResultsScreen.show_result" title="Link to this definition"></a></dt>
+<dd><p>Показать результат завершённого упражнения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – Данные, подготовленные <code class="docutils literal notranslate"><span class="pre">SessionService</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.screens.settings_screen">
+<span id="keytrainer-views-screens-settings-screen-module"></span><h2>keytrainer.views.screens.settings_screen module<a class="headerlink" href="#module-keytrainer.views.screens.settings_screen" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.settings_screen.</span></span><span class="sig-name descname"><span class="pre">SettingsScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.views.html#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></p>
+<p>Пассивное представление: профили, новый профиль, внешний вид, умолчания.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen.clear_new_name">
+<span class="sig-name descname"><span class="pre">clear_new_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen.clear_new_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen.clear_new_name" title="Link to this definition"></a></dt>
+<dd><p>Очистить поле нового профиля.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen.show_draft">
+<span class="sig-name descname"><span class="pre">show_draft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen.show_draft"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen.show_draft" title="Link to this definition"></a></dt>
+<dd><p>Показать редактируемые (ещё не сохранённые) настройки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user</strong> – Копия профиля с редактируемыми настройками.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen.show_message">
+<span class="sig-name descname"><span class="pre">show_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen.show_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen.show_message" title="Link to this definition"></a></dt>
+<dd><p>Показать сообщение рядом с кнопками.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Сообщение.</p></li>
+<li><p><strong>is_error</strong> – Окрасить как ошибку.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen.show_name_error">
+<span class="sig-name descname"><span class="pre">show_name_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen.show_name_error"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen.show_name_error" title="Link to this definition"></a></dt>
+<dd><p>Показать ошибку проверки под полем (состояние «ошибка»).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Текст ошибки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.settings_screen.SettingsScreen.show_profiles">
+<span class="sig-name descname"><span class="pre">show_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.profile_service.ProfileInfo" title="keytrainer.engine.profile_service.ProfileInfo"><span class="pre">ProfileInfo</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/settings_screen.html#SettingsScreen.show_profiles"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.settings_screen.SettingsScreen.show_profiles" title="Link to this definition"></a></dt>
+<dd><p>Нарисовать список профилей с их действиями.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profiles</strong> – Профили с количеством сессий.</p></li>
+<li><p><strong>active_id</strong> – Идентификатор активного профиля.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.screens.stats_screen">
+<span id="keytrainer-views-screens-stats-screen-module"></span><h2>keytrainer.views.screens.stats_screen module<a class="headerlink" href="#module-keytrainer.views.screens.stats_screen" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.StatsScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.stats_screen.</span></span><span class="sig-name descname"><span class="pre">StatsScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.views.html#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#StatsScreen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.StatsScreen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></p>
+<p>Пассивное представление вкладки статистики.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.StatsScreen.show_data">
+<span class="sig-name descname"><span class="pre">show_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.analytics_engine.HeatmapData" title="keytrainer.engine.analytics_engine.HeatmapData"><span class="pre">HeatmapData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#StatsScreen.show_data"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.StatsScreen.show_data" title="Link to this definition"></a></dt>
+<dd><p>Нарисовать тепловую карту и проблемные клавиши.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Данные тепловой карты.</p></li>
+<li><p><strong>keys</strong> – Клавиши раскладки.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.StatsScreen.show_error">
+<span class="sig-name descname"><span class="pre">show_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#StatsScreen.show_error"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.StatsScreen.show_error" title="Link to this definition"></a></dt>
+<dd><p>Показать ошибку вместо тепловой карты.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Текст ошибки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.StatsScreen.show_filters">
+<span class="sig-name descname"><span class="pre">show_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.analytics_engine.Metric" title="keytrainer.engine.analytics_engine.Metric"><span class="pre">Metric</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.analytics_engine.Period" title="keytrainer.engine.analytics_engine.Period"><span class="pre">Period</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#StatsScreen.show_filters"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.StatsScreen.show_filters" title="Link to this definition"></a></dt>
+<dd><p>Подчеркнуть выбранные фильтры.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – Выбранная метрика.</p></li>
+<li><p><strong>period</strong> – Выбранный период.</p></li>
+<li><p><strong>layout_name</strong> – Выбранная раскладка.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.StatsScreen.show_loading">
+<span class="sig-name descname"><span class="pre">show_loading</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#StatsScreen.show_loading"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.StatsScreen.show_loading" title="Link to this definition"></a></dt>
+<dd><p>Показать, что статистика вычисляется.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.stats_screen.tooltip_text">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.stats_screen.</span></span><span class="sig-name descname"><span class="pre">tooltip_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.analytics_engine.KeyCell" title="keytrainer.engine.analytics_engine.KeyCell"><span class="pre">KeyCell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/stats_screen.html#tooltip_text"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.stats_screen.tooltip_text" title="Link to this definition"></a></dt>
+<dd><p>Текст всплывающей подсказки клавиши (ТЗ, п. 4.2.1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cell</strong> – Статистика клавиши.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Многострочный текст.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.screens.training_screen">
+<span id="keytrainer-views-screens-training-screen-module"></span><h2>keytrainer.views.screens.training_screen module<a class="headerlink" href="#module-keytrainer.views.screens.training_screen" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.training_screen.</span></span><span class="sig-name descname"><span class="pre">TrainingScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Misc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.views.html#keytrainer.views.theme.ThemeManager" title="keytrainer.views.theme.ThemeManager"><span class="pre">ThemeManager</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen" title="Link to this definition"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></p>
+<p>Пассивное представление вкладки тренировки.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.error_feedback">
+<span class="sig-name descname"><span class="pre">error_feedback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.error_feedback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.error_feedback" title="Link to this definition"></a></dt>
+<dd><p>Красная каретка на 0,26 с и короткая тряска текста (ошибка набора).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.key_feedback">
+<span class="sig-name descname"><span class="pre">key_feedback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_correct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.key_feedback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.key_feedback" title="Link to this definition"></a></dt>
+<dd><p>Анимировать нажатую клавишу на клавиатуре.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_char</strong> – Базовый символ нажатой клавиши.</p></li>
+<li><p><strong>is_correct</strong> – Было ли нажатие правильным.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.mark">
+<span class="sig-name descname"><span class="pre">mark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_correct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.mark"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.mark" title="Link to this definition"></a></dt>
+<dd><p>Раскрасить один символ после нажатия клавиши или Backspace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – Индекс символа.</p></li>
+<li><p><strong>is_correct</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code>/<code class="docutils literal notranslate"><span class="pre">False</span></code> после нажатия, <code class="docutils literal notranslate"><span class="pre">None</span></code> после
+Backspace (возврат к «не набрано»).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.move_caret">
+<span class="sig-name descname"><span class="pre">move_caret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.move_caret"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.move_caret" title="Link to this definition"></a></dt>
+<dd><p>Переместить каретку перед символом и прокрутить до его строки.</p>
+<p>Внутри строки каретка скользит; на новой строке — прыгает.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>position</strong> – Индекс следующего символа.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.set_keyboard">
+<span class="sig-name descname"><span class="pre">set_keyboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_digits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.set_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.set_keyboard" title="Link to this definition"></a></dt>
+<dd><p>Нарисовать экранную клавиатуру раскладки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> – Клавиши раскладки.</p></li>
+<li><p><strong>show_digits</strong> – Нужен ли цифровой ряд.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.set_running">
+<span class="sig-name descname"><span class="pre">set_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">running</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.set_running"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.set_running" title="Link to this definition"></a></dt>
+<dd><p>Переключить кнопки между «готово» и «упражнение идёт».</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>running</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code>, пока набирается упражнение.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_message">
+<span class="sig-name descname"><span class="pre">show_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_message" title="Link to this definition"></a></dt>
+<dd><p>Показать короткое сообщение под кнопками.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Текст сообщения, пустая строка — очистить.</p></li>
+<li><p><strong>is_error</strong> – Окрасить сообщение как ошибку.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_metrics">
+<span class="sig-name descname"><span class="pre">show_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.typing_session.SessionSnapshot" title="keytrainer.engine.typing_session.SessionSnapshot"><span class="pre">SessionSnapshot</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_metrics"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_metrics" title="Link to this definition"></a></dt>
+<dd><p>Показать метрики в реальном времени.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>snapshot</strong> – Текущие метрики, <code class="docutils literal notranslate"><span class="pre">None</span></code> до первого нажатия.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_next_key">
+<span class="sig-name descname"><span class="pre">show_next_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_next_key"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_next_key" title="Link to this definition"></a></dt>
+<dd><p>Подсветить следующую клавишу и показать подсказку пальца.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_char</strong> – Базовый символ следующей клавиши, <code class="docutils literal notranslate"><span class="pre">None</span></code> — скрыть.</p></li>
+<li><p><strong>finger</strong> – Название пальца по-русски, <code class="docutils literal notranslate"><span class="pre">None</span></code> — скрыть.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_params">
+<span class="sig-name descname"><span class="pre">show_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.engine.html#keytrainer.engine.exercise_generator.ExerciseParams" title="keytrainer.engine.exercise_generator.ExerciseParams"><span class="pre">ExerciseParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_params"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_params" title="Link to this definition"></a></dt>
+<dd><p>Показать выбранные параметры.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – Текущие параметры упражнения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_pause">
+<span class="sig-name descname"><span class="pre">show_pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_pause"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_pause" title="Link to this definition"></a></dt>
+<dd><p>Закрыть текст, пока сессия на паузе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>visible</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code>, чтобы показать крышку паузы.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_source">
+<span class="sig-name descname"><span class="pre">show_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_source"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_source" title="Link to this definition"></a></dt>
+<dd><p>Показать автора и произведение под связным текстом.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source</strong> – Заголовок из библиотеки, например «Л. Н. Толстой - Война и мир»;
+пусто для других режимов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_text">
+<span class="sig-name descname"><span class="pre">show_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_text"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_text" title="Link to this definition"></a></dt>
+<dd><p>Показать текст нового упражнения, пока ничего не набрано.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Текст упражнения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.TrainingScreen.show_time_left">
+<span class="sig-name descname"><span class="pre">show_time_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#TrainingScreen.show_time_left"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.TrainingScreen.show_time_left" title="Link to this definition"></a></dt>
+<dd><p>Показать оставшееся время упражнения на время вместо прошедшего.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seconds_left</strong> – Оставшиеся секунды.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.views.screens.training_screen.format_source">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.views.screens.training_screen.</span></span><span class="sig-name descname"><span class="pre">format_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/views/screens/training_screen.html#format_source"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.views.screens.training_screen.format_source" title="Link to this definition"></a></dt>
+<dd><p>Составить подпись к тексту по его заголовку в библиотеке.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>title</strong> – «Автор - Произведение» или просто заголовок текста.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>«— Л. Н. Толстой, «Война и мир»», «Утро в городе» или «».</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.views.screens">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-keytrainer.views.screens" title="Ссылка на этот заголовок"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="keytrainer.views.dialogs.html" class="btn btn-neutral float-left" title="keytrainer.views.dialogs package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="keytrainer.views.widgets.html" class="btn btn-neutral float-right" title="keytrainer.views.widgets package" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

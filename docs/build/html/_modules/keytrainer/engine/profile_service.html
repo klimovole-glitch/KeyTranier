@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.engine.profile_service &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=9bfe3ffa"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">keytrainer</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.engine.profile_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.engine.profile_service</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">&quot;&quot;&quot;Бизнес-правила профилей (ТЗ, п. 4.2.1 «Профили (CRUD)»).&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">replace</span>
+
+<span class="kn">from</span> <span class="nn">keytrainer.data.exceptions</span> <span class="kn">import</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.models</span> <span class="kn">import</span> <span class="n">ExerciseMode</span><span class="p">,</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">keytrainer.data.repositories</span> <span class="kn">import</span> <span class="n">SessionRepository</span><span class="p">,</span> <span class="n">UserRepository</span>
+
+<span class="n">DEFAULT_SETTINGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;layout_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">Theme</span><span class="o">.</span><span class="n">LIGHT</span><span class="p">,</span>
+    <span class="s2">&quot;font_size&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+    <span class="s2">&quot;default_mode&quot;</span><span class="p">:</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span><span class="p">,</span>
+    <span class="s2">&quot;show_finger_hint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;auto_pause&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">FONT_SIZE_RANGE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ProfileInfo">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileInfo">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ProfileInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Профиль с количеством его сессий.&quot;&quot;&quot;</span>
+
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+    <span class="n">sessions_count</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="ProfileService">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService">[документация]</a>
+<span class="k">class</span> <span class="nc">ProfileService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Создаёт, переименовывает, удаляет профили и сохраняет их настройки.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="n">UserRepository</span><span class="p">,</span> <span class="n">sessions</span><span class="p">:</span> <span class="n">SessionRepository</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Сохранить репозитории.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            users: Репозиторий профилей.</span>
+<span class="sd">            sessions: Репозиторий сессий (для подсчётов).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_users</span> <span class="o">=</span> <span class="n">users</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span> <span class="o">=</span> <span class="n">sessions</span>
+
+<div class="viewcode-block" id="ProfileService.list_profiles">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.list_profiles">[документация]</a>
+    <span class="k">def</span> <span class="nf">list_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ProfileInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Прочитать все профили с количеством их сессий.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Профили в порядке создания.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">ProfileInfo</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="o">.</span><span class="n">count_by_user</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ProfileService.create">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.create">[документация]</a>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создать профиль.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_name: Имя, введённое пользователем.</span>
+<span class="sd">            layout_id: Раскладка по умолчанию.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Новый профиль.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProfileService.rename">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.rename">[документация]</a>
+    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Переименовать профиль.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">            new_name: Новое имя.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotFoundError: Если профиль не существует.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s2">&quot;Профиль не найден&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProfileService.delete">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.delete">[документация]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">active_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Удалить профиль вместе с его историей.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Удаляемый профиль.</span>
+<span class="sd">            active_id: Текущий активный профиль.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Идентификатор профиля, который должен стать активным после удаления.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Если это последний профиль.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">profiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Нельзя удалить единственный профиль&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user_id</span> <span class="o">!=</span> <span class="n">active_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">active_id</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">profiles</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProfileService.save_settings">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.save_settings">[документация]</a>
+    <span class="k">def</span> <span class="nf">save_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Проверить и сохранить личные настройки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Профиль с новыми настройками.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Если размер шрифта вне допустимого диапазона.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">FONT_SIZE_RANGE</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">low</span> <span class="o">&lt;=</span> <span class="n">user</span><span class="o">.</span><span class="n">font_size</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Размер шрифта должен быть от </span><span class="si">{</span><span class="n">low</span><span class="si">}</span><span class="s2"> до </span><span class="si">{</span><span class="n">high</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">user</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProfileService.with_defaults">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.profile_service.ProfileService.with_defaults">[документация]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">with_defaults</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Вернуть копию профиля с настройками по умолчанию.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Профиль.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Копия с настройками нового профиля.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">replace</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">DEFAULT_SETTINGS</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
