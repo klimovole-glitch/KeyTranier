@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.engine.history_service &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.engine.history_service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.engine.history_service</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""История сессий: сводка, данные графика и удаление (ТЗ, п. 4.2.1)."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.repositories</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionRepository</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.csv_importer</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_sessions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">moving_average</span>
+
+<span class="n">SMOOTHING_WINDOW</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># N скользящего среднего (ТЗ, п. 4.3.1)</span>
+<span class="n">CHART_SESSIONS</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">LAST_SESSIONS</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<div class="viewcode-block" id="HistorySummary">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistorySummary">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistorySummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Числа над графиком."""</span>
+
+    <span class="n">total_sessions</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">best_wpm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">avg_wpm_last</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ChartData">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.ChartData">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChartData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Сглаженные ряды для графика WPM и доли ошибок."""</span>
+
+    <span class="n">dates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">wpm</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">error_rate</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="ImportSummary">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.ImportSummary">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImportSummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Результат импорта CSV, показываемый пользователю."""</span>
+
+    <span class="n">added</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">duplicates</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">invalid</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="HistoryData">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistoryData">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistoryData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Всё, что показывает экран истории."""</span>
+
+    <span class="n">sessions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">summary</span><span class="p">:</span> <span class="n">HistorySummary</span>
+    <span class="n">chart</span><span class="p">:</span> <span class="n">ChartData</span></div>
+
+
+
+<div class="viewcode-block" id="HistoryService">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistoryService">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistoryService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Читает, импортирует и удаляет сессии профиля."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="p">:</span> <span class="n">SessionRepository</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сохранить репозиторий.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sessions: Репозиторий сессий.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span> <span class="o">=</span> <span class="n">sessions</span>
+
+<div class="viewcode-block" id="HistoryService.load">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistoryService.load">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">order_by</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Прочитать всю историю профиля (выполняется в фоновом потоке).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">            order_by: Столбец сортировки (белый список репозитория).</span>
+<span class="sd">            descending: Направление сортировки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Сессии, сводка и данные графика.</span>
+<span class="sd">        """</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="o">.</span><span class="n">get_by_user</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="n">order_by</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="n">descending</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">HistoryData</span><span class="p">(</span>
+            <span class="n">sessions</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summarize</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+            <span class="n">chart</span><span class="o">=</span><span class="n">chart_data</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HistoryService.import_csv">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistoryService.import_csv">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">import_csv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImportSummary</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Добавить сессии из файла CSV; уже существующие пропускаются.</span>
+
+<span class="sd">        Сессия считается дубликатом, если у профиля уже есть сессия с тем же</span>
+<span class="sd">        началом (с точностью до минуты, как в файле) и тем же режимом.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Файл CSV, записанный экспортом.</span>
+<span class="sd">            user_id: Профиль, получающий сессии.</span>
+<span class="sd">            layout_id: Раскладка профиля.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество добавленных, повторяющихся и нечитаемых строк.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Файл не является историей KeyTrainer.</span>
+<span class="sd">        """</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">read_sessions</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">)</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">started_at</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">s</span><span class="o">.</span><span class="n">exercise_mode</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="o">.</span><span class="n">get_by_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">fresh</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Session</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">sessions</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">started_at</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">session</span><span class="o">.</span><span class="n">exercise_mode</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known</span><span class="p">:</span>
+                <span class="n">known</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">fresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="o">.</span><span class="n">create_many</span><span class="p">(</span><span class="n">fresh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ImportSummary</span><span class="p">(</span>
+            <span class="n">added</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fresh</span><span class="p">),</span>
+            <span class="n">duplicates</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">fresh</span><span class="p">),</span>
+            <span class="n">invalid</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">invalid</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HistoryService.delete">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.HistoryService.delete">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Удалить сессии (статистика клавиш удаляется через CASCADE).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_ids: Идентификаторы сессий.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество удалённых сессий.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span><span class="n">session_ids</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_chronological</span><span class="p">(</span><span class="n">sessions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Завершённые сессии, отсортированные от старых к новым.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sessions: Сессии в произвольном порядке.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Отсортированные завершённые сессии.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">is_completed</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">started_at</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="summarize">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.summarize">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">summarize</span><span class="p">(</span><span class="n">sessions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">HistorySummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Вычислить сводку по истории.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sessions: Все сессии профиля.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Количество, рекорд и средняя WPM последних 10 завершённых сессий.</span>
+<span class="sd">    """</span>
+    <span class="n">completed</span> <span class="o">=</span> <span class="n">_chronological</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">completed</span><span class="p">[</span><span class="o">-</span><span class="n">LAST_SESSIONS</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">HistorySummary</span><span class="p">(</span>
+        <span class="n">total_sessions</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+        <span class="n">best_wpm</span><span class="o">=</span><span class="nb">max</span><span class="p">((</span><span class="n">s</span><span class="o">.</span><span class="n">wpm</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">completed</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+        <span class="n">avg_wpm_last</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">wpm</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">last</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">last</span><span class="p">)</span> <span class="k">if</span> <span class="n">last</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="chart_data">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.history_service.chart_data">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">chart_data</span><span class="p">(</span><span class="n">sessions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ChartData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Подготовить сглаженные ряды WPM и доли ошибок для графика.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sessions: Все сессии профиля.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Ряды последних 100 завершённых сессий, сглаженные с N = 5.</span>
+<span class="sd">    """</span>
+    <span class="n">recent</span> <span class="o">=</span> <span class="n">_chronological</span><span class="p">(</span><span class="n">sessions</span><span class="p">)[</span><span class="o">-</span><span class="n">CHART_SESSIONS</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">ChartData</span><span class="p">(</span>
+        <span class="n">dates</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">started_at</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">recent</span><span class="p">),</span>
+        <span class="n">wpm</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">moving_average</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">wpm</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">recent</span><span class="p">],</span> <span class="n">SMOOTHING_WINDOW</span><span class="p">)),</span>
+        <span class="n">error_rate</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">moving_average</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">error_rate</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">recent</span><span class="p">],</span> <span class="n">SMOOTHING_WINDOW</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

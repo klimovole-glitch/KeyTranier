@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.screens.settings_screen &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.screens.settings_screen</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.views.screens.settings_screen</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Экран настроек и профилей (Figma: рисунок 10)."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.keyboard_layouts</span><span class="w"> </span><span class="kn">import</span> <span class="n">LAYOUT_EN</span><span class="p">,</span> <span class="n">LAYOUT_IDS</span><span class="p">,</span> <span class="n">LAYOUT_RU</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExerciseMode</span><span class="p">,</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.profile_service</span><span class="w"> </span><span class="kn">import</span> <span class="n">FONT_SIZE_RANGE</span><span class="p">,</span> <span class="n">ProfileInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.labels</span><span class="w"> </span><span class="kn">import</span> <span class="n">LAYOUT_SHORT</span><span class="p">,</span> <span class="n">LAYOUT_TITLES</span><span class="p">,</span> <span class="n">MODE_TITLES</span><span class="p">,</span> <span class="n">plural</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Animator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">px</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.widgets.dropdown</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dropdown</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.widgets.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_animated_message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.widgets.slider</span><span class="w"> </span><span class="kn">import</span> <span class="n">Slider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.widgets.text_button</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextButton</span>
+
+<span class="n">LAYOUT_BY_ID</span> <span class="o">=</span> <span class="p">{</span><span class="n">layout_id</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layout_id</span> <span class="ow">in</span> <span class="n">LAYOUT_IDS</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<div class="viewcode-block" id="SettingsScreen">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SettingsScreen</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Пассивное представление: профили, новый профиль, внешний вид, умолчания."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Построить виджеты.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Область содержимого главного окна.</span>
+<span class="sd">            theme: Менеджер тем.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="n">theme</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s2">"bg"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">body</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">relx</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">rely</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span> <span class="n">relwidth</span><span class="o">=</span><span class="mf">0.84</span><span class="p">,</span> <span class="n">relheight</span><span class="o">=</span><span class="mf">0.92</span><span class="p">)</span>
+        <span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">"настройки"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"title"</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">"профили"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"x"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_new_profile</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">"внешний вид"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_appearance</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">"по умолчанию"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_defaults</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">bottom</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+        <span class="n">TextButton</span><span class="p">(</span><span class="n">bottom</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="s2">"сбросить"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"reset"</span><span class="p">))</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">TextButton</span><span class="p">(</span>
+            <span class="n">bottom</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="s2">"сохранить"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"save"</span><span class="p">),</span> <span class="n">role</span><span class="o">=</span><span class="s2">"text"</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">bottom</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"muted"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"small"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------ построение</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вызвать обратный вызов контроллера.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Имя обратного вызова.</span>
+<span class="sd">            *args: Позиционные аргументы.</span>
+<span class="sd">            **kwargs: Именованные аргументы (изменённые настройки).</span>
+<span class="sd">        """</span>
+        <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Небольшая серая подпись раздела.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">            caption: Текст подписи.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"muted"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"tiny"</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">22</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span> <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Строка «подпись   элементы управления».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">            caption: Левая подпись.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Рамка для элементов управления.</span>
+<span class="sd">        """</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"muted"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">side</span><span class="o">=</span><span class="s2">"left"</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">row</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_new_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Поле ввода имени нового профиля.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"имя нового профиля"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"muted"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"tiny"</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span>
+            <span class="n">field</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">highlightthickness</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span><span class="p">[</span><span class="s2">"ui"</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s2">"bg"</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">insertbackground</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">ipady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">border</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"x"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_animator</span> <span class="o">=</span> <span class="n">Animator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_error</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;FocusIn&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_underline</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;FocusOut&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_underline</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">on_change</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_p</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_underline</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">animate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Return&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">())</span>
+        <span class="n">TextButton</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="s2">"создать профиль"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"error"</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s2">"tiny"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_error</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_underline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focused</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">animate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Покрасить линию под полем имени (состояния «фокус» и «ошибка»).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            focused: Есть ли у поля фокус клавиатуры.</span>
+<span class="sd">            animate: Менять цвет плавно.</span>
+<span class="sd">        """</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_error</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">text</span> <span class="k">if</span> <span class="n">focused</span> <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">border</span>
+        <span class="k">if</span> <span class="n">animate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_line_animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span>
+                <span class="s2">"line"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="p">,</span> <span class="s2">"bg"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">"bg"</span><span class="p">),</span> <span class="n">color</span><span class="p">,</span> <span class="mi">180</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name_line</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сообщить контроллеру введённое имя."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"create"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_appearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Переключатель темы и ползунок размера шрифта.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">        """</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"тема"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_buttons</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="p">((</span><span class="n">Theme</span><span class="o">.</span><span class="n">LIGHT</span><span class="p">,</span> <span class="s2">"светлая"</span><span class="p">),</span> <span class="p">(</span><span class="n">Theme</span><span class="o">.</span><span class="n">DARK</span><span class="p">,</span> <span class="s2">"тёмная"</span><span class="p">)):</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">TextButton</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">v</span><span class="o">=</span><span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"draft"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme_buttons</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">button</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"размер шрифта"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_label</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">FONT_SIZE_RANGE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_scale</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span>
+            <span class="n">row</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
+            <span class="n">low</span><span class="p">,</span>
+            <span class="n">high</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"draft"</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">v</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_scale</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Раскладка по умолчанию, режим, подсказка пальца и автопауза.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">        """</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"раскладка"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_buttons</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LAYOUT_RU</span><span class="p">,</span> <span class="n">LAYOUT_EN</span><span class="p">):</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">TextButton</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
+                <span class="n">LAYOUT_SHORT</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"draft"</span><span class="p">,</span> <span class="n">layout_id</span><span class="o">=</span><span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="n">n</span><span class="p">]),</span>
+            <span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_buttons</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">button</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"режим"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_button</span> <span class="o">=</span> <span class="n">TextButton</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode_menu</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode_items</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">MODE_TITLES</span><span class="p">[</span><span class="n">mode</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">m</span><span class="o">=</span><span class="n">mode</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"draft"</span><span class="p">,</span> <span class="n">default_mode</span><span class="o">=</span><span class="n">m</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ExerciseMode</span><span class="o">.</span><span class="n">KEYS</span><span class="p">,</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span><span class="p">,</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">TEXT</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">switches</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">caption</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">"show_finger_hint"</span><span class="p">,</span> <span class="s2">"подсказка пальцев"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"auto_pause"</span><span class="p">,</span> <span class="s2">"автопауза"</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">TextButton</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
+                <span class="s2">""</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="o">=</span><span class="n">field</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">"switch"</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span>
+                <span class="n">role</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">switches</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">button</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mode_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Открыть список режимов по умолчанию."""</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode_button</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+        <span class="n">Dropdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode_items</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="c1"># ----------------------------------------------------------- обновление</span>
+<div class="viewcode-block" id="SettingsScreen.show_profiles">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_profiles">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profiles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ProfileInfo</span><span class="p">],</span> <span class="n">active_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Нарисовать список профилей с их действиями.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            profiles: Профили с количеством сессий.</span>
+<span class="sd">            active_id: Идентификатор активного профиля.</span>
+<span class="sd">        """</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">winfo_children</span><span class="p">():</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">user</span>
+            <span class="n">active</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">active_id</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+                <span class="n">role</span><span class="o">=</span><span class="s2">"text"</span> <span class="k">if</span> <span class="n">active</span> <span class="k">else</span> <span class="s2">"muted"</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="s2">"title"</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+                <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+            <span class="n">layout</span> <span class="o">=</span> <span class="n">LAYOUT_TITLES</span><span class="p">[</span><span class="n">LAYOUT_BY_ID</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">layout_id</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">,</span> <span class="n">LAYOUT_RU</span><span class="p">)]</span>
+            <span class="n">sessions</span> <span class="o">=</span> <span class="n">plural</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">sessions_count</span><span class="p">,</span> <span class="s2">"сессия"</span><span class="p">,</span> <span class="s2">"сессии"</span><span class="p">,</span> <span class="s2">"сессий"</span><span class="p">)</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="s2">"активен"</span> <span class="k">if</span> <span class="n">active</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layout</span><span class="si">}</span><span class="s2"> · </span><span class="si">{</span><span class="n">sessions</span><span class="si">}</span><span class="s2">"</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">label</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span>
+                <span class="n">details</span><span class="p">,</span>
+                <span class="n">role</span><span class="o">=</span><span class="s2">"success"</span> <span class="k">if</span> <span class="n">active</span> <span class="k">else</span> <span class="s2">"dim"</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="s2">"tiny"</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"переименовать"</span><span class="p">,</span> <span class="s2">"rename"</span><span class="p">,</span> <span class="s2">"muted"</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+                <span class="n">actions</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"переключить"</span><span class="p">,</span> <span class="s2">"switch_user"</span><span class="p">,</span> <span class="s2">"muted"</span><span class="p">)]</span> <span class="o">+</span> <span class="n">actions</span>
+                <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"удалить"</span><span class="p">,</span> <span class="s2">"delete"</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">caption</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+                <span class="n">TextButton</span><span class="p">(</span>
+                    <span class="n">row</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
+                    <span class="n">caption</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span>
+                    <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="p">,</span>
+                    <span class="n">hover_role</span><span class="o">=</span><span class="s2">"text"</span> <span class="k">if</span> <span class="n">role</span> <span class="o">!=</span> <span class="s2">"error"</span> <span class="k">else</span> <span class="s2">"error"</span><span class="p">,</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">14</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SettingsScreen.show_draft">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_draft">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_draft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать редактируемые (ещё не сохранённые) настройки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Копия профиля с редактируемыми настройками.</span>
+<span class="sd">        """</span>
+        <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">button</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_buttons</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">selected</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">theme</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="si">}</span><span class="s2"> px"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_scale</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">font_scale</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">LAYOUT_BY_ID</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">layout_id</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">,</span> <span class="n">LAYOUT_RU</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">button</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_buttons</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">selected</span><span class="o">=</span><span class="n">name</span> <span class="o">==</span> <span class="n">layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">MODE_TITLES</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">default_mode</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">button</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">switches</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">"вкл"</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"выкл"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsScreen.clear_new_name">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.clear_new_name">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_new_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Очистить поле нового профиля."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_entry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_error</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_error</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_underline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsScreen.show_name_error">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_name_error">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_name_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать ошибку проверки под полем (состояние «ошибка»).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Текст ошибки.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_error</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_error</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_underline</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">show_animated_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_error</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsScreen.show_message">
+<a class="viewcode-back" href="../../../../keytrainer.views.screens.html#keytrainer.views.screens.settings_screen.SettingsScreen.show_message">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать сообщение рядом с кнопками.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Сообщение.</span>
+<span class="sd">            is_error: Окрасить как ошибку.</span>
+<span class="sd">        """</span>
+        <span class="n">show_animated_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">is_error</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

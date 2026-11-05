@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.engine.exercise_generator &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.engine.exercise_generator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.engine.exercise_generator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Генератор упражнений: пять режимов ТЗ, п. 4.2.1 и адаптивные веса 4.3.1.</span>
+
+<span class="sd">Генератор ничего не знает о SQLite: слова и тексты приходят через протокол</span>
+<span class="sd">:class:`WordSource`. В программе его реализуют репозитории</span>
+<span class="sd">(:class:`RepositoryWordSource`), в тестах — обычный список.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">replace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.keyboard_layouts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LAYOUT_RU</span><span class="p">,</span>
+    <span class="n">base_key_char</span><span class="p">,</span>
+    <span class="n">is_typeable</span><span class="p">,</span>
+    <span class="n">row_chars</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExerciseMode</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">MIN_WORDS</span><span class="p">,</span> <span class="n">MAX_WORDS</span><span class="p">,</span> <span class="n">DEFAULT_WORDS</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">30</span>
+<span class="n">TIME_LIMITS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">MAX_LEVEL</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="c1"># Слов, генерируемых для упражнения на время: достаточно для 150 WPM.</span>
+<span class="n">WORDS_PER_MINUTE_RESERVE</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">WEAK_BASE_WEIGHT</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># w_0</span>
+<span class="n">WEAK_ERROR_FACTOR</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># k</span>
+<span class="n">WEAK_MIN_SHARE</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># ТЗ, п. 6.1: не менее 50 % символов на слабых клавишах</span>
+<span class="n">PUNCTUATION_MARKS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">"."</span><span class="p">,</span> <span class="s2">"!"</span><span class="p">,</span> <span class="s2">"?"</span><span class="p">,</span> <span class="s2">":"</span><span class="p">,</span> <span class="s2">";"</span><span class="p">)</span>
+<span class="n">_TYPOGRAPHY</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"«"</span><span class="p">:</span> <span class="s1">'"'</span><span class="p">,</span>
+        <span class="s2">"»"</span><span class="p">:</span> <span class="s1">'"'</span><span class="p">,</span>
+        <span class="s2">"“"</span><span class="p">:</span> <span class="s1">'"'</span><span class="p">,</span>
+        <span class="s2">"”"</span><span class="p">:</span> <span class="s1">'"'</span><span class="p">,</span>
+        <span class="s2">"„"</span><span class="p">:</span> <span class="s1">'"'</span><span class="p">,</span>
+        <span class="s2">"—"</span><span class="p">:</span> <span class="s2">"-"</span><span class="p">,</span>
+        <span class="s2">"–"</span><span class="p">:</span> <span class="s2">"-"</span><span class="p">,</span>
+        <span class="s2">"’"</span><span class="p">:</span> <span class="s2">"'"</span><span class="p">,</span>
+        <span class="s2">"…"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="WordSource">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.WordSource">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WordSource</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Откуда генератор берёт слова словаря и тексты."""</span>
+
+<div class="viewcode-block" id="WordSource.get_words">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.WordSource.get_words">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Вернуть слова словаря раскладки."""</span></div>
+
+
+<div class="viewcode-block" id="WordSource.get_random_text">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.WordSource.get_random_text">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_random_text</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вернуть ``(заголовок, содержимое)`` случайного встроенного текста или ``None``."""</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExerciseParams">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.ExerciseParams">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExerciseParams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Параметры, выбранные на вкладке тренировки."""</span>
+
+    <span class="n">mode</span><span class="p">:</span> <span class="n">ExerciseMode</span> <span class="o">=</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span>
+    <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LAYOUT_RU</span>
+    <span class="n">word_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_WORDS</span>
+    <span class="n">time_limit_sec</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">capitals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">digits</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">punctuation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">custom_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">weak_key_rates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Exercise">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.Exercise">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Exercise</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Сгенерированное упражнение."""</span>
+
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span>
+    <span class="n">warnings</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>  <span class="c1"># автор и название связного текста</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_params">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.normalize_params">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_params</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ExerciseParams</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Заменить недопустимые параметры значениями по умолчанию (ТЗ, п. 4.1.4).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        params: Параметры из интерфейса.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Исправленные параметры и сообщения о том, что было исправлено.</span>
+<span class="sd">    """</span>
+    <span class="n">warnings</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">MIN_WORDS</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">word_count</span> <span class="o">&lt;=</span> <span class="n">MAX_WORDS</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Длина </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">word_count</span><span class="si">}</span><span class="s2"> слов вне диапазона </span><span class="si">{</span><span class="n">MIN_WORDS</span><span class="si">}</span><span class="s2">–</span><span class="si">{</span><span class="n">MAX_WORDS</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"установлено </span><span class="si">{</span><span class="n">DEFAULT_WORDS</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">word_count</span><span class="o">=</span><span class="n">DEFAULT_WORDS</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TIME_LIMITS</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Неверное ограничение времени, установлено 60 с"</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">time_limit_sec</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">MAX_LEVEL</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">warnings</span></div>
+
+
+
+<div class="viewcode-block" id="clean_custom_text">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.clean_custom_text">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">clean_custom_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Подготовить пользовательский текст для набора.</span>
+
+<span class="sd">    Типографские кавычки и тире заменяются обычными, переводы строк —</span>
+<span class="sd">    пробелами, символы, которые нельзя набрать на раскладке, удаляются.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Исходный пользовательский текст.</span>
+<span class="sd">        layout_name: Раскладка упражнения.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Очищенный текст и количество удалённых символов.</span>
+<span class="sd">    """</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">_TYPOGRAPHY</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">char</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="n">is_typeable</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">)]</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" +"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kept</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cleaned</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sentence_starts">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.sentence_starts">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sentence_starts</span><span class="p">(</span><span class="n">words</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Индексы слов, с которых начинаются предложения.</span>
+
+<span class="sd">    Предложение начинается с первого слова и после слова, заканчивающегося на</span>
+<span class="sd">    ".", "!" или "?" (после них допускаются закрывающие кавычки и скобки).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        words: Слова текста.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Индексы первых слов предложений (как минимум ``[0]``).</span>
+<span class="sd">    """</span>
+    <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\"</span><span class="s2">')"</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">"!"</span><span class="p">,</span> <span class="s2">"?"</span><span class="p">)):</span>
+            <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">starts</span></div>
+
+
+
+<div class="viewcode-block" id="ExerciseGenerator">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.ExerciseGenerator">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExerciseGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Строит тексты упражнений для всех пяти режимов."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">WordSource</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Создать генератор.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source: Поставщик слов и текстов.</span>
+<span class="sd">            rng: Генератор случайных чисел (в тестах — с фиксированным seed).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">rng</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># не выдавать один текст дважды подряд</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_source</span> <span class="o">=</span> <span class="s2">""</span>
+
+<div class="viewcode-block" id="ExerciseGenerator.generate">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.ExerciseGenerator.generate">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exercise</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сгенерировать упражнение.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Параметры упражнения.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст упражнения с предупреждениями об исправленных параметрах.</span>
+<span class="sd">        """</span>
+        <span class="n">params</span><span class="p">,</span> <span class="n">warnings</span> <span class="o">=</span> <span class="n">normalize_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_source</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">builders</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">KEYS</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_text</span><span class="p">,</span>
+            <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_words_text</span><span class="p">,</span>
+            <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">TEXT</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected_text</span><span class="p">,</span>
+            <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WEAK_KEYS</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weak_keys_text</span><span class="p">,</span>
+            <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_text</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">builders</span><span class="p">[</span><span class="n">ExerciseMode</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">mode</span><span class="p">)](</span><span class="n">params</span><span class="p">,</span> <span class="n">warnings</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Не удалось составить упражнение, выбраны случайные слова"</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_words_text</span><span class="p">(</span><span class="n">replace</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span><span class="p">),</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">warnings</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_source</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">TEXT</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="n">Exercise</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">warnings</span><span class="p">),</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># ---------------------------------------------------------- помощники</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_target_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Количество генерируемых слов (больше для упражнения на время).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Нормализованные параметры.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество слов.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">time_limit_sec</span><span class="p">:</span>
+            <span class="n">minutes</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="o">/</span> <span class="mi">60</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">WORDS_PER_MINUTE_RESERVE</span> <span class="o">*</span> <span class="n">minutes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">params</span><span class="o">.</span><span class="n">word_count</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_decorate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">words</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Добавить заглавные буквы, цифры и знаки препинания, если они включены.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            words: Слова в нижнем регистре.</span>
+<span class="sd">            params: Параметры с флагами.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Итоговый текст.</span>
+<span class="sd">        """</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">capitalize_next</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">capitals</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">digits</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.15</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2026</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">capitalize_next</span> <span class="ow">or</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">capitals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">):</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">word</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">capitalize_next</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">punctuation</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">:</span>
+                <span class="n">mark</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">PUNCTUATION_MARKS</span><span class="p">)</span>
+                <span class="n">word</span> <span class="o">+=</span> <span class="n">mark</span>
+                <span class="n">capitalize_next</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">capitals</span> <span class="ow">and</span> <span class="n">mark</span> <span class="ow">in</span> <span class="s2">".!?"</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------ режимы</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_keys_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">,</span> <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Режим KEYS: изучение раскладки по рядам.</span>
+
+<span class="sd">        Уровень 1 — домашний ряд, 2 — плюс верхний, 3 — плюс нижний, 4 — плюс</span>
+<span class="sd">        цифры, 5 — плюс знаки препинания. Буквы самого нового ряда встречаются</span>
+<span class="sd">        вдвое чаще.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Нормализованные параметры.</span>
+<span class="sd">            warnings: Список для сообщений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст из псевдослов, составленных из символов уровня.</span>
+<span class="sd">        """</span>
+        <span class="n">rows_by_level</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">rows_by_level</span><span class="p">[:</span> <span class="nb">min</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">level</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
+        <span class="n">alphabet</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">chars</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">row_chars</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()]</span>
+            <span class="n">alphabet</span> <span class="o">+=</span> <span class="n">chars</span>
+            <span class="n">weights</span> <span class="o">+=</span> <span class="p">[</span><span class="mf">2.0</span> <span class="k">if</span> <span class="n">row</span> <span class="o">==</span> <span class="n">rows</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target_words</span><span class="p">(</span><span class="n">params</span><span class="p">)):</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">alphabet</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">length</span><span class="p">)))</span>
+        <span class="n">decorated</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">punctuation</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;=</span> <span class="n">MAX_LEVEL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decorate</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">decorated</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_words_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">,</span> <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Режим WORDS: случайные слова из словаря.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Нормализованные параметры.</span>
+<span class="sd">            warnings: Список для сообщений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст из случайных слов.</span>
+<span class="sd">        """</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source</span><span class="o">.</span><span class="n">get_words</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Словарь пуст"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">""</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_words</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decorate</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_connected_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">,</span> <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Режим TEXT: фрагмент встроенного текста (в основном классическая литература).</span>
+
+<span class="sd">        Фрагмент начинается со случайного предложения, поэтому даже один текст</span>
+<span class="sd">        даёт разные упражнения; предыдущий текст не повторяется.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Нормализованные параметры.</span>
+<span class="sd">            warnings: Список для сообщений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст, обрезанный до запрошенного количества слов (продолжается</span>
+<span class="sd">            с начала, если остаток текста короткий).</span>
+<span class="sd">        """</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source</span><span class="o">.</span><span class="n">get_random_text</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_title</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Библиотека текстов пуста"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">""</span>
+        <span class="n">title</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="n">found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_source</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">starts</span> <span class="o">=</span> <span class="n">sentence_starts</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span> <span class="o">+</span> <span class="n">words</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_words</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+            <span class="n">ordered</span> <span class="o">+=</span> <span class="n">words</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ordered</span><span class="p">[:</span><span class="n">count</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_custom_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">,</span> <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Режим CUSTOM: собственный текст пользователя.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Параметры с ``custom_text``.</span>
+<span class="sd">            warnings: Список для сообщений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Очищенный пользовательский текст.</span>
+<span class="sd">        """</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">removed</span> <span class="o">=</span> <span class="n">clean_custom_text</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">custom_text</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Удалено символов, которых нет на раскладке: </span><span class="si">{</span><span class="n">removed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Свой текст пуст"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_weak_keys_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ExerciseParams</span><span class="p">,</span> <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Режим WEAK_KEYS: адаптивное упражнение на проблемных клавишах.</span>
+
+<span class="sd">        Каждый символ получает вес ``w_i = w_0 + k * e_i`` (ТЗ, п. 4.3.1).</span>
+<span class="sd">        Слова выбираются через ``random.choices`` по сумме весов их букв; если</span>
+<span class="sd">        слабых символов в тексте всё ещё меньше 50 %, подмешиваются слова,</span>
+<span class="sd">        состоящие только из слабых символов.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Параметры с ``weak_key_rates`` (символ -&gt; доля ошибок в %).</span>
+<span class="sd">            warnings: Список для сообщений.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Адаптивный текст.</span>
+<span class="sd">        """</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">r</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">weak_key_rates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source</span><span class="o">.</span><span class="n">get_words</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rates</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Недостаточно статистики, выбраны случайные слова"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_words_text</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">warnings</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">weight</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">WEAK_BASE_WEIGHT</span> <span class="o">+</span> <span class="n">WEAK_ERROR_FACTOR</span> <span class="o">*</span> <span class="n">rates</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">word</span>
+            <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_words</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="p">[</span><span class="n">weight</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+        <span class="n">weak_chars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span>
+        <span class="n">weak_weights</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">WEAK_BASE_WEIGHT</span> <span class="o">+</span> <span class="n">WEAK_ERROR_FACTOR</span> <span class="o">*</span> <span class="n">rates</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">weak_chars</span>
+        <span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">weak_share</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">rates</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">WEAK_MIN_SHARE</span><span class="p">:</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="n">words</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">weak_chars</span><span class="p">,</span> <span class="n">weak_weights</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="weak_share">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.weak_share">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">weak_share</span><span class="p">(</span>
+    <span class="n">words</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">rates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Доля символов, приходящихся на слабые клавиши (пробелы не учитываются).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        words: Слова упражнения.</span>
+<span class="sd">        rates: Слабые клавиши (базовые символы).</span>
+<span class="sd">        layout_name: Раскладка упражнения.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Значение от 0 до 1.</span>
+<span class="sd">    """</span>
+    <span class="n">chars</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">word</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">chars</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="n">weak</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">base_key_char</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">rates</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">weak</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RepositoryWordSource">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.RepositoryWordSource">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RepositoryWordSource</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">""":class:`WordSource` на основе базы данных (слова кэшируются в памяти)."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layouts</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">texts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сохранить репозитории.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layouts: ``LayoutRepository``.</span>
+<span class="sd">            words: ``WordRepository``.</span>
+<span class="sd">            texts: ``TextRepository``.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layouts</span> <span class="o">=</span> <span class="n">layouts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_words</span> <span class="o">=</span> <span class="n">words</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_texts</span> <span class="o">=</span> <span class="n">texts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_layout_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Найти идентификатор раскладки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_name: Имя раскладки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Идентификатор или ``None``.</span>
+<span class="sd">        """</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layouts</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">layout</span> <span class="k">else</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RepositoryWordSource.get_words">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.RepositoryWordSource.get_words">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Вернуть слова словаря раскладки (читаются один раз, затем кэшируются).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_name: Имя раскладки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Слова.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">layout_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="n">layout_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_id</span><span class="p">(</span><span class="n">layout_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">layout_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_words</span><span class="o">.</span><span class="n">get_words</span><span class="p">(</span><span class="n">layout_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">layout_id</span> <span class="k">else</span> <span class="p">[]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">layout_name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="RepositoryWordSource.get_random_text">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.RepositoryWordSource.get_random_text">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_random_text</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вернуть случайный встроенный текст раскладки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_name: Имя раскладки.</span>
+<span class="sd">            exclude_title: Заголовок предыдущего текста (не повторяется).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``(заголовок, содержимое)`` или ``None``.</span>
+<span class="sd">        """</span>
+        <span class="n">layout_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_id</span><span class="p">(</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_texts</span><span class="o">.</span><span class="n">get_random</span><span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">exclude_title</span><span class="p">)</span> <span class="k">if</span> <span class="n">layout_id</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="k">if</span> <span class="n">text</span> <span class="k">else</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.exercise_generator.main">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Вывести сгенерированное упражнение в консоль для ручной проверки."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DB_PATH</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">Database</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.repositories</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+        <span class="n">LayoutRepository</span><span class="p">,</span>
+        <span class="n">TextRepository</span><span class="p">,</span>
+        <span class="n">WordRepository</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Генерация упражнения"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--mode"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">"WORDS"</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">ExerciseMode</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--layout"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">LAYOUT_RU</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--words"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_WORDS</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--level"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--capitals"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--digits"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--punctuation"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">database</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="n">DB_PATH</span><span class="p">)</span>
+    <span class="n">database</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">RepositoryWordSource</span><span class="p">(</span>
+        <span class="n">LayoutRepository</span><span class="p">(</span><span class="n">database</span><span class="p">),</span> <span class="n">WordRepository</span><span class="p">(</span><span class="n">database</span><span class="p">),</span> <span class="n">TextRepository</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">ExerciseParams</span><span class="p">(</span>
+        <span class="n">mode</span><span class="o">=</span><span class="n">ExerciseMode</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">mode</span><span class="p">),</span>
+        <span class="n">layout_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
+        <span class="n">word_count</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">words</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
+        <span class="n">capitals</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">capitals</span><span class="p">,</span>
+        <span class="n">digits</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span>
+        <span class="n">punctuation</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">punctuation</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ExerciseGenerator</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

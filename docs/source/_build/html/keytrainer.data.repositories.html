@@ -1,0 +1,1497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.repositories package &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="keytrainer.engine package" href="keytrainer.engine.html" />
+    <link rel="prev" title="keytrainer.data package" href="keytrainer.data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Справочник</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">keytrainer</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="keytrainer.html">keytrainer package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="keytrainer.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.app">keytrainer.app module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.config">keytrainer.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.labels">keytrainer.labels module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Справочник</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">keytrainer</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.html">keytrainer package</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.data.html">keytrainer.data package</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.repositories package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/keytrainer.data.repositories.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="keytrainer-data-repositories-package">
+<h1>keytrainer.data.repositories package<a class="headerlink" href="#keytrainer-data-repositories-package" title="Ссылка на этот заголовок"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Ссылка на этот заголовок"></a></h2>
+</section>
+<section id="module-keytrainer.data.repositories.base">
+<span id="keytrainer-data-repositories-base-module"></span><h2>keytrainer.data.repositories.base module<a class="headerlink" href="#module-keytrainer.data.repositories.base" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.base.</span></span><span class="sig-name descname"><span class="pre">BaseRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/base.html#BaseRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">EntityT</span></code>]</p>
+<p>Общие операции чтения и удаления для одной таблицы.</p>
+<p>Подклассы задают <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository.table" title="keytrainer.data.repositories.base.BaseRepository.table"><code class="xref py py-attr docutils literal notranslate"><span class="pre">table</span></code></a>, реализуют <code class="xref py py-meth docutils literal notranslate"><span class="pre">_to_entity()</span></code> и добавляют
+собственные методы создания и обновления.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/base.html#BaseRepository.count"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository.count" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитать записи в таблице.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Количество строк.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/base.html#BaseRepository.delete"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository.delete" title="Ссылка на это определение"></a></dt>
+<dd><p>Удалить одну запись по первичному ключу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entity_id</strong> – Значение столбца <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если запись удалена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository.get_all">
+<span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">EntityT</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/base.html#BaseRepository.get_all"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository.get_all" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать все записи, упорядоченные по id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Список сущностей.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository.get_by_id">
+<span class="sig-name descname"><span class="pre">get_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">EntityT</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/base.html#BaseRepository.get_by_id"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository.get_by_id" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать одну запись по первичному ключу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entity_id</strong> – Значение столбца <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сущность или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.base.BaseRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#keytrainer.data.repositories.base.BaseRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.key_repository">
+<span id="keytrainer-data-repositories-key-repository-module"></span><h2>keytrainer.data.repositories.key_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.key_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.key_repository.</span></span><span class="sig-name descname"><span class="pre">KeyRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><code class="xref py py-class docutils literal notranslate"><span class="pre">Key</span></code></a>]</p>
+<p>Операции CRUD для клавиш раскладок.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить клавишу (<code class="docutils literal notranslate"><span class="pre">key.id</span></code> игнорируется).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – Данные клавиши.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиша с идентификатором, присвоенным базой данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository.get_by_char">
+<span class="sig-name descname"><span class="pre">get_by_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.get_by_char"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository.get_by_char" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти клавишу по напечатанному на ней символу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>key_char</strong> – Базовый (строчный, без Shift) символ.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиша или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository.get_by_layout">
+<span class="sig-name descname"><span class="pre">get_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.get_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository.get_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать все клавиши раскладки в порядке отрисовки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиши, отсортированные по ряду и позиции.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_keys'</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_repository.KeyRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_repository.KeyRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить палец и позицию клавиши.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – Клавиша с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если клавиша обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.key_stat_repository">
+<span id="keytrainer-data-repositories-key-stat-repository-module"></span><h2>keytrainer.data.repositories.key_stat_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.key_stat_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyAggregate">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.key_stat_repository.</span></span><span class="sig-name descname"><span class="pre">KeyAggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_latency_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyAggregate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Сводка по одной клавише за много сессий (входные данные тепловой карты).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyAggregate.attempts">
+<span class="sig-name descname"><span class="pre">attempts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate.attempts" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyAggregate.avg_latency_ms">
+<span class="sig-name descname"><span class="pre">avg_latency_ms</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate.avg_latency_ms" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyAggregate.errors">
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate.errors" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyAggregate.key_id">
+<span class="sig-name descname"><span class="pre">key_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate.key_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.key_stat_repository.</span></span><span class="sig-name descname"><span class="pre">KeyStatRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyStat</span></code></a>]</p>
+<p>Операции CRUD и агрегация статистики по клавишам.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository.aggregate">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate" title="keytrainer.data.repositories.key_stat_repository.KeyAggregate"><span class="pre">KeyAggregate</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.aggregate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.aggregate" title="Ссылка на это определение"></a></dt>
+<dd><p>Просуммировать статистику каждой клавиши по сессиям периода.</p>
+<p>Средняя задержка взвешивается по числу попыток, поэтому сессия
+со 100 нажатиями весит больше, чем сессия с 2 нажатиями.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>layout_id</strong> – Раскладка, клавиши которой агрегируются.</p></li>
+<li><p><strong>since</strong> – Дата и время начала периода в формате ISO, <code class="docutils literal notranslate"><span class="pre">None</span></code> — всё время.</p></li>
+<li><p><strong>session_id</strong> – Только эта сессия (период «последняя сессия»).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>По одному агрегату на каждую клавишу, нажатую хотя бы раз.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить статистику одной клавиши в существующую сессию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stat</strong> – Статистика с заданным <code class="docutils literal notranslate"><span class="pre">session_id</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Статистика с идентификатором, присвоенным базой данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository.get_by_session">
+<span class="sig-name descname"><span class="pre">get_by_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.get_by_session"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.get_by_session" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать статистику всех клавиш одной сессии.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_id</strong> – Идентификатор сессии.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список статистики.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_key_stats'</span></span><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.key_stat_repository.KeyStatRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Перезаписать счётчики записи статистики.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stat</strong> – Статистика с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если запись обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.layout_repository">
+<span id="keytrainer-data-repositories-layout-repository-module"></span><h2>keytrainer.data.repositories.layout_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.layout_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.layout_repository.LayoutRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.layout_repository.</span></span><span class="sig-name descname"><span class="pre">LayoutRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.layout_repository.LayoutRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code></a>]</p>
+<p>Операции CRUD для раскладок клавиатуры.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.layout_repository.LayoutRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><span class="pre">Layout</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.layout_repository.LayoutRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить раскладку.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_name</strong> – Уникальное имя, например <code class="docutils literal notranslate"><span class="pre">&quot;RU_JCUKEN&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданная раскладка.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже используется.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.layout_repository.LayoutRepository.get_by_name">
+<span class="sig-name descname"><span class="pre">get_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><span class="pre">Layout</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.get_by_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.layout_repository.LayoutRepository.get_by_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти раскладку по имени.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_name</strong> – Имя, например <code class="docutils literal notranslate"><span class="pre">&quot;EN_QWERTY&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Раскладка или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.layout_repository.LayoutRepository.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.rename"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.layout_repository.LayoutRepository.rename" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить имя раскладки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>new_name</strong> – Новое уникальное имя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если раскладка существовала и была переименована.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.layout_repository.LayoutRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_layouts'</span></span><a class="headerlink" href="#keytrainer.data.repositories.layout_repository.LayoutRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.session_repository">
+<span id="keytrainer-data-repositories-session-repository-module"></span><h2>keytrainer.data.repositories.session_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.session_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.session_repository.</span></span><span class="sig-name descname"><span class="pre">SessionRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>]</p>
+<p>Операции CRUD для тренировочных сессий.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.count_by_user">
+<span class="sig-name descname"><span class="pre">count_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.count_by_user"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.count_by_user" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитать сессии профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> – Идентификатор профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_stats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить сессию вместе со статистикой по клавишам.</p>
+<p>Оба INSERT выполняются в ОДНОЙ транзакции (ТЗ, п. 3.2): если запись
+статистики не удалась, сессия тоже откатывается, поэтому в истории
+никогда не бывает сессии без данных по клавишам.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> – Результат сессии.</p></li>
+<li><p><strong>key_stats</strong> – Статистика каждой нажатой клавиши.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Идентификатор созданной сессии.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.create_many">
+<span class="sig-name descname"><span class="pre">create_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sessions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.create_many"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.create_many" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить много сессий без статистики клавиш в ОДНОЙ транзакции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sessions</strong> – Сохраняемые сессии (используется при импорте CSV).</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество сохранённых сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.delete_many">
+<span class="sig-name descname"><span class="pre">delete_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.delete_many"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.delete_many" title="Ссылка на это определение"></a></dt>
+<dd><p>Удалить несколько сессий (их статистика по клавишам удаляется через CASCADE).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_ids</strong> – Идентификаторы сессий.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество удалённых сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.get_best_wpm">
+<span class="sig-name descname"><span class="pre">get_best_wpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_best_wpm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.get_best_wpm" title="Ссылка на это определение"></a></dt>
+<dd><p>Вернуть личный рекорд профиля (только завершённые сессии).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> – Идентификатор профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Максимальная WPM или <code class="docutils literal notranslate"><span class="pre">None</span></code>, если сессий нет.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.get_by_user">
+<span class="sig-name descname"><span class="pre">get_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'started_at'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_by_user"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.get_by_user" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать сессии профиля с фильтрацией и сортировкой.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>since</strong> – Дата и время в формате ISO; только сессии, начатые не раньше неё.</p></li>
+<li><p><strong>order_by</strong> – Столбец из <code class="xref py py-data docutils literal notranslate"><span class="pre">SORTABLE_COLUMNS</span></code>.</p></li>
+<li><p><strong>descending</strong> – Направление сортировки.</p></li>
+<li><p><strong>limit</strong> – Максимальное количество сессий.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список сессий.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если <code class="docutils literal notranslate"><span class="pre">order_by</span></code> нет в белом списке.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.get_last">
+<span class="sig-name descname"><span class="pre">get_last</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_last"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.get_last" title="Ссылка на это определение"></a></dt>
+<dd><p>Вернуть последнюю сессию профиля на раскладке.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сессия или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_sessions'</span></span><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.session_repository.SessionRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.session_repository.SessionRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Перезаписать метрики существующей сессии.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session</strong> – Сессия с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если сессия обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.text_repository">
+<span id="keytrainer-data-repositories-text-repository-module"></span><h2>keytrainer.data.repositories.text_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.text_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.text_repository.</span></span><span class="sig-name descname"><span class="pre">TextRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><code class="xref py py-class docutils literal notranslate"><span class="pre">Text</span></code></a>]</p>
+<p>Операции CRUD для встроенных и пользовательских текстов.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_custom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить текст (по умолчанию — пользовательский для режима «Свой текст»).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Язык текста.</p></li>
+<li><p><strong>title</strong> – Заголовок.</p></li>
+<li><p><strong>content</strong> – Тело текста.</p></li>
+<li><p><strong>is_custom</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> для текстов, добавленных пользователем.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданный текст.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository.get_by_layout">
+<span class="sig-name descname"><span class="pre">get_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.get_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository.get_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать тексты одного языка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>custom</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> — только пользовательские тексты, <code class="docutils literal notranslate"><span class="pre">False</span></code> — только
+встроенные, <code class="docutils literal notranslate"><span class="pre">None</span></code> — все тексты.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список текстов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository.get_random">
+<span class="sig-name descname"><span class="pre">get_random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.get_random"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository.get_random" title="Ссылка на это определение"></a></dt>
+<dd><p>Выбрать случайный встроенный текст для режима «Связный текст».</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>exclude_title</strong> – Заголовок предыдущего текста, чтобы один и тот же текст
+не выдавался дважды подряд (игнорируется, если он единственный).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Случайный текст или <code class="docutils literal notranslate"><span class="pre">None</span></code>, если библиотека пуста.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_texts'</span></span><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.text_repository.TextRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.text_repository.TextRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить заголовок и содержимое текста.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Текст с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если текст обновлён.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.user_repository">
+<span id="keytrainer-data-repositories-user-repository-module"></span><h2>keytrainer.data.repositories.user_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.user_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.user_repository.</span></span><span class="sig-name descname"><span class="pre">UserRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>]</p>
+<p>Операции CRUD для профилей пользователей и их настроек.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Создать профиль с настройками по умолчанию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_name</strong> – Уникальное имя профиля.</p></li>
+<li><p><strong>layout_id</strong> – Раскладка профиля по умолчанию.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданный профиль.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя недопустимо.</p></li>
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже занято.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.get_by_name">
+<span class="sig-name descname"><span class="pre">get_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.get_by_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.get_by_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти профиль по имени.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_name</strong> – Имя профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Профиль или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.rename"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.rename" title="Ссылка на это определение"></a></dt>
+<dd><p>Переименовать профиль.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>new_name</strong> – Новое уникальное имя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если профиль переименован.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя недопустимо.</p></li>
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже занято.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_users'</span></span><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.update_settings">
+<span class="sig-name descname"><span class="pre">update_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.update_settings"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.update_settings" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить личные настройки профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user</strong> – Профиль с изменёнными настройками.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если профиль обновлён.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.user_repository.UserRepository.validate_name">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.validate_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.user_repository.UserRepository.validate_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверить имя профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_name</strong> – Имя, введённое пользователем.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Имя без пробелов в начале и в конце.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя пустое или слишком длинное.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories.word_repository">
+<span id="keytrainer-data-repositories-word-repository-module"></span><h2>keytrainer.data.repositories.word_repository module<a class="headerlink" href="#module-keytrainer.data.repositories.word_repository" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.word_repository.</span></span><span class="sig-name descname"><span class="pre">WordRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Word" title="keytrainer.data.models.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a>]</p>
+<p>Операции CRUD для словаря режима «Случайные слова».</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository.count_by_layout">
+<span class="sig-name descname"><span class="pre">count_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.count_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository.count_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитать слова одного языка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество слов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Word" title="keytrainer.data.models.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить слово в словарь.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Язык (раскладка) слова.</p></li>
+<li><p><strong>word</strong> – Слово.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданное слово.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если слово уже есть для этой раскладки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository.get_words">
+<span class="sig-name descname"><span class="pre">get_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.get_words"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository.get_words" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать все слова языка в виде простых строк.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Слова; генератор держит их в памяти для быстрой выборки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_words'</span></span><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.word_repository.WordRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.word_repository.WordRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Исправить написание слова.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>word_id</strong> – Идентификатор слова.</p></li>
+<li><p><strong>new_word</strong> – Новое написание.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если слово обновлено.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.repositories">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-keytrainer.data.repositories" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyAggregate">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">KeyAggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_latency_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyAggregate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyAggregate" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Сводка по одной клавише за много сессий (входные данные тепловой карты).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyAggregate.attempts">
+<span class="sig-name descname"><span class="pre">attempts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyAggregate.attempts" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyAggregate.avg_latency_ms">
+<span class="sig-name descname"><span class="pre">avg_latency_ms</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyAggregate.avg_latency_ms" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyAggregate.errors">
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyAggregate.errors" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyAggregate.key_id">
+<span class="sig-name descname"><span class="pre">key_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyAggregate.key_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">KeyRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><code class="xref py py-class docutils literal notranslate"><span class="pre">Key</span></code></a>]</p>
+<p>Операции CRUD для клавиш раскладок.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить клавишу (<code class="docutils literal notranslate"><span class="pre">key.id</span></code> игнорируется).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – Данные клавиши.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиша с идентификатором, присвоенным базой данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository.get_by_char">
+<span class="sig-name descname"><span class="pre">get_by_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.get_by_char"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository.get_by_char" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти клавишу по напечатанному на ней символу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>key_char</strong> – Базовый (строчный, без Shift) символ.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиша или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository.get_by_layout">
+<span class="sig-name descname"><span class="pre">get_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.get_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository.get_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать все клавиши раскладки в порядке отрисовки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Клавиши, отсортированные по ряду и позиции.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_keys'</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Key" title="keytrainer.data.models.Key"><span class="pre">Key</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_repository.html#KeyRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить палец и позицию клавиши.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – Клавиша с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если клавиша обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">KeyStatRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyStat</span></code></a>]</p>
+<p>Операции CRUD и агрегация статистики по клавишам.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository.aggregate">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#keytrainer.data.repositories.key_stat_repository.KeyAggregate" title="keytrainer.data.repositories.key_stat_repository.KeyAggregate"><span class="pre">KeyAggregate</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.aggregate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository.aggregate" title="Ссылка на это определение"></a></dt>
+<dd><p>Просуммировать статистику каждой клавиши по сессиям периода.</p>
+<p>Средняя задержка взвешивается по числу попыток, поэтому сессия
+со 100 нажатиями весит больше, чем сессия с 2 нажатиями.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>layout_id</strong> – Раскладка, клавиши которой агрегируются.</p></li>
+<li><p><strong>since</strong> – Дата и время начала периода в формате ISO, <code class="docutils literal notranslate"><span class="pre">None</span></code> — всё время.</p></li>
+<li><p><strong>session_id</strong> – Только эта сессия (период «последняя сессия»).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>По одному агрегату на каждую клавишу, нажатую хотя бы раз.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить статистику одной клавиши в существующую сессию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stat</strong> – Статистика с заданным <code class="docutils literal notranslate"><span class="pre">session_id</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Статистика с идентификатором, присвоенным базой данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository.get_by_session">
+<span class="sig-name descname"><span class="pre">get_by_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.get_by_session"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository.get_by_session" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать статистику всех клавиш одной сессии.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_id</strong> – Идентификатор сессии.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список статистики.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_key_stats'</span></span><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.KeyStatRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/key_stat_repository.html#KeyStatRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.KeyStatRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Перезаписать счётчики записи статистики.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stat</strong> – Статистика с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если запись обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.LayoutRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">LayoutRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.LayoutRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code></a>]</p>
+<p>Операции CRUD для раскладок клавиатуры.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.LayoutRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><span class="pre">Layout</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.LayoutRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить раскладку.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_name</strong> – Уникальное имя, например <code class="docutils literal notranslate"><span class="pre">&quot;RU_JCUKEN&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданная раскладка.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже используется.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.LayoutRepository.get_by_name">
+<span class="sig-name descname"><span class="pre">get_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Layout" title="keytrainer.data.models.Layout"><span class="pre">Layout</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.get_by_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.LayoutRepository.get_by_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти раскладку по имени.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_name</strong> – Имя, например <code class="docutils literal notranslate"><span class="pre">&quot;EN_QWERTY&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Раскладка или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.LayoutRepository.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/layout_repository.html#LayoutRepository.rename"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.LayoutRepository.rename" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить имя раскладки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>new_name</strong> – Новое уникальное имя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если раскладка существовала и была переименована.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.LayoutRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_layouts'</span></span><a class="headerlink" href="#keytrainer.data.repositories.LayoutRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">SessionRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>]</p>
+<p>Операции CRUD для тренировочных сессий.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.count_by_user">
+<span class="sig-name descname"><span class="pre">count_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.count_by_user"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.count_by_user" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитать сессии профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> – Идентификатор профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_stats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.KeyStat" title="keytrainer.data.models.KeyStat"><span class="pre">KeyStat</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить сессию вместе со статистикой по клавишам.</p>
+<p>Оба INSERT выполняются в ОДНОЙ транзакции (ТЗ, п. 3.2): если запись
+статистики не удалась, сессия тоже откатывается, поэтому в истории
+никогда не бывает сессии без данных по клавишам.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> – Результат сессии.</p></li>
+<li><p><strong>key_stats</strong> – Статистика каждой нажатой клавиши.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Идентификатор созданной сессии.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.create_many">
+<span class="sig-name descname"><span class="pre">create_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sessions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.create_many"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.create_many" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить много сессий без статистики клавиш в ОДНОЙ транзакции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sessions</strong> – Сохраняемые сессии (используется при импорте CSV).</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество сохранённых сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.delete_many">
+<span class="sig-name descname"><span class="pre">delete_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.delete_many"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.delete_many" title="Ссылка на это определение"></a></dt>
+<dd><p>Удалить несколько сессий (их статистика по клавишам удаляется через CASCADE).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_ids</strong> – Идентификаторы сессий.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество удалённых сессий.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.get_best_wpm">
+<span class="sig-name descname"><span class="pre">get_best_wpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_best_wpm"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.get_best_wpm" title="Ссылка на это определение"></a></dt>
+<dd><p>Вернуть личный рекорд профиля (только завершённые сессии).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> – Идентификатор профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Максимальная WPM или <code class="docutils literal notranslate"><span class="pre">None</span></code>, если сессий нет.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.get_by_user">
+<span class="sig-name descname"><span class="pre">get_by_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'started_at'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_by_user"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.get_by_user" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать сессии профиля с фильтрацией и сортировкой.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>since</strong> – Дата и время в формате ISO; только сессии, начатые не раньше неё.</p></li>
+<li><p><strong>order_by</strong> – Столбец из <code class="xref py py-data docutils literal notranslate"><span class="pre">SORTABLE_COLUMNS</span></code>.</p></li>
+<li><p><strong>descending</strong> – Направление сортировки.</p></li>
+<li><p><strong>limit</strong> – Максимальное количество сессий.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список сессий.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если <code class="docutils literal notranslate"><span class="pre">order_by</span></code> нет в белом списке.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.get_last">
+<span class="sig-name descname"><span class="pre">get_last</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.get_last"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.get_last" title="Ссылка на это определение"></a></dt>
+<dd><p>Вернуть последнюю сессию профиля на раскладке.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сессия или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_sessions'</span></span><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.SessionRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Session" title="keytrainer.data.models.Session"><span class="pre">Session</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/session_repository.html#SessionRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.SessionRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Перезаписать метрики существующей сессии.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session</strong> – Сессия с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если сессия обновлена.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">TextRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.TextRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><code class="xref py py-class docutils literal notranslate"><span class="pre">Text</span></code></a>]</p>
+<p>Операции CRUD для встроенных и пользовательских текстов.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_custom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.TextRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить текст (по умолчанию — пользовательский для режима «Свой текст»).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Язык текста.</p></li>
+<li><p><strong>title</strong> – Заголовок.</p></li>
+<li><p><strong>content</strong> – Тело текста.</p></li>
+<li><p><strong>is_custom</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> для текстов, добавленных пользователем.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданный текст.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository.get_by_layout">
+<span class="sig-name descname"><span class="pre">get_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.get_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.TextRepository.get_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать тексты одного языка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>custom</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> — только пользовательские тексты, <code class="docutils literal notranslate"><span class="pre">False</span></code> — только
+встроенные, <code class="docutils literal notranslate"><span class="pre">None</span></code> — все тексты.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список текстов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository.get_random">
+<span class="sig-name descname"><span class="pre">get_random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.get_random"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.TextRepository.get_random" title="Ссылка на это определение"></a></dt>
+<dd><p>Выбрать случайный встроенный текст для режима «Связный текст».</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Идентификатор раскладки.</p></li>
+<li><p><strong>exclude_title</strong> – Заголовок предыдущего текста, чтобы один и тот же текст
+не выдавался дважды подряд (игнорируется, если он единственный).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Случайный текст или <code class="docutils literal notranslate"><span class="pre">None</span></code>, если библиотека пуста.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_texts'</span></span><a class="headerlink" href="#keytrainer.data.repositories.TextRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.TextRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Text" title="keytrainer.data.models.Text"><span class="pre">Text</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/text_repository.html#TextRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.TextRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Изменить заголовок и содержимое текста.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Текст с существующим id.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если текст обновлён.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">UserRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>]</p>
+<p>Операции CRUD для профилей пользователей и их настроек.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Создать профиль с настройками по умолчанию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_name</strong> – Уникальное имя профиля.</p></li>
+<li><p><strong>layout_id</strong> – Раскладка профиля по умолчанию.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданный профиль.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя недопустимо.</p></li>
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже занято.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.get_by_name">
+<span class="sig-name descname"><span class="pre">get_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.get_by_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.get_by_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Найти профиль по имени.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_name</strong> – Имя профиля.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Профиль или <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.rename"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.rename" title="Ссылка на это определение"></a></dt>
+<dd><p>Переименовать профиль.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – Идентификатор профиля.</p></li>
+<li><p><strong>new_name</strong> – Новое уникальное имя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если профиль переименован.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя недопустимо.</p></li>
+<li><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если имя уже занято.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_users'</span></span><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.update_settings">
+<span class="sig-name descname"><span class="pre">update_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.User" title="keytrainer.data.models.User"><span class="pre">User</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.update_settings"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.update_settings" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохранить личные настройки профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user</strong> – Профиль с изменёнными настройками.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если профиль обновлён.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.UserRepository.validate_name">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/user_repository.html#UserRepository.validate_name"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.UserRepository.validate_name" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверить имя профиля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_name</strong> – Имя, введённое пользователем.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Имя без пробелов в начале и в конце.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.ValidationError" title="keytrainer.data.exceptions.ValidationError"><strong>ValidationError</strong></a> – Если имя пустое или слишком длинное.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.repositories.</span></span><span class="sig-name descname"><span class="pre">WordRepository</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.WordRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.repositories.base.BaseRepository" title="keytrainer.data.repositories.base.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRepository</span></code></a>[<a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Word" title="keytrainer.data.models.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a>]</p>
+<p>Операции CRUD для словаря режима «Случайные слова».</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository.count_by_layout">
+<span class="sig-name descname"><span class="pre">count_by_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.count_by_layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.WordRepository.count_by_layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитать слова одного языка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество слов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="keytrainer.data.html#keytrainer.data.models.Word" title="keytrainer.data.models.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.create"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.WordRepository.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Добавить слово в словарь.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_id</strong> – Язык (раскладка) слова.</p></li>
+<li><p><strong>word</strong> – Слово.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Созданное слово.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="keytrainer.data.html#keytrainer.data.exceptions.DuplicateNameError" title="keytrainer.data.exceptions.DuplicateNameError"><strong>DuplicateNameError</strong></a> – Если слово уже есть для этой раскладки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository.get_words">
+<span class="sig-name descname"><span class="pre">get_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.get_words"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.WordRepository.get_words" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать все слова языка в виде простых строк.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_id</strong> – Идентификатор раскладки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Слова; генератор держит их в памяти для быстрой выборки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tbl_words'</span></span><a class="headerlink" href="#keytrainer.data.repositories.WordRepository.table" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.repositories.WordRepository.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/repositories/word_repository.html#WordRepository.update"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.repositories.WordRepository.update" title="Ссылка на это определение"></a></dt>
+<dd><p>Исправить написание слова.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>word_id</strong> – Идентификатор слова.</p></li>
+<li><p><strong>new_word</strong> – Новое написание.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если слово обновлено.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="keytrainer.data.html" class="btn btn-neutral float-left" title="keytrainer.data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="keytrainer.engine.html" class="btn btn-neutral float-right" title="keytrainer.engine package" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

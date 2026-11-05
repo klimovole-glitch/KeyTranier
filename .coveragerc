@@ -1,0 +1,5 @@
+[run]
+omit =
+    */views/*
+    */app.py
+    */__main__.py

@@ -1,0 +1,973 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data package &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="keytrainer.data.repositories package" href="keytrainer.data.repositories.html" />
+    <link rel="prev" title="keytrainer.controllers package" href="keytrainer.controllers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Справочник</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">keytrainer</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="keytrainer.html">keytrainer package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="keytrainer.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.app">keytrainer.app module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.config">keytrainer.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer.labels">keytrainer.labels module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.html#module-keytrainer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Справочник</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">keytrainer</a></li>
+          <li class="breadcrumb-item"><a href="keytrainer.html">keytrainer package</a></li>
+      <li class="breadcrumb-item active">keytrainer.data package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/keytrainer.data.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="keytrainer-data-package">
+<h1>keytrainer.data package<a class="headerlink" href="#keytrainer-data-package" title="Ссылка на этот заголовок"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Ссылка на этот заголовок"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="keytrainer.data.repositories.html">keytrainer.data.repositories package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.base">keytrainer.data.repositories.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository"><code class="docutils literal notranslate"><span class="pre">BaseRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository.count"><code class="docutils literal notranslate"><span class="pre">BaseRepository.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository.delete"><code class="docutils literal notranslate"><span class="pre">BaseRepository.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository.get_all"><code class="docutils literal notranslate"><span class="pre">BaseRepository.get_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository.get_by_id"><code class="docutils literal notranslate"><span class="pre">BaseRepository.get_by_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.base.BaseRepository.table"><code class="docutils literal notranslate"><span class="pre">BaseRepository.table</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.key_repository">keytrainer.data.repositories.key_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository"><code class="docutils literal notranslate"><span class="pre">KeyRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository.create"><code class="docutils literal notranslate"><span class="pre">KeyRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository.get_by_char"><code class="docutils literal notranslate"><span class="pre">KeyRepository.get_by_char()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository.get_by_layout"><code class="docutils literal notranslate"><span class="pre">KeyRepository.get_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository.table"><code class="docutils literal notranslate"><span class="pre">KeyRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_repository.KeyRepository.update"><code class="docutils literal notranslate"><span class="pre">KeyRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.key_stat_repository">keytrainer.data.repositories.key_stat_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate"><code class="docutils literal notranslate"><span class="pre">KeyAggregate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate.attempts"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate.avg_latency_ms"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.avg_latency_ms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate.errors"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyAggregate.key_id"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.key_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.aggregate"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.aggregate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.create"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.get_by_session"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.get_by_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.table"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.key_stat_repository.KeyStatRepository.update"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.layout_repository">keytrainer.data.repositories.layout_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.layout_repository.LayoutRepository"><code class="docutils literal notranslate"><span class="pre">LayoutRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.layout_repository.LayoutRepository.create"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.layout_repository.LayoutRepository.get_by_name"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.get_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.layout_repository.LayoutRepository.rename"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.layout_repository.LayoutRepository.table"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.table</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.session_repository">keytrainer.data.repositories.session_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository"><code class="docutils literal notranslate"><span class="pre">SessionRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.count_by_user"><code class="docutils literal notranslate"><span class="pre">SessionRepository.count_by_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.create"><code class="docutils literal notranslate"><span class="pre">SessionRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.create_many"><code class="docutils literal notranslate"><span class="pre">SessionRepository.create_many()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.delete_many"><code class="docutils literal notranslate"><span class="pre">SessionRepository.delete_many()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_best_wpm"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_best_wpm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_by_user"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_by_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_last"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_last()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.table"><code class="docutils literal notranslate"><span class="pre">SessionRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.update"><code class="docutils literal notranslate"><span class="pre">SessionRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.text_repository">keytrainer.data.repositories.text_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository"><code class="docutils literal notranslate"><span class="pre">TextRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.create"><code class="docutils literal notranslate"><span class="pre">TextRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.get_by_layout"><code class="docutils literal notranslate"><span class="pre">TextRepository.get_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.get_random"><code class="docutils literal notranslate"><span class="pre">TextRepository.get_random()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.table"><code class="docutils literal notranslate"><span class="pre">TextRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.text_repository.TextRepository.update"><code class="docutils literal notranslate"><span class="pre">TextRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.user_repository">keytrainer.data.repositories.user_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository"><code class="docutils literal notranslate"><span class="pre">UserRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.create"><code class="docutils literal notranslate"><span class="pre">UserRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.get_by_name"><code class="docutils literal notranslate"><span class="pre">UserRepository.get_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.rename"><code class="docutils literal notranslate"><span class="pre">UserRepository.rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.table"><code class="docutils literal notranslate"><span class="pre">UserRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.update_settings"><code class="docutils literal notranslate"><span class="pre">UserRepository.update_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.user_repository.UserRepository.validate_name"><code class="docutils literal notranslate"><span class="pre">UserRepository.validate_name()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories.word_repository">keytrainer.data.repositories.word_repository module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository"><code class="docutils literal notranslate"><span class="pre">WordRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository.count_by_layout"><code class="docutils literal notranslate"><span class="pre">WordRepository.count_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository.create"><code class="docutils literal notranslate"><span class="pre">WordRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository.get_words"><code class="docutils literal notranslate"><span class="pre">WordRepository.get_words()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository.table"><code class="docutils literal notranslate"><span class="pre">WordRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.word_repository.WordRepository.update"><code class="docutils literal notranslate"><span class="pre">WordRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="keytrainer.data.repositories.html#module-keytrainer.data.repositories">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyAggregate"><code class="docutils literal notranslate"><span class="pre">KeyAggregate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyAggregate.attempts"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyAggregate.avg_latency_ms"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.avg_latency_ms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyAggregate.errors"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyAggregate.key_id"><code class="docutils literal notranslate"><span class="pre">KeyAggregate.key_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository"><code class="docutils literal notranslate"><span class="pre">KeyRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository.create"><code class="docutils literal notranslate"><span class="pre">KeyRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository.get_by_char"><code class="docutils literal notranslate"><span class="pre">KeyRepository.get_by_char()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository.get_by_layout"><code class="docutils literal notranslate"><span class="pre">KeyRepository.get_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository.table"><code class="docutils literal notranslate"><span class="pre">KeyRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyRepository.update"><code class="docutils literal notranslate"><span class="pre">KeyRepository.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository.aggregate"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.aggregate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository.create"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository.get_by_session"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.get_by_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository.table"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.KeyStatRepository.update"><code class="docutils literal notranslate"><span class="pre">KeyStatRepository.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.LayoutRepository"><code class="docutils literal notranslate"><span class="pre">LayoutRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.LayoutRepository.create"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.LayoutRepository.get_by_name"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.get_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.LayoutRepository.rename"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.LayoutRepository.table"><code class="docutils literal notranslate"><span class="pre">LayoutRepository.table</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository"><code class="docutils literal notranslate"><span class="pre">SessionRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.count_by_user"><code class="docutils literal notranslate"><span class="pre">SessionRepository.count_by_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.create"><code class="docutils literal notranslate"><span class="pre">SessionRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.create_many"><code class="docutils literal notranslate"><span class="pre">SessionRepository.create_many()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.delete_many"><code class="docutils literal notranslate"><span class="pre">SessionRepository.delete_many()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.get_best_wpm"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_best_wpm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.get_by_user"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_by_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.get_last"><code class="docutils literal notranslate"><span class="pre">SessionRepository.get_last()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.table"><code class="docutils literal notranslate"><span class="pre">SessionRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.SessionRepository.update"><code class="docutils literal notranslate"><span class="pre">SessionRepository.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository"><code class="docutils literal notranslate"><span class="pre">TextRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository.create"><code class="docutils literal notranslate"><span class="pre">TextRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository.get_by_layout"><code class="docutils literal notranslate"><span class="pre">TextRepository.get_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository.get_random"><code class="docutils literal notranslate"><span class="pre">TextRepository.get_random()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository.table"><code class="docutils literal notranslate"><span class="pre">TextRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.TextRepository.update"><code class="docutils literal notranslate"><span class="pre">TextRepository.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository"><code class="docutils literal notranslate"><span class="pre">UserRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.create"><code class="docutils literal notranslate"><span class="pre">UserRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.get_by_name"><code class="docutils literal notranslate"><span class="pre">UserRepository.get_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.rename"><code class="docutils literal notranslate"><span class="pre">UserRepository.rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.table"><code class="docutils literal notranslate"><span class="pre">UserRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.update_settings"><code class="docutils literal notranslate"><span class="pre">UserRepository.update_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.UserRepository.validate_name"><code class="docutils literal notranslate"><span class="pre">UserRepository.validate_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository"><code class="docutils literal notranslate"><span class="pre">WordRepository</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository.count_by_layout"><code class="docutils literal notranslate"><span class="pre">WordRepository.count_by_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository.create"><code class="docutils literal notranslate"><span class="pre">WordRepository.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository.get_words"><code class="docutils literal notranslate"><span class="pre">WordRepository.get_words()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository.table"><code class="docutils literal notranslate"><span class="pre">WordRepository.table</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="keytrainer.data.repositories.html#keytrainer.data.repositories.WordRepository.update"><code class="docutils literal notranslate"><span class="pre">WordRepository.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Ссылка на этот заголовок"></a></h2>
+</section>
+<section id="module-keytrainer.data.database">
+<span id="keytrainer-data-database-module"></span><h2>keytrainer.data.database module<a class="headerlink" href="#module-keytrainer.data.database" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">WindowsPath('C:/Users/klimo/OneDrive/Рабочий</span> <span class="pre">стол/KeyTranier-main/keytrainer/resources')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/database.html#Database"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.Database" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Шлюз к файлу <code class="docutils literal notranslate"><span class="pre">keytrainer.db</span></code>.</p>
+<p>Репозитории получают экземпляр этого класса и открывают короткие
+соединения через <a class="reference internal" href="#keytrainer.data.database.Database.connection" title="keytrainer.data.database.Database.connection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connection()</span></code></a>. Новое соединение на каждую операцию
+в SQLite дёшево и позволяет фоновым потокам (тепловая карта, экспорт CSV)
+работать без общего объекта соединения.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database.backup_path">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">backup_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></span><a class="headerlink" href="#keytrainer.data.database.Database.backup_path" title="Ссылка на это определение"></a></dt>
+<dd><p>Путь к резервной копии <code class="docutils literal notranslate"><span class="pre">&lt;db&gt;.bak</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database.connection">
+<span class="sig-name descname"><span class="pre">connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Connection</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/database.html#Database.connection"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.Database.connection" title="Ссылка на это определение"></a></dt>
+<dd><p>Открыть соединение, которое фиксирует изменения при успехе и откатывает при ошибке.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Соединение со строками <code class="docutils literal notranslate"><span class="pre">sqlite3.Row</span></code> и включёнными внешними ключами.</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sqlite3.Error</strong> – Повторно выбрасывается после отката, если блок завершился ошибкой.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#keytrainer.data.database.InitStatus" title="keytrainer.data.database.InitStatus"><span class="pre">InitStatus</span></a></span></span><a class="reference internal" href="_modules/keytrainer/data/database.html#Database.initialize"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.Database.initialize" title="Ссылка на это определение"></a></dt>
+<dd><p>Подготовить базу данных к работе: восстановить, создать схему, заполнить, сделать копию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Что произошло с файлом базы данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database.make_backup">
+<span class="sig-name descname"><span class="pre">make_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/database.html#Database.make_backup"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.Database.make_backup" title="Ссылка на это определение"></a></dt>
+<dd><p>Скопировать базу данных в <code class="docutils literal notranslate"><span class="pre">&lt;db&gt;.bak</span></code> через API резервного копирования SQLite.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keytrainer.data.database.Database.path">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></span><a class="headerlink" href="#keytrainer.data.database.Database.path" title="Ссылка на это определение"></a></dt>
+<dd><p>Путь к файлу базы данных.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.database.InitStatus">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.database.</span></span><span class="sig-name descname"><span class="pre">InitStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/database.html#InitStatus"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.InitStatus" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Результат <a class="reference internal" href="#keytrainer.data.database.Database.initialize" title="keytrainer.data.database.Database.initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Database.initialize()</span></code></a>, показываемый пользователю в интерфейсе.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.database.InitStatus.CREATED">
+<span class="sig-name descname"><span class="pre">CREATED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'created'</span></span><a class="headerlink" href="#keytrainer.data.database.InitStatus.CREATED" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.database.InitStatus.OPENED">
+<span class="sig-name descname"><span class="pre">OPENED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'opened'</span></span><a class="headerlink" href="#keytrainer.data.database.InitStatus.OPENED" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.database.InitStatus.RECREATED">
+<span class="sig-name descname"><span class="pre">RECREATED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'recreated'</span></span><a class="headerlink" href="#keytrainer.data.database.InitStatus.RECREATED" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.database.InitStatus.RESTORED_FROM_BACKUP">
+<span class="sig-name descname"><span class="pre">RESTORED_FROM_BACKUP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'restored_from_backup'</span></span><a class="headerlink" href="#keytrainer.data.database.InitStatus.RESTORED_FROM_BACKUP" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.database.is_healthy">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.database.</span></span><span class="sig-name descname"><span class="pre">is_healthy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/database.html#is_healthy"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.database.is_healthy" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверить, что файл — читаемая неповреждённая база данных SQLite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db_path</strong> – Путь к файлу базы данных.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если <code class="docutils literal notranslate"><span class="pre">PRAGMA</span> <span class="pre">integrity_check</span></code> возвращает <code class="docutils literal notranslate"><span class="pre">ok</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.demo_data">
+<span id="keytrainer-data-demo-data-module"></span><h2>keytrainer.data.demo_data module<a class="headerlink" href="#module-keytrainer.data.demo_data" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.demo_data.generate">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.demo_data.</span></span><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.data.database.Database" title="keytrainer.data.database.Database"><span class="pre">Database</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/demo_data.html#generate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.demo_data.generate" title="Ссылка на это определение"></a></dt>
+<dd><p>Создать профиль (при необходимости) и заполнить его случайными сессиями.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database</strong> – Инициализированная база данных.</p></li>
+<li><p><strong>user_name</strong> – Профиль, получающий сессии.</p></li>
+<li><p><strong>count</strong> – Количество сессий.</p></li>
+<li><p><strong>seed</strong> – Начальное значение генератора для воспроизводимых данных.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Идентификатор профиля.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.demo_data.main">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.demo_data.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/keytrainer/data/demo_data.html#main"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.demo_data.main" title="Ссылка на это определение"></a></dt>
+<dd><p>Разобрать аргументы командной строки и сгенерировать данные.</p>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.exceptions">
+<span id="keytrainer-data-exceptions-module"></span><h2>keytrainer.data.exceptions module<a class="headerlink" href="#module-keytrainer.data.exceptions" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="keytrainer.data.exceptions.DataAccessError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.exceptions.</span></span><span class="sig-name descname"><span class="pre">DataAccessError</span></span><a class="reference internal" href="_modules/keytrainer/data/exceptions.html#DataAccessError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.exceptions.DataAccessError" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Базовый класс всех ошибок доступа к данным.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="keytrainer.data.exceptions.DuplicateNameError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.exceptions.</span></span><span class="sig-name descname"><span class="pre">DuplicateNameError</span></span><a class="reference internal" href="_modules/keytrainer/data/exceptions.html#DuplicateNameError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.exceptions.DuplicateNameError" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.exceptions.DataAccessError" title="keytrainer.data.exceptions.DataAccessError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataAccessError</span></code></a></p>
+<p>Выбрасывается, когда UNIQUE-имя (профиль, слово) уже существует.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="keytrainer.data.exceptions.NotFoundError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotFoundError</span></span><a class="reference internal" href="_modules/keytrainer/data/exceptions.html#NotFoundError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.exceptions.NotFoundError" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.exceptions.DataAccessError" title="keytrainer.data.exceptions.DataAccessError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataAccessError</span></code></a></p>
+<p>Выбрасывается, когда запись с запрошенным идентификатором не существует.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="keytrainer.data.exceptions.ValidationError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.exceptions.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><a class="reference internal" href="_modules/keytrainer/data/exceptions.html#ValidationError"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.exceptions.ValidationError" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="#keytrainer.data.exceptions.DataAccessError" title="keytrainer.data.exceptions.DataAccessError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataAccessError</span></code></a></p>
+<p>Выбрасывается, когда значение не удовлетворяет бизнес-ограничениям.</p>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.keyboard_layouts">
+<span id="keytrainer-data-keyboard-layouts-module"></span><h2>keytrainer.data.keyboard_layouts module<a class="headerlink" href="#module-keytrainer.data.keyboard_layouts" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.keyboard_layouts.</span></span><span class="sig-name descname"><span class="pre">KeySpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/keyboard_layouts.html#KeySpec"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Описание одной физической клавиши до сохранения в базе данных.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec.finger">
+<span class="sig-name descname"><span class="pre">finger</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec.finger" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec.key_char">
+<span class="sig-name descname"><span class="pre">key_char</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec.key_char" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec.pos_x">
+<span class="sig-name descname"><span class="pre">pos_x</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec.pos_x" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec.pos_y">
+<span class="sig-name descname"><span class="pre">pos_y</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec.pos_y" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.KeySpec.row_num">
+<span class="sig-name descname"><span class="pre">row_num</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.keyboard_layouts.KeySpec.row_num" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.base_key_char">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.keyboard_layouts.</span></span><span class="sig-name descname"><span class="pre">base_key_char</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/data/keyboard_layouts.html#base_key_char"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.keyboard_layouts.base_key_char" title="Ссылка на это определение"></a></dt>
+<dd><p>Сопоставить введённый символ клавише, которая его выдаёт.</p>
+<p>Заглавные буквы и символы с Shift учитываются на своей базовой клавише,
+поэтому статистика для «А» и «а» хранится вместе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>char</strong> – Символ из текста упражнения.</p></li>
+<li><p><strong>layout_name</strong> – Раскладка, на которой набирается упражнение.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Символ базовой клавиши (строчная буква или символ без Shift).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.build_key_specs">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.keyboard_layouts.</span></span><span class="sig-name descname"><span class="pre">build_key_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#keytrainer.data.keyboard_layouts.KeySpec" title="keytrainer.data.keyboard_layouts.KeySpec"><span class="pre">KeySpec</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/keyboard_layouts.html#build_key_specs"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.keyboard_layouts.build_key_specs" title="Ссылка на это определение"></a></dt>
+<dd><p>Построить список клавиш раскладки, включая пробел.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layout_name</strong> – <code class="docutils literal notranslate"><span class="pre">LAYOUT_RU</span></code> или <code class="docutils literal notranslate"><span class="pre">LAYOUT_EN</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Описания клавиш в порядке отрисовки.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – Если раскладка неизвестна.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.is_typeable">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.keyboard_layouts.</span></span><span class="sig-name descname"><span class="pre">is_typeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/keyboard_layouts.html#is_typeable"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.keyboard_layouts.is_typeable" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверить, можно ли набрать символ на раскладке.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>char</strong> – Один символ.</p></li>
+<li><p><strong>layout_name</strong> – Раскладка упражнения.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> для пробела, клавиш раскладки, их заглавных вариантов и
+символов с Shift.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.keyboard_layouts.row_chars">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.keyboard_layouts.</span></span><span class="sig-name descname"><span class="pre">row_chars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/keytrainer/data/keyboard_layouts.html#row_chars"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.keyboard_layouts.row_chars" title="Ссылка на это определение"></a></dt>
+<dd><p>Вернуть символы, напечатанные на одном ряду раскладки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout_name</strong> – <code class="docutils literal notranslate"><span class="pre">LAYOUT_RU</span></code> или <code class="docutils literal notranslate"><span class="pre">LAYOUT_EN</span></code>.</p></li>
+<li><p><strong>row_num</strong> – 0 - цифры, 1 - верхний, 2 - домашний, 3 - нижний.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Символы ряда слева направо.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.models">
+<span id="keytrainer-data-models-module"></span><h2>keytrainer.data.models module<a class="headerlink" href="#module-keytrainer.data.models" title="Ссылка на этот заголовок"></a></h2>
+<p>Классы сущностей, отражающие таблицы <code class="docutils literal notranslate"><span class="pre">keytrainer.db</span></code>.</p>
+<p>Каждый dataclass соответствует одной таблице ER-диаграммы. Репозитории
+преобразуют объекты <code class="docutils literal notranslate"><span class="pre">sqlite3.Row</span></code> в эти сущности, поэтому верхние слои
+никогда не работают с «сырыми» строками SQL.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">ExerciseMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#ExerciseMode"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.ExerciseMode" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Режимы упражнений (ТЗ, п. 4.2.1).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode.CUSTOM">
+<span class="sig-name descname"><span class="pre">CUSTOM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CUSTOM'</span></span><a class="headerlink" href="#keytrainer.data.models.ExerciseMode.CUSTOM" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode.KEYS">
+<span class="sig-name descname"><span class="pre">KEYS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KEYS'</span></span><a class="headerlink" href="#keytrainer.data.models.ExerciseMode.KEYS" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode.TEXT">
+<span class="sig-name descname"><span class="pre">TEXT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TEXT'</span></span><a class="headerlink" href="#keytrainer.data.models.ExerciseMode.TEXT" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode.WEAK_KEYS">
+<span class="sig-name descname"><span class="pre">WEAK_KEYS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'WEAK_KEYS'</span></span><a class="headerlink" href="#keytrainer.data.models.ExerciseMode.WEAK_KEYS" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.ExerciseMode.WORDS">
+<span class="sig-name descname"><span class="pre">WORDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'WORDS'</span></span><a class="headerlink" href="#keytrainer.data.models.ExerciseMode.WORDS" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Key"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Key" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Клавиша раскладки с пальцем и позицией отрисовки (<code class="docutils literal notranslate"><span class="pre">tbl_keys</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.finger">
+<span class="sig-name descname"><span class="pre">finger</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Key.finger" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Key.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.key_char">
+<span class="sig-name descname"><span class="pre">key_char</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Key.key_char" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.layout_id">
+<span class="sig-name descname"><span class="pre">layout_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Key.layout_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.pos_x">
+<span class="sig-name descname"><span class="pre">pos_x</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Key.pos_x" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.pos_y">
+<span class="sig-name descname"><span class="pre">pos_y</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Key.pos_y" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Key.row_num">
+<span class="sig-name descname"><span class="pre">row_num</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Key.row_num" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">KeyStat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_latency_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#KeyStat"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.KeyStat" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Статистика по клавишам внутри одной сессии (<code class="docutils literal notranslate"><span class="pre">tbl_key_stats</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.attempts">
+<span class="sig-name descname"><span class="pre">attempts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.attempts" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.avg_latency_ms">
+<span class="sig-name descname"><span class="pre">avg_latency_ms</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.avg_latency_ms" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.errors">
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.errors" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.key_id">
+<span class="sig-name descname"><span class="pre">key_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.key_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.KeyStat.session_id">
+<span class="sig-name descname"><span class="pre">session_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.models.KeyStat.session_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Layout">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Layout"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Layout" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Раскладка клавиатуры (строка <code class="docutils literal notranslate"><span class="pre">tbl_layouts</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Layout.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Layout.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Layout.layout_name">
+<span class="sig-name descname"><span class="pre">layout_name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Layout.layout_name" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">started_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exercise_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.data.models.ExerciseMode" title="keytrainer.data.models.ExerciseMode"><span class="pre">ExerciseMode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_completed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Session"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Session" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Результат одного упражнения (<code class="docutils literal notranslate"><span class="pre">tbl_sessions</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">id</span></code> равен <code class="docutils literal notranslate"><span class="pre">None</span></code>, пока сессия не сохранена в базе данных.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.cpm">
+<span class="sig-name descname"><span class="pre">cpm</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Session.cpm" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.duration_sec">
+<span class="sig-name descname"><span class="pre">duration_sec</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Session.duration_sec" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.error_rate">
+<span class="sig-name descname"><span class="pre">error_rate</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Session.error_rate" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.errors_count">
+<span class="sig-name descname"><span class="pre">errors_count</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Session.errors_count" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.exercise_mode">
+<span class="sig-name descname"><span class="pre">exercise_mode</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#keytrainer.data.models.ExerciseMode" title="keytrainer.data.models.ExerciseMode"><span class="pre">ExerciseMode</span></a></span><a class="headerlink" href="#keytrainer.data.models.Session.exercise_mode" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.models.Session.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.is_completed">
+<span class="sig-name descname"><span class="pre">is_completed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#keytrainer.data.models.Session.is_completed" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.layout_id">
+<span class="sig-name descname"><span class="pre">layout_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Session.layout_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.started_at">
+<span class="sig-name descname"><span class="pre">started_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Session.started_at" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.text_length">
+<span class="sig-name descname"><span class="pre">text_length</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Session.text_length" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Session.user_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Session.wpm">
+<span class="sig-name descname"><span class="pre">wpm</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#keytrainer.data.models.Session.wpm" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_custom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Text"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Text" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Встроенный или пользовательский текст (<code class="docutils literal notranslate"><span class="pre">tbl_texts</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text.content">
+<span class="sig-name descname"><span class="pre">content</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Text.content" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Text.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text.is_custom">
+<span class="sig-name descname"><span class="pre">is_custom</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#keytrainer.data.models.Text.is_custom" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text.layout_id">
+<span class="sig-name descname"><span class="pre">layout_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Text.layout_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Text.title">
+<span class="sig-name descname"><span class="pre">title</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Text.title" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Theme">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Theme"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Theme" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Цветовые темы интерфейса.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Theme.DARK">
+<span class="sig-name descname"><span class="pre">DARK</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DARK'</span></span><a class="headerlink" href="#keytrainer.data.models.Theme.DARK" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Theme.LIGHT">
+<span class="sig-name descname"><span class="pre">LIGHT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'LIGHT'</span></span><a class="headerlink" href="#keytrainer.data.models.Theme.LIGHT" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.User">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.data.models.Theme" title="keytrainer.data.models.Theme"><span class="pre">Theme</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#keytrainer.data.models.ExerciseMode" title="keytrainer.data.models.ExerciseMode"><span class="pre">ExerciseMode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_finger_hint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_pause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#User"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.User" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Профиль пользователя с личными настройками (<code class="docutils literal notranslate"><span class="pre">tbl_users</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.auto_pause">
+<span class="sig-name descname"><span class="pre">auto_pause</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#keytrainer.data.models.User.auto_pause" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.User.created_at" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.default_mode">
+<span class="sig-name descname"><span class="pre">default_mode</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#keytrainer.data.models.ExerciseMode" title="keytrainer.data.models.ExerciseMode"><span class="pre">ExerciseMode</span></a></span><a class="headerlink" href="#keytrainer.data.models.User.default_mode" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.font_size">
+<span class="sig-name descname"><span class="pre">font_size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.User.font_size" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.User.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.layout_id">
+<span class="sig-name descname"><span class="pre">layout_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#keytrainer.data.models.User.layout_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.show_finger_hint">
+<span class="sig-name descname"><span class="pre">show_finger_hint</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#keytrainer.data.models.User.show_finger_hint" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.theme">
+<span class="sig-name descname"><span class="pre">theme</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#keytrainer.data.models.Theme" title="keytrainer.data.models.Theme"><span class="pre">Theme</span></a></span><a class="headerlink" href="#keytrainer.data.models.User.theme" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.User.user_name">
+<span class="sig-name descname"><span class="pre">user_name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.User.user_name" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keytrainer.data.models.Word">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">keytrainer.data.models.</span></span><span class="sig-name descname"><span class="pre">Word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keytrainer/data/models.html#Word"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.models.Word" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Слово словаря (<code class="docutils literal notranslate"><span class="pre">tbl_words</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Word.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Word.id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Word.layout_id">
+<span class="sig-name descname"><span class="pre">layout_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#keytrainer.data.models.Word.layout_id" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keytrainer.data.models.Word.word">
+<span class="sig-name descname"><span class="pre">word</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#keytrainer.data.models.Word.word" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data.seed">
+<span id="keytrainer-data-seed-module"></span><h2>keytrainer.data.seed module<a class="headerlink" href="#module-keytrainer.data.seed" title="Ссылка на этот заголовок"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.seed.load_words">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.seed.</span></span><span class="sig-name descname"><span class="pre">load_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/seed.html#load_words"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.seed.load_words" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать файл словаря, где одно слово на строку.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Текстовый файл в UTF-8.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Непустые, очищенные от пробелов слова в нижнем регистре без дубликатов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.seed.parse_texts">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.seed.</span></span><span class="sig-name descname"><span class="pre">parse_texts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keytrainer/data/seed.html#parse_texts"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.seed.parse_texts" title="Ссылка на это определение"></a></dt>
+<dd><p>Прочитать библиотеку текстов, где каждый текст начинается со строки <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">Заголовок</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Текстовый файл в UTF-8.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Пары <code class="docutils literal notranslate"><span class="pre">(заголовок,</span> <span class="pre">содержимое)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.seed.seed_reference_data">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.seed.</span></span><span class="sig-name descname"><span class="pre">seed_reference_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">WindowsPath('C:/Users/klimo/OneDrive/Рабочий</span> <span class="pre">стол/KeyTranier-main/keytrainer/resources')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/keytrainer/data/seed.html#seed_reference_data"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.seed.seed_reference_data" title="Ссылка на это определение"></a></dt>
+<dd><p>Заполнить справочные таблицы, если база данных пуста.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conn</strong> – Открытое соединение; транзакцию фиксирует вызывающий код.</p></li>
+<li><p><strong>resources_dir</strong> – Папка с файлами словарей и текстов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code>, если данные вставлены, <code class="docutils literal notranslate"><span class="pre">False</span></code>, если они уже были.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keytrainer.data.seed.sync_builtin_library">
+<span class="sig-prename descclassname"><span class="pre">keytrainer.data.seed.</span></span><span class="sig-name descname"><span class="pre">sync_builtin_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">WindowsPath('C:/Users/klimo/OneDrive/Рабочий</span> <span class="pre">стол/KeyTranier-main/keytrainer/resources')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/keytrainer/data/seed.html#sync_builtin_library"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keytrainer.data.seed.sync_builtin_library" title="Ссылка на это определение"></a></dt>
+<dd><p>Привести встроенные слова и тексты существующей базы данных к актуальному виду.</p>
+<p>Библиотека растёт от версии к версии: добавляются новые слова словаря;
+тексты сопоставляются по заголовку, новые добавляются, удалённые
+убираются. Пользовательские тексты (<code class="docutils literal notranslate"><span class="pre">is_custom</span> <span class="pre">=</span> <span class="pre">1</span></code>) не затрагиваются.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conn</strong> – Открытое соединение; транзакцию фиксирует вызывающий код.</p></li>
+<li><p><strong>resources_dir</strong> – Папка с файлами текстов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Количество добавленных текстов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-keytrainer.data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-keytrainer.data" title="Ссылка на этот заголовок"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="keytrainer.controllers.html" class="btn btn-neutral float-left" title="keytrainer.controllers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="keytrainer.data.repositories.html" class="btn btn-neutral float-right" title="keytrainer.data.repositories package" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

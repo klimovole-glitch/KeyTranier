@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.controllers.training_controller &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.controllers.training_controller</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.controllers.training_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Контроллер экранов тренировки и результатов.</span>
+
+<span class="sd">Получает события клавиш от главного окна, фильтрует их (ТЗ, п. 4.1.4),</span>
+<span class="sd">передаёт печатные символы в :class:`TypingSession`, перерисовывает</span>
+<span class="sd">представление и сохраняет завершённую сессию через :class:`SessionService`.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">replace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.controllers.app_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.keyboard_layouts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FINGER_NAMES</span><span class="p">,</span>
+    <span class="n">LAYOUT_EN</span><span class="p">,</span>
+    <span class="n">LAYOUT_IDS</span><span class="p">,</span>
+    <span class="n">LAYOUT_RU</span><span class="p">,</span>
+    <span class="n">base_key_char</span><span class="p">,</span>
+    <span class="n">is_typeable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExerciseMode</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.repositories</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyRepository</span><span class="p">,</span> <span class="n">TextRepository</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.exercise_generator</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Exercise</span><span class="p">,</span>
+    <span class="n">ExerciseGenerator</span><span class="p">,</span>
+    <span class="n">ExerciseParams</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.session_service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionResult</span><span class="p">,</span> <span class="n">SessionService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.typing_session</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionState</span><span class="p">,</span> <span class="n">TypingSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.dialogs.custom_text_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomTextDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.screens.results_screen</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsScreen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.screens.training_screen</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainingScreen</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">IGNORED_KEYSYMS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"Shift_L"</span><span class="p">,</span>
+        <span class="s2">"Shift_R"</span><span class="p">,</span>
+        <span class="s2">"Control_L"</span><span class="p">,</span>
+        <span class="s2">"Control_R"</span><span class="p">,</span>
+        <span class="s2">"Alt_L"</span><span class="p">,</span>
+        <span class="s2">"Alt_R"</span><span class="p">,</span>
+        <span class="s2">"Caps_Lock"</span><span class="p">,</span>
+        <span class="s2">"Meta_L"</span><span class="p">,</span>
+        <span class="s2">"Meta_R"</span><span class="p">,</span>
+        <span class="s2">"Super_L"</span><span class="p">,</span>
+        <span class="s2">"Super_R"</span><span class="p">,</span>
+        <span class="s2">"Win_L"</span><span class="p">,</span>
+        <span class="s2">"Win_R"</span><span class="p">,</span>
+        <span class="s2">"ISO_Next_Group"</span><span class="p">,</span>
+        <span class="s2">"ISO_Prev_Group"</span><span class="p">,</span>
+        <span class="s2">"Num_Lock"</span><span class="p">,</span>
+        <span class="s2">"Menu"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">CONTROL_MASK</span> <span class="o">=</span> <span class="mh">0x0004</span>
+<span class="n">VK_P</span> <span class="o">=</span> <span class="mi">80</span>  <span class="c1"># Виртуальный код клавиши P в Windows</span>
+<span class="n">AUTOREPEAT_WINDOW_MS</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">TICK_MS</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">LAYOUT_BY_ID</span> <span class="o">=</span> <span class="p">{</span><span class="n">layout_id</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layout_id</span> <span class="ow">in</span> <span class="n">LAYOUT_IDS</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">WeakRatesProvider</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="is_pause_key">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.is_pause_key">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_pause_key</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Проверить Ctrl+P в любой раскладке клавиатуры.</span>
+
+<span class="sd">    В русской раскладке клавиша P даёт «з» (``Cyrillic_ze``), а в Windows Tk</span>
+<span class="sd">    иногда сообщает управляющий символ вместо буквы, поэтому дополнительно</span>
+<span class="sd">    проверяется физический код клавиши (VK_P = 80).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event: Событие клавиши Tk с нажатым Ctrl.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``True`` для Ctrl+P / Ctrl+З.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"p"</span><span class="p">,</span> <span class="s2">"cyrillic_ze"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">char</span> <span class="o">==</span> <span class="s2">"</span><span class="se">\x10</span><span class="s2">"</span><span class="p">:</span>  <span class="c1"># Ctrl+P как управляющий символ</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">"win32"</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">keycode</span> <span class="o">==</span> <span class="n">VK_P</span></div>
+
+
+
+<div class="viewcode-block" id="TrainingController">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TrainingController</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Жизненный цикл упражнения: создание, набор, пауза, завершение, сохранение."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">,</span>
+        <span class="n">view</span><span class="p">:</span> <span class="n">TrainingScreen</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">AppState</span><span class="p">,</span>
+        <span class="n">generator</span><span class="p">:</span> <span class="n">ExerciseGenerator</span><span class="p">,</span>
+        <span class="n">session_service</span><span class="p">:</span> <span class="n">SessionService</span><span class="p">,</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="n">KeyRepository</span><span class="p">,</span>
+        <span class="n">texts</span><span class="p">:</span> <span class="n">TextRepository</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Связать представление с движком.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Корневое окно Tk (таймеры и фокус).</span>
+<span class="sd">            view: Экран тренировки.</span>
+<span class="sd">            state: Активный профиль.</span>
+<span class="sd">            generator: Генератор упражнений.</span>
+<span class="sd">            session_service: Сохраняет сессии.</span>
+<span class="sd">            keys: Репозиторий клавиш (экранная клавиатура и подсказки пальцев).</span>
+<span class="sd">            texts: Репозиторий текстов (пользовательские тексты).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">generator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span> <span class="o">=</span> <span class="n">session_service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keys_repo</span> <span class="o">=</span> <span class="n">keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_texts</span> <span class="o">=</span> <span class="n">texts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_finished</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">SessionResult</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_layout_changed</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weak_rates_provider</span><span class="p">:</span> <span class="n">WeakRatesProvider</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params_for</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="p">:</span> <span class="n">Exercise</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="p">:</span> <span class="n">TypingSession</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keys_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Key</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_release_jobs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_mode</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_layout</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_length</span><span class="p">,</span>
+            <span class="n">toggle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_option</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_level</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">abort</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">,</span>
+            <span class="n">new</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">,</span>
+            <span class="n">resume</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;FocusOut&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="s2">"+"</span><span class="p">)</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_user</span><span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------- параметры</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_params_for</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExerciseParams</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Построить параметры по умолчанию из настроек профиля.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Активный профиль.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Параметры с раскладкой и режимом профиля.</span>
+<span class="sd">        """</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">default_mode</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ExerciseMode</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WEAK_KEYS</span><span class="p">):</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WORDS</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">LAYOUT_BY_ID</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">layout_id</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">LAYOUT_RU</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExerciseParams</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">layout_name</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">word_count</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TrainingController.apply_user">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.apply_user">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сбросить параметры после смены профиля или новых настроек.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user: Активный профиль.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params_for</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Изменить параметры и сгенерировать новое упражнение.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **changes: Поля :class:`ExerciseParams`.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TrainingController.set_mode">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.set_mode">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">ExerciseMode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Выбрать режим упражнения.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode: Новый режим.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ask_custom_text</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WEAK_KEYS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_weak_keys</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.toggle_layout">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.toggle_layout">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Переключиться между ЙЦУКЕН и QWERTY."""</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">LAYOUT_EN</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span> <span class="o">==</span> <span class="n">LAYOUT_RU</span> <span class="k">else</span> <span class="n">LAYOUT_RU</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">layout_name</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">weak_key_rates</span><span class="o">=</span><span class="p">{})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WEAK_KEYS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_weak_keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.set_length">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.set_length">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">words</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Выбрать длину в словах или лимит времени.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            words: Количество слов или ``None``.</span>
+<span class="sd">            seconds: Лимит времени или ``None``.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">word_count</span><span class="o">=</span><span class="n">words</span><span class="p">,</span> <span class="n">time_limit_sec</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">time_limit_sec</span><span class="o">=</span><span class="n">seconds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.toggle_option">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.toggle_option">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Переключить заглавные буквы, цифры или знаки препинания.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Имя поля :class:`ExerciseParams`.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">)})</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.set_level">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.set_level">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Выбрать уровень режима «Изучение клавиш».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            level: Уровень 1-5.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.ask_custom_text">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.ask_custom_text">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ask_custom_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Запросить текст пользователя, сохранить его и начать упражнение."""</span>
+        <span class="n">layout_id</span> <span class="o">=</span> <span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">]</span>
+        <span class="n">saved</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_texts</span><span class="o">.</span><span class="n">get_by_layout</span><span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">custom</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">CustomTextDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">saved</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">show_modal</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">title</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_texts</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">is_custom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">ExerciseMode</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="n">custom_text</span><span class="o">=</span><span class="n">content</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.start_weak_keys">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.start_weak_keys">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_weak_keys</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Запустить режим «Работа над ошибками».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rates: Доля ошибок проблемных клавиш; если ``None``, берётся</span>
+<span class="sd">                из статистики через :attr:`weak_rates_provider`.</span>
+<span class="sd">            layout_name: Раскладка упражнения, ``None`` оставляет текущую.</span>
+<span class="sd">        """</span>
+        <span class="n">layout_name</span> <span class="o">=</span> <span class="n">layout_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span>
+        <span class="k">if</span> <span class="n">rates</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weak_rates_provider</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weak_rates_provider</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">ExerciseMode</span><span class="o">.</span><span class="n">WEAK_KEYS</span><span class="p">,</span>
+            <span class="n">layout_name</span><span class="o">=</span><span class="n">layout_name</span><span class="p">,</span>
+            <span class="n">weak_key_rates</span><span class="o">=</span><span class="n">rates</span> <span class="ow">or</span> <span class="p">{},</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------- упражнение</span>
+<div class="viewcode-block" id="TrainingController.keys_by_char">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.keys_by_char">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keys_by_char</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Key</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Вернуть клавиши раскладки по их символу (с кэшированием).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout_name: Название раскладки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Соответствие символ -&gt; клавиша.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">layout_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_cache</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_repo</span><span class="o">.</span><span class="n">get_by_layout</span><span class="p">(</span><span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="n">layout_name</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_keys_cache</span><span class="p">[</span><span class="n">layout_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">key_char</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_cache</span><span class="p">[</span><span class="n">layout_name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.new_exercise">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.new_exercise">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_exercise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сгенерировать новое упражнение с текущими параметрами."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">warnings</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_layout_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_layout_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.restart">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.restart">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Начать тот же текст заново (Tab)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_tick</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="o">=</span> <span class="n">TypingSession</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">time_limit_sec</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">started_at</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_metrics</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_pause</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">set_running</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">show_digits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">digits</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exercise</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys_by_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">set_keyboard</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">show_digits</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_next_key</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.start">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.start">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Кнопка «старт»: таймер запускается с первым нажатием клавиши."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"начинайте печатать — время пойдет с первой клавиши"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.abort">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.abort">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">abort</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Кнопка «прервать» / Enter: остановить и сохранить как незавершённую."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finish</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">completed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Завершить сессию, сохранить её и показать результаты.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            completed: Полностью ли выполнено упражнение.</span>
+<span class="sd">        """</span>
+        <span class="n">typing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span>
+        <span class="k">if</span> <span class="n">typing</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">READY</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_tick</span><span class="p">()</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="n">completed</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">typing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">started_at</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Session </span><span class="si">%s</span><span class="s2"> saved"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">completed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_finished</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_finished</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"сессия прервана и сохранена в истории"</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------- клавиши</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_autorepeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keycode</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Определить автоповтор удерживаемой клавиши.</span>
+
+<span class="sd">        Windows повторяет KeyPress без KeyRelease; X11 отправляет KeyRelease,</span>
+<span class="sd">        сразу за которым следует KeyPress. Оба случая распознаются: отпускание</span>
+<span class="sd">        подтверждается только после короткой задержки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keycode: Аппаратный код нажатой клавиши.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если нажатие является автоповтором.</span>
+<span class="sd">        """</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_jobs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">keycode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after_cancel</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">keycode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keycode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="TrainingController.handle_key_release">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.handle_key_release">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подтвердить отпускание клавиши после :data:`AUTOREPEAT_WINDOW_MS`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+<span class="sd">        """</span>
+        <span class="n">keycode</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">keycode</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">release</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_release_jobs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">keycode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">keycode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_release_jobs</span><span class="p">[</span><span class="n">keycode</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">AUTOREPEAT_WINDOW_MS</span><span class="p">,</span> <span class="n">release</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.handle_key">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.handle_key">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Обработать нажатие клавиши на экране тренировки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если клавиша обработана.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_autorepeat</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">keycode</span><span class="p">)</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span> <span class="ow">in</span> <span class="n">IGNORED_KEYSYMS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">state</span> <span class="o">&amp;</span> <span class="n">CONTROL_MASK</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_pause_key</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Tab"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">restart</span><span class="p">,</span> <span class="s2">"Return"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">,</span> <span class="s2">"KP_Enter"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+            <span class="n">handlers</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">keysym</span><span class="p">]()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">is_finished</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>  <span class="c1"># клавиша, завершающая паузу, не учитывается</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span> <span class="o">==</span> <span class="s2">"BackSpace"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backspace</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">char</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">isprintable</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_type_char</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">char</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_type_char</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Передать печатный символ в сессию и перерисовать.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            char: Введённый символ.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_typeable</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                <span class="s2">"переключите раскладку ОС на "</span>
+                <span class="o">+</span> <span class="p">(</span><span class="s2">"русскую"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span> <span class="o">==</span> <span class="n">LAYOUT_RU</span> <span class="k">else</span> <span class="s2">"английскую"</span><span class="p">),</span>
+                <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">READY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">started_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_running</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_schedule_tick</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">is_correct</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">key_feedback</span><span class="p">(</span>
+            <span class="n">base_key_char</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">is_correct</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">is_correct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">error_feedback</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">finished</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finish</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">move_caret</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_next_key</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_backspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Стереть на экране последний введённый символ."""</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">backspace</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">move_caret</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_next_key</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_next_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подсветить следующую клавишу и палец, если подсказка включена."""</span>
+        <span class="n">typing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span>
+        <span class="k">if</span> <span class="n">typing</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">typing</span><span class="o">.</span><span class="n">is_finished</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">show_finger_hint</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_next_key</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">position</span><span class="p">]</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">base_key_char</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys_by_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_next_key</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">finger</span> <span class="o">=</span> <span class="n">FINGER_NAMES</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">finger</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="o">!=</span> <span class="n">base</span><span class="p">:</span>
+            <span class="n">finger</span> <span class="o">+=</span> <span class="s2">" + Shift"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_next_key</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">finger</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------ пауза, время</span>
+<div class="viewcode-block" id="TrainingController.toggle_pause">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.toggle_pause">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Приостановить или возобновить упражнение (Ctrl+P)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">READY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"пауза включается, когда упражнение уже идёт"</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_pause</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.resume">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.resume">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Продолжить после паузы."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_pause</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_focus_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Автопауза при потере окном фокуса (настройка профиля).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие фокуса Tk.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">auto_pause</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_schedule_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Запустить таймер обновления метрик."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_tick</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">TICK_MS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tick</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Остановить таймер метрик."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after_cancel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Обновить метрики; завершить упражнение на время, когда время вышло."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">typing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span>
+        <span class="k">if</span> <span class="n">typing</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">typing</span><span class="o">.</span><span class="n">is_finished</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_metrics</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">snapshot</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">time_limit_sec</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_time_left</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="o">-</span> <span class="n">typing</span><span class="o">.</span><span class="n">elapsed_sec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">is_time_over</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_finish</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">TICK_MS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tick</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------- ScreenController</span>
+<div class="viewcode-block" id="TrainingController.on_show">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.on_show">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Экран тренировки стал видимым."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_held</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># отпускания могли уйти на другой экран</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">move_caret</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">position</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.on_hide">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.on_hide">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_hide</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показан другой экран: приостановить идущее упражнение."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TrainingController.status_hint">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.TrainingController.status_hint">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status_hint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Горячие клавиши экрана тренировки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст подсказки.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"tab — заново   ·   enter — завершить   ·   ctrl+p — пауза"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ResultsController">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResultsController</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Клавиши и кнопки карточки результатов."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">view</span><span class="p">:</span> <span class="n">ResultsScreen</span><span class="p">,</span>
+        <span class="n">training</span><span class="p">:</span> <span class="n">TrainingController</span><span class="p">,</span>
+        <span class="n">show</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Связать карточку с контроллером тренировки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: Экран результатов.</span>
+<span class="sd">            training: Контроллер тренировки (повтор / новое упражнение).</span>
+<span class="sd">            show: Функция переключения экранов.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="n">training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show</span> <span class="o">=</span> <span class="n">show</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repeat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ResultsController.repeat">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.repeat">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Набрать тот же текст ещё раз."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show</span><span class="p">(</span><span class="s2">"training"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.new">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.new">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сгенерировать новое упражнение."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show</span><span class="p">(</span><span class="s2">"training"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.stats">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.stats">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Открыть экран статистики."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">new_exercise</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show</span><span class="p">(</span><span class="s2">"stats"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.on_show">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.on_show">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Запустить появление кнопок результата."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">on_shown</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.on_hide">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.on_hide">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_hide</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Очищать нечего."""</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.handle_key">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.handle_key">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Tab — повтор, Enter — новое упражнение.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если клавиша обработана.</span>
+<span class="sd">        """</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Tab"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">,</span> <span class="s2">"Return"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="s2">"KP_Enter"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">keysym</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="n">actions</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">keysym</span><span class="p">]()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.handle_key_release">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.handle_key_release">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Отпускание клавиш здесь не нужно.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+<span class="sd">        """</span></div>
+
+
+<div class="viewcode-block" id="ResultsController.status_hint">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.training_controller.ResultsController.status_hint">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status_hint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Горячие клавиши карточки результатов.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст подсказки.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"tab — повторить   ·   enter — новое упражнение"</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

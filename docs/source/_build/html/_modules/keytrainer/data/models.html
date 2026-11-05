@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.models &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.data.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Классы сущностей, отражающие таблицы ``keytrainer.db``.</span>
+
+<span class="sd">Каждый dataclass соответствует одной таблице ER-диаграммы. Репозитории</span>
+<span class="sd">преобразуют объекты ``sqlite3.Row`` в эти сущности, поэтому верхние слои</span>
+<span class="sd">никогда не работают с «сырыми» строками SQL.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+
+<div class="viewcode-block" id="ExerciseMode">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.ExerciseMode">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExerciseMode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Режимы упражнений (ТЗ, п. 4.2.1)."""</span>
+
+    <span class="n">KEYS</span> <span class="o">=</span> <span class="s2">"KEYS"</span>
+    <span class="n">WORDS</span> <span class="o">=</span> <span class="s2">"WORDS"</span>
+    <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">"TEXT"</span>
+    <span class="n">WEAK_KEYS</span> <span class="o">=</span> <span class="s2">"WEAK_KEYS"</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">"CUSTOM"</span></div>
+
+
+
+<div class="viewcode-block" id="Theme">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Theme">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Theme</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Цветовые темы интерфейса."""</span>
+
+    <span class="n">LIGHT</span> <span class="o">=</span> <span class="s2">"LIGHT"</span>
+    <span class="n">DARK</span> <span class="o">=</span> <span class="s2">"DARK"</span></div>
+
+
+
+<div class="viewcode-block" id="Layout">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Layout">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Layout</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Раскладка клавиатуры (строка ``tbl_layouts``)."""</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Key">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Key">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Key</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Клавиша раскладки с пальцем и позицией отрисовки (``tbl_keys``)."""</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">key_char</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">row_num</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">finger</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">pos_x</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pos_y</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="User">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.User">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Профиль пользователя с личными настройками (``tbl_users``)."""</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">Theme</span>
+    <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">default_mode</span><span class="p">:</span> <span class="n">ExerciseMode</span>
+    <span class="n">show_finger_hint</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">auto_pause</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Word">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Word">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Word</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Слово словаря (``tbl_words``)."""</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">word</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Text">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Text">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Text</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Встроенный или пользовательский текст (``tbl_texts``)."""</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_custom</span><span class="p">:</span> <span class="nb">bool</span></div>
+
+
+
+<div class="viewcode-block" id="Session">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.Session">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Результат одного упражнения (``tbl_sessions``).</span>
+
+<span class="sd">    ``id`` равен ``None``, пока сессия не сохранена в базе данных.</span>
+<span class="sd">    """</span>
+
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">started_at</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">exercise_mode</span><span class="p">:</span> <span class="n">ExerciseMode</span>
+    <span class="n">text_length</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">duration_sec</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">wpm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">cpm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">error_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">errors_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_completed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="KeyStat">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.models.KeyStat">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KeyStat</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Статистика по клавишам внутри одной сессии (``tbl_key_stats``)."""</span>
+
+    <span class="n">key_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">attempts</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">avg_latency_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">session_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.controllers.settings_controller &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.controllers.settings_controller</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.controllers.settings_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Контроллер экрана настроек: управление профилями и личные настройки."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">replace</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.controllers.app_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataAccessError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine.profile_service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProfileService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.labels</span><span class="w"> </span><span class="kn">import</span> <span class="n">plural</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.dialogs.confirm_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">ask_confirm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.dialogs.profile_name_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProfileNameDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.screens.settings_screen</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsScreen</span>
+
+<span class="n">APPEARANCE_DELAY_MS</span> <span class="o">=</span> <span class="mi">250</span>
+
+
+<div class="viewcode-block" id="SettingsController">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SettingsController</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Редактирует черновую копию настроек, пока не нажато «сохранить»."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">,</span>
+        <span class="n">view</span><span class="p">:</span> <span class="n">SettingsScreen</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">AppState</span><span class="p">,</span>
+        <span class="n">profiles</span><span class="p">:</span> <span class="n">ProfileService</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Связать представление с сервисом профилей.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Корневое окно Tk.</span>
+<span class="sd">            view: Экран настроек.</span>
+<span class="sd">            state: Активный профиль.</span>
+<span class="sd">            profiles: Сервис профилей.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">profiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance_job</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">create</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">,</span>
+            <span class="n">rename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rename</span><span class="p">,</span>
+            <span class="n">switch_user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">switch_user</span><span class="p">,</span>
+            <span class="n">delete</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">,</span>
+            <span class="n">draft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">change_draft</span><span class="p">,</span>
+            <span class="n">switch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle</span><span class="p">,</span>
+            <span class="n">save</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">,</span>
+            <span class="n">reset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_user</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">())</span>
+
+<div class="viewcode-block" id="SettingsController.refresh">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.refresh">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать профили и сохранённые настройки активного профиля."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_profiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_draft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------- профили</span>
+<div class="viewcode-block" id="SettingsController.create">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.create">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Создать профиль из введённого имени.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Введённое имя.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="o">.</span><span class="n">layout_id</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">DataAccessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_name_error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_new_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_profiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">"профиль «</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">» создан"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.rename">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.rename">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Переименовать профиль в диалоге.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">        """</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">DataAccessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">ProfileNameDialog</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span> <span class="n">apply</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">show_modal</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">user_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">reload_user</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.switch_user">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.switch_user">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">switch_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сделать активным другой профиль.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">switch_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">"активный профиль: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.delete">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.delete">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Удалить профиль и его историю после подтверждения.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">        """</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="n">plural</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">sessions_count</span><span class="p">,</span> <span class="s2">"сессия"</span><span class="p">,</span> <span class="s2">"сессии"</span><span class="p">,</span> <span class="s2">"сессий"</span><span class="p">)</span>
+        <span class="n">question</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"удалить профиль «</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">»?"</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Вместе с ним будут удалены </span><span class="si">{</span><span class="n">sessions</span><span class="si">}</span><span class="s2"> и статистика клавиш."</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ask_confirm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">active</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">DataAccessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">active</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">switch_user</span><span class="p">(</span><span class="n">active</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">"профиль «</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_name</span><span class="si">}</span><span class="s2">» удален"</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------- настройки</span>
+<div class="viewcode-block" id="SettingsController.change_draft">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.change_draft">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_draft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Изменить редактируемую настройку (ещё не сохранена).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **changes: Поля :class:`User`.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_draft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"theme"</span> <span class="ow">in</span> <span class="n">changes</span> <span class="ow">or</span> <span class="s2">"font_size"</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_appearance_later</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_appearance_later</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Применить тему и размер шрифта через мгновенье после последнего изменения.</span>
+
+<span class="sd">        Ползунок отправляет много значений во время перетаскивания; сохраняется</span>
+<span class="sd">        только последнее, поэтому окно не перерисовывается десятки раз.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance_job</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after_cancel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_appearance_job</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">after</span><span class="p">(</span>
+            <span class="n">APPEARANCE_DELAY_MS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_appearance</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_appearance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сразу сохранить тему и размер шрифта и перерисовать окно.</span>
+
+<span class="sd">        Остальные изменённые настройки остаются в черновике до нажатия «сохранить».</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance_job</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">user</span><span class="p">,</span> <span class="n">pending</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">draft</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">pending</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">pending</span><span class="o">.</span><span class="n">font_size</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">save_settings</span><span class="p">(</span>
+                <span class="n">replace</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">pending</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">pending</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">DataAccessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">reload_user</span><span class="p">()</span>  <span class="c1"># перерисовывает окно, обновляет этот экран</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft</span> <span class="o">=</span> <span class="n">pending</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_draft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SettingsController.toggle">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.toggle">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Переключить настройки «вкл/выкл».</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field: ``show_finger_hint`` или ``auto_pause``.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_draft</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">,</span> <span class="n">field</span><span class="p">)})</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.save">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.save">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сохранить черновик и применить его ко всей программе."""</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">save_settings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">DataAccessError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">is_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">reload_user</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"настройки сохранены"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.reset">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.reset">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подставить в черновик значения по умолчанию."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">with_defaults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_draft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draft</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_appearance_later</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">"значения по умолчанию — нажмите «сохранить»"</span><span class="p">)</span></div>
+
+
+    <span class="c1"># ------------------------------------------------- ScreenController</span>
+<div class="viewcode-block" id="SettingsController.on_show">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.on_show">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Перезагружать профили при открытии экрана."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.on_hide">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.on_hide">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_hide</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Отказаться от несохранённых изменений."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.handle_key">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.handle_key">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Клавиши идут в поле ввода; ничего не обрабатывается.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Всегда ``False``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.handle_key_release">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.handle_key_release">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_key_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Отпускание клавиш здесь не нужно.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие клавиши Tk.</span>
+<span class="sd">        """</span></div>
+
+
+<div class="viewcode-block" id="SettingsController.status_hint">
+<a class="viewcode-back" href="../../../keytrainer.controllers.html#keytrainer.controllers.settings_controller.SettingsController.status_hint">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status_hint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подсказки экрана настроек.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Текст подсказки.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"тема и шрифт меняются сразу, остальное — после «сохранить»"</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

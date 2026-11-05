@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Руководство системного программиста &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="API Справочник" href="api.html" />
+    <link rel="prev" title="Руководство программиста" href="programmeguide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Руководство системного программиста</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">1. Общие сведения о программе</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2. Структура программы</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">3. Настройка программы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">3.1. Настройка на состав технических средств</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">3.2. Выбор функций и настроек</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">4. Проверка программы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">4.1. Способы проверки</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">4.2. Контрольные примеры</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">5. Дополнительные возможности</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">6. Сообщения системному программисту</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Руководство системного программиста</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sysprogrammeguide.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Руководство системного программиста<a class="headerlink" href="#id1" title="Ссылка на этот заголовок"></a></h1>
+<section id="id2">
+<h2>1. Общие сведения о программе<a class="headerlink" href="#id2" title="Ссылка на этот заголовок"></a></h2>
+<p>Программа «KeyTrainer Analytics» представляет собой десктопное приложение для обучения слепой печати. Работает автономно (Portable), не требует подключения к сети Интернет и сторонних серверов.</p>
+<p><strong>Технические и программные средства:</strong>
+* <strong>ОС:</strong> Windows 10/11 (64-bit) или Linux (Ubuntu 22.04+).
+* <strong>ОЗУ:</strong> Минимум 2 ГБ.
+* <strong>Диск:</strong> Около 150 МБ свободного пространства для exe-файла и базы данных.</p>
+</section>
+<section id="id3">
+<h2>2. Структура программы<a class="headerlink" href="#id3" title="Ссылка на этот заголовок"></a></h2>
+<p>Программа состоит из следующих составных частей:
+* Исполняемый файл <code class="docutils literal notranslate"><span class="pre">KeyTrainer.exe</span></code> (содержит интерпретатор Python, библиотеки и ресурсы).
+* База данных <code class="docutils literal notranslate"><span class="pre">keytrainer.db</span></code> (создается при первом запуске).
+* Файл журнала <code class="docutils literal notranslate"><span class="pre">keytrainer.log</span></code> (логи работы и ошибок).
+* Резервная копия базы <code class="docutils literal notranslate"><span class="pre">keytrainer.db.bak</span></code>.</p>
+</section>
+<section id="id4">
+<h2>3. Настройка программы<a class="headerlink" href="#id4" title="Ссылка на этот заголовок"></a></h2>
+<section id="id5">
+<h3>3.1. Настройка на состав технических средств<a class="headerlink" href="#id5" title="Ссылка на этот заголовок"></a></h3>
+<p>Программа не требует сложной установки. При переносе на другой компьютер достаточно скопировать файл <code class="docutils literal notranslate"><span class="pre">KeyTrainer.exe</span></code>. Для сохранения истории тренировок скопируйте также файл <code class="docutils literal notranslate"><span class="pre">keytrainer.db</span></code>.</p>
+</section>
+<section id="id6">
+<h3>3.2. Выбор функций и настроек<a class="headerlink" href="#id6" title="Ссылка на этот заголовок"></a></h3>
+<p>Настройка параметров (тема, шрифт, раскладка) осуществляется через встроенное меню «Настройки» (вызывается клавишей <kbd class="kbd docutils literal notranslate">Esc</kbd>).</p>
+</section>
+</section>
+<section id="id7">
+<h2>4. Проверка программы<a class="headerlink" href="#id7" title="Ссылка на этот заголовок"></a></h2>
+<section id="id8">
+<h3>4.1. Способы проверки<a class="headerlink" href="#id8" title="Ссылка на этот заголовок"></a></h3>
+<p>Для проверки целостности базы данных и корректности работы программы используются встроенные механизмы и автоматические тесты.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py<span class="w"> </span>-m<span class="w"> </span>pytest
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3>4.2. Контрольные примеры<a class="headerlink" href="#id9" title="Ссылка на этот заголовок"></a></h3>
+<ul class="simple">
+<li><p>Запуск приложения и прохождение упражнения в режиме «Случайные слова».</p></li>
+<li><p>Проверка сохранения сессии: после завершения упражнения данные должны появиться на вкладке «История».</p></li>
+<li><p>Проверка экспорта: нажатие кнопки «Экспорт в CSV» должно создавать файл, корректно открывающийся в Microsoft Excel.</p></li>
+</ul>
+</section>
+</section>
+<section id="id10">
+<h2>5. Дополнительные возможности<a class="headerlink" href="#id10" title="Ссылка на этот заголовок"></a></h2>
+<ul class="simple">
+<li><p>Экспорт истории в CSV с кодировкой UTF-8 (BOM) для корректного отображения кириллицы в Excel.</p></li>
+<li><p>Наличие адаптивного режима «Работа над ошибками», который генерирует текст на основе слабых клавиш пользователя.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h2>6. Сообщения системному программисту<a class="headerlink" href="#id11" title="Ссылка на этот заголовок"></a></h2>
+<ul class="simple">
+<li><p><strong>Информационные:</strong> «База данных успешно инициализирована», «Резервная копия создана».</p></li>
+<li><p><strong>Предупреждения:</strong> «Файл keytrainer.db поврежден, восстановление из резервной копии».</p></li>
+<li><p><strong>Ошибки:</strong> «Не найдены ресурсы программы», «Ошибка доступа к файлу базы данных».</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Если программа не запускается, проверьте права на запись в папке, где она находится. Не рекомендуется размещать <code class="docutils literal notranslate"><span class="pre">KeyTrainer.exe</span></code> в системных папках (например, <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files</span></code>).</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="programmeguide.html" class="btn btn-neutral float-left" title="Руководство программиста" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API Справочник" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

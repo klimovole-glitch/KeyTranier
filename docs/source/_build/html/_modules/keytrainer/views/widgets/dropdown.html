@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.widgets.dropdown &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.widgets.dropdown</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.views.widgets.dropdown</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Выпадающий список в стиле макетов (Figma: 01c, 01e, 01f).</span>
+
+<span class="sd">Системное ``tk.Menu`` нельзя стилизовать или анимировать, поэтому список —</span>
+<span class="sd">обычная рамка поверх окна: он разворачивается вниз, выбранный пункт</span>
+<span class="sd">отмечен «✓», пункт под мышью подсвечивается. Открыт может быть только</span>
+<span class="sd">один список; щелчок вне его или любая клавиша закрывает его.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Animator</span><span class="p">,</span> <span class="n">mix_colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">px</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeManager</span>
+
+<span class="n">OPEN_MS</span> <span class="o">=</span> <span class="mi">180</span>
+<span class="n">CHECK</span> <span class="o">=</span> <span class="s2">"✓ "</span>
+<span class="n">NO_CHECK</span> <span class="o">=</span> <span class="s2">"   "</span>
+
+<span class="n">_roots_with_handler</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Dropdown">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Dropdown</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Список вариантов, прикреплённый к опорному виджету."""</span>
+
+    <span class="n">active</span><span class="p">:</span> <span class="s2">"Dropdown | None"</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">anchor</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span>
+        <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">,</span>
+        <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]],</span>
+        <span class="n">selected</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Запомнить, что показывать; список строится в :meth:`open`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            anchor: Виджет, под которым открывается список.</span>
+<span class="sd">            theme: Менеджер тем.</span>
+<span class="sd">            items: Подписи и команды.</span>
+<span class="sd">            selected: Подпись выбранного пункта (получает галочку).</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="n">anchor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">items</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="n">selected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># ------------------------------------------------------------ класс</span>
+<div class="viewcode-block" id="Dropdown.close_active">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.close_active">[документация]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_active</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Закрыть открытый список, если он есть.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если список был открыт.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">active</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_install_click_handler</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Привязать по одному обработчику щелчка на окно, закрывающему списки при щелчке снаружи.</span>
+
+<span class="sd">        У каждого виджета в тегах привязки есть его окно верхнего уровня, поэтому</span>
+<span class="sd">        привязка к окну видит щелчки по всем виджетам.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Окно верхнего уровня.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_roots_with_handler</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">_roots_with_handler</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">on_click</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">_click_outside</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Button-1&gt;"</span><span class="p">,</span> <span class="n">on_click</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="s2">"+"</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------- открытие</span>
+<div class="viewcode-block" id="Dropdown.open">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.open">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать список под опорным виджетом (повторный щелчок закрывает)."""</span>
+        <span class="k">if</span> <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">same</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">anchor</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span>
+            <span class="n">Dropdown</span><span class="o">.</span><span class="n">close_active</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">same</span><span class="p">:</span>
+                <span class="k">return</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_install_click_handler</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span>
+            <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span>
+            <span class="n">highlightthickness</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">highlightbackground</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">border</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">caption</span><span class="p">,</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+            <span class="n">mark</span> <span class="o">=</span> <span class="n">CHECK</span> <span class="k">if</span> <span class="n">caption</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="k">else</span> <span class="n">NO_CHECK</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+                <span class="n">frame</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="n">mark</span> <span class="o">+</span> <span class="n">caption</span><span class="p">,</span>
+                <span class="n">anchor</span><span class="o">=</span><span class="s2">"w"</span><span class="p">,</span>
+                <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">14</span><span class="p">),</span>
+                <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+                <span class="n">cursor</span><span class="o">=</span><span class="s2">"hand2"</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span><span class="p">[</span><span class="s2">"ui"</span><span class="p">],</span>
+                <span class="n">bg</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span>
+                <span class="n">fg</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Enter&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hover</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Leave&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hover</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;ButtonRelease-1&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">command</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_choose</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">update_idletasks</span><span class="p">()</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">winfo_reqwidth</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">()</span> <span class="o">+</span> <span class="n">px</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_reqheight</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">()</span> <span class="o">-</span> <span class="n">root</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">()</span> <span class="o">-</span> <span class="n">px</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span> <span class="o">-</span> <span class="n">root</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span> <span class="o">+</span> <span class="n">px</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">lift</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">animator</span> <span class="o">=</span> <span class="n">Animator</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animator</span> <span class="o">=</span> <span class="n">animator</span>
+        <span class="n">animator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="s2">"unfold"</span><span class="p">,</span>
+            <span class="n">OPEN_MS</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">place_configure</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="n">t</span><span class="p">))),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">palette</span><span class="o">.</span><span class="n">text</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">CHECK</span><span class="p">)</span> <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">muted</span>
+            <span class="p">)</span>
+            <span class="n">animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"row</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="s2">"fg"</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">40</span> <span class="o">+</span> <span class="n">index</span> <span class="o">*</span> <span class="mi">25</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">,</span> <span class="n">inside</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подсветить строку под мышью.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: Метка строки.</span>
+<span class="sd">            inside: ``True``, когда мышь входит.</span>
+<span class="sd">        """</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">"bg"</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">surface_active</span> <span class="k">if</span> <span class="n">inside</span> <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">surface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animator</span><span class="o">.</span><span class="n">fade</span><span class="p">(</span><span class="sa">f</span><span class="s2">"hover</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="s2">"bg"</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">fg</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">palette</span><span class="o">.</span><span class="n">text</span>
+                <span class="k">if</span> <span class="n">inside</span> <span class="ow">or</span> <span class="n">row</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">CHECK</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">palette</span><span class="o">.</span><span class="n">muted</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_choose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Закрыть список и выполнить команду выбранной строки.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: Команда строки.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">command</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_click_outside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Закрыть список, если щелчок был не по нему и не по его опорному виджету.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: Событие щелчка Tk.</span>
+<span class="sd">        """</span>
+        <span class="n">widget</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">widget</span>
+        <span class="k">while</span> <span class="n">widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="ow">or</span> <span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">widget</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Dropdown.close">
+<a class="viewcode-back" href="../../../../keytrainer.views.widgets.html#keytrainer.views.widgets.dropdown.Dropdown.close">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Свернуть список и уничтожить его."""</span>
+        <span class="k">if</span> <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">Dropdown</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">mix_colors</span><span class="p">(</span><span class="n">palette</span><span class="o">.</span><span class="n">muted</span><span class="p">,</span> <span class="n">palette</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="s2">"unfold"</span><span class="p">,</span>
+            <span class="mi">110</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">place_configure</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)))),</span>
+            <span class="n">done</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">destroy</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

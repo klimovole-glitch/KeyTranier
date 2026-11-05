@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+dist/
+*.spec
+.pytest_cache/
+htmlcov/
+.coverage
+*.log
+*.db
+*.db.bak
+settings.json_build/
+docs/build/
+docs/source/_build/

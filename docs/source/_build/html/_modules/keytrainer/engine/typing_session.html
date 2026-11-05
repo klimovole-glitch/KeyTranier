@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.engine.typing_session &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.engine.typing_session</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.engine.typing_session</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Сессия набора: учёт нажатий и метрики в реальном времени (ТЗ, п. 4.1.1, 4.1.4).</span>
+
+<span class="sd">Реализованные здесь правила:</span>
+
+<span class="sd">* таймер запускается с первым нажатием клавиши;</span>
+<span class="sd">* неверный символ показывается в тексте и сразу считается ошибкой —</span>
+<span class="sd">  стирание его клавишей Backspace ошибку не убирает;</span>
+<span class="sd">* время, проведённое на паузе, не учитывается;</span>
+<span class="sd">* интервал перед нажатием клавиши дольше 2000 мс считается выбросом и не</span>
+<span class="sd">  используется при расчёте среднего времени реакции;</span>
+<span class="sd">* статистика хранится на базовой клавише ОЖИДАЕМОГО символа</span>
+<span class="sd">  («А» и «а» — одна клавиша).</span>
+
+<span class="sd">Клавиши-модификаторы и автоповтор фильтруются контроллером, поэтому этот</span>
+<span class="sd">класс получает только печатные символы и Backspace.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.keyboard_layouts</span><span class="w"> </span><span class="kn">import</span> <span class="n">base_key_char</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">metrics</span>
+
+<span class="n">LATENCY_OUTLIER_MS</span> <span class="o">=</span> <span class="mf">2000.0</span>
+
+
+<div class="viewcode-block" id="SessionState">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.SessionState">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionState</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Жизненный цикл сессии."""</span>
+
+    <span class="n">READY</span> <span class="o">=</span> <span class="s2">"READY"</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">"RUNNING"</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="s2">"PAUSED"</span>
+    <span class="n">FINISHED</span> <span class="o">=</span> <span class="s2">"FINISHED"</span></div>
+
+
+
+<div class="viewcode-block" id="KeyCounter">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.KeyCounter">[документация]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KeyCounter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Попытки, ошибки и время реакции одной клавиши."""</span>
+
+    <span class="n">attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">latencies_ms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="KeyCounter.register">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.KeyCounter.register">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_correct</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">latency_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Учесть одно нажатие клавиши.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            is_correct: Был ли введён правильный символ.</span>
+<span class="sd">            latency_ms: Интервал с предыдущего нажатия, ``None`` для</span>
+<span class="sd">                первого нажатия сессии.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_correct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">latency_ms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">latency_ms</span> <span class="o">&lt;=</span> <span class="n">LATENCY_OUTLIER_MS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latencies_ms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">latency_ms</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">avg_latency_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Среднее время реакции без выбросов, ``None``, если оно неизвестно."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">latencies_ms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latencies_ms</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latencies_ms</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="KeyResult">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.KeyResult">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KeyResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Что произошло после одного нажатия клавиши (используется представлением для перерисовки)."""</span>
+
+    <span class="n">position</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">expected</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">typed</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_correct</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">finished</span><span class="p">:</span> <span class="nb">bool</span></div>
+
+
+
+<div class="viewcode-block" id="SessionSnapshot">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.SessionSnapshot">[документация]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionSnapshot</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Метрики в реальном времени, показываемые на панели метрик."""</span>
+
+    <span class="n">elapsed_sec</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">correct_chars</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">keystrokes</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">wpm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">cpm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">error_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">accuracy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">progress</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="TypingSession">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypingSession</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Один проход одного текста упражнения."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">layout_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">time_limit_sec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clock</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подготовить сессию; таймер запускается с первым нажатием клавиши.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Текст упражнения.</span>
+<span class="sd">            layout_name: Раскладка, на которой набирается текст.</span>
+<span class="sd">            time_limit_sec: Лимит времени для режима «по времени».</span>
+<span class="sd">            clock: Источник времени в секундах (``time.perf_counter``);</span>
+<span class="sd">                в тестах передаются поддельные часы.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Если текст пустой.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Exercise text is empty"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_name</span> <span class="o">=</span> <span class="n">layout_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="o">=</span> <span class="n">time_limit_sec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span> <span class="o">=</span> <span class="n">clock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typed</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keystrokes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KeyCounter</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">READY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paused_total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_completed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># ----------------------------------------------------------- состояние</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SessionState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Текущее состояние сессии."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Индекс следующего набираемого символа."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_typed</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``True`` после :meth:`finish`."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">FINISHED</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elapsed_sec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Время набора в секундах без пауз."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_total</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_time_over</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``True``, если достигнут лимит времени упражнения."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_limit_sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_sec</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_limit_sec</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">key_counters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KeyCounter</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Статистика по символам базовых клавиш."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counters</span>
+
+<div class="viewcode-block" id="TypingSession.char_states">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.char_states">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">char_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Вернуть правильность каждого введённого символа (для подсветки).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True`` для правильного символа в каждой введённой позиции.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">typed</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">typed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_typed</span><span class="p">)]</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------- действия</span>
+<div class="viewcode-block" id="TypingSession.press">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.press">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Учесть нажатие печатной клавиши.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            char: Введённый символ.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Результат нажатия.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Если сессия завершена или приостановлена.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">SessionState</span><span class="o">.</span><span class="n">FINISHED</span><span class="p">,</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot type in state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">READY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span> <span class="o">=</span> <span class="n">now</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+        <span class="n">is_correct</span> <span class="o">=</span> <span class="n">char</span> <span class="o">==</span> <span class="n">expected</span>
+        <span class="n">latency</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">latency</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span> <span class="o">=</span> <span class="n">now</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keystrokes</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_correct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># остаётся учтённой даже после Backspace</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">base_key_char</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">KeyCounter</span><span class="p">())</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">is_correct</span><span class="p">,</span> <span class="n">latency</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+        <span class="n">finished</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">finished</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">KeyResult</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">char</span><span class="p">,</span> <span class="n">is_correct</span><span class="p">,</span> <span class="n">finished</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypingSession.backspace">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.backspace">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">backspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Стереть последний введённый символ (ошибки остаются учтёнными).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Новая позиция.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_typed</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span></div>
+
+
+<div class="viewcode-block" id="TypingSession.pause">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.pause">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Остановить таймер (потеря фокуса или клавиша паузы)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span></div>
+
+
+<div class="viewcode-block" id="TypingSession.resume">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.resume">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Продолжить после паузы; пауза не учитывается во времени набора."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">PAUSED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_paused_total</span> <span class="o">+=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span>
+            <span class="c1"># первое нажатие после паузы не должно получать паузу как задержку</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_last_press_at</span> <span class="o">+=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_paused_at</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">RUNNING</span></div>
+
+
+<div class="viewcode-block" id="TypingSession.finish">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.finish">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">completed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Остановить сессию.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            completed: ``True``, если набран весь текст или истёк лимит</span>
+<span class="sd">                времени, ``False``, если пользователь прервал упражнение.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">==</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">FINISHED</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">SessionState</span><span class="o">.</span><span class="n">FINISHED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_completed</span> <span class="o">=</span> <span class="n">completed</span></div>
+
+
+    <span class="c1"># --------------------------------------------------------- метрики</span>
+<div class="viewcode-block" id="TypingSession.snapshot">
+<a class="viewcode-back" href="../../../keytrainer.engine.html#keytrainer.engine.typing_session.TypingSession.snapshot">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SessionSnapshot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вычислить метрики на текущий момент.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Значения для панели метрик и карточки результатов.</span>
+<span class="sd">        """</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_states</span><span class="p">())</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_sec</span> <span class="o">/</span> <span class="mi">60</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">error_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keystrokes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SessionSnapshot</span><span class="p">(</span>
+            <span class="n">elapsed_sec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed_sec</span><span class="p">,</span>
+            <span class="n">correct_chars</span><span class="o">=</span><span class="n">correct</span><span class="p">,</span>
+            <span class="n">keystrokes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_keystrokes</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span>
+            <span class="n">wpm</span><span class="o">=</span><span class="n">metrics</span><span class="o">.</span><span class="n">wpm</span><span class="p">(</span><span class="n">correct</span><span class="p">,</span> <span class="n">minutes</span><span class="p">),</span>
+            <span class="n">cpm</span><span class="o">=</span><span class="n">metrics</span><span class="o">.</span><span class="n">cpm</span><span class="p">(</span><span class="n">correct</span><span class="p">,</span> <span class="n">minutes</span><span class="p">),</span>
+            <span class="n">error_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">,</span>
+            <span class="n">accuracy</span><span class="o">=</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">rate</span><span class="p">),</span>
+            <span class="n">progress</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

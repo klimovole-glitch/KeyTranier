@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.repositories.session_repository &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.repositories.session_repository</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.data.repositories.session_repository</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Репозиторий для ``tbl_sessions`` (журнал сессий)."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExerciseMode</span><span class="p">,</span> <span class="n">KeyStat</span><span class="p">,</span> <span class="n">Session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.repositories.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRepository</span>
+
+<span class="c1"># ORDER BY нельзя параметризовать, поэтому столбцы сортировки берутся из белого списка.</span>
+<span class="n">SORTABLE_COLUMNS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"started_at"</span><span class="p">,</span> <span class="s2">"exercise_mode"</span><span class="p">,</span> <span class="s2">"wpm"</span><span class="p">,</span> <span class="s2">"cpm"</span><span class="p">,</span> <span class="s2">"error_rate"</span><span class="p">,</span> <span class="s2">"duration_sec"</span><span class="p">}</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="SessionRepository">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionRepository</span><span class="p">(</span><span class="n">BaseRepository</span><span class="p">[</span><span class="n">Session</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">"""Операции CRUD для тренировочных сессий."""</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="s2">"tbl_sessions"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Преобразовать строку в :class:`Session`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row: Строка ``tbl_sessions``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Сущность сессии.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Session</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"user_id"</span><span class="p">],</span>
+            <span class="n">layout_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"layout_id"</span><span class="p">],</span>
+            <span class="n">started_at</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"started_at"</span><span class="p">],</span>
+            <span class="n">exercise_mode</span><span class="o">=</span><span class="n">ExerciseMode</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"exercise_mode"</span><span class="p">]),</span>
+            <span class="n">text_length</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"text_length"</span><span class="p">],</span>
+            <span class="n">duration_sec</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"duration_sec"</span><span class="p">],</span>
+            <span class="n">wpm</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"wpm"</span><span class="p">],</span>
+            <span class="n">cpm</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"cpm"</span><span class="p">],</span>
+            <span class="n">error_rate</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"error_rate"</span><span class="p">],</span>
+            <span class="n">errors_count</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"errors_count"</span><span class="p">],</span>
+            <span class="n">is_completed</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"is_completed"</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_session_values</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Собрать значения столбцов сессии в порядке INSERT.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session: Сохраняемая сессия.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Кортеж значений для плейсхолдеров.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">layout_id</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">started_at</span><span class="p">,</span>
+            <span class="n">ExerciseMode</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">exercise_mode</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">text_length</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">duration_sec</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">wpm</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">cpm</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">error_rate</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">errors_count</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">is_completed</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SessionRepository.create">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.create">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">key_stats</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">KeyStat</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сохранить сессию вместе со статистикой по клавишам.</span>
+
+<span class="sd">        Оба INSERT выполняются в ОДНОЙ транзакции (ТЗ, п. 3.2): если запись</span>
+<span class="sd">        статистики не удалась, сессия тоже откатывается, поэтому в истории</span>
+<span class="sd">        никогда не бывает сессии без данных по клавишам.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session: Результат сессии.</span>
+<span class="sd">            key_stats: Статистика каждой нажатой клавиши.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Идентификатор созданной сессии.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">"INSERT INTO tbl_sessions (user_id, layout_id, started_at, "</span>
+                <span class="s2">"exercise_mode, text_length, duration_sec, wpm, cpm, error_rate, "</span>
+                <span class="s2">"errors_count, is_completed) "</span>
+                <span class="s2">"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_session_values</span><span class="p">(</span><span class="n">session</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">session_id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+                <span class="s2">"INSERT INTO tbl_key_stats "</span>
+                <span class="s2">"(session_id, key_id, attempts, errors, avg_latency_ms) "</span>
+                <span class="s2">"VALUES (?, ?, ?, ?, ?)"</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">key_id</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">attempts</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">avg_latency_ms</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">key_stats</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="k">return</span> <span class="n">session_id</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.create_many">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.create_many">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Сохранить много сессий без статистики клавиш в ОДНОЙ транзакции.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sessions: Сохраняемые сессии (используется при импорте CSV).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество сохранённых сессий.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+                <span class="s2">"INSERT INTO tbl_sessions (user_id, layout_id, started_at, "</span>
+                <span class="s2">"exercise_mode, text_length, duration_sec, wpm, cpm, error_rate, "</span>
+                <span class="s2">"errors_count, is_completed) "</span>
+                <span class="s2">"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"</span><span class="p">,</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_values</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.get_by_user">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_by_user">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_by_user</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">since</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">order_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"started_at"</span><span class="p">,</span>
+        <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Прочитать сессии профиля с фильтрацией и сортировкой.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">            since: Дата и время в формате ISO; только сессии, начатые не раньше неё.</span>
+<span class="sd">            order_by: Столбец из :data:`SORTABLE_COLUMNS`.</span>
+<span class="sd">            descending: Направление сортировки.</span>
+<span class="sd">            limit: Максимальное количество сессий.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список сессий.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Если ``order_by`` нет в белом списке.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">order_by</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SORTABLE_COLUMNS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Недопустимое поле сортировки: </span><span class="si">{</span><span class="n">order_by</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">"SELECT * FROM tbl_sessions WHERE user_id = ?"</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">user_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">since</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">" AND started_at &gt;= ?"</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">since</span><span class="p">)</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" ORDER BY </span><span class="si">{</span><span class="n">order_by</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'DESC'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">descending</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'ASC'</span><span class="si">}</span><span class="s2">, id DESC"</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">" LIMIT ?"</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.get_last">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_last">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_last</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вернуть последнюю сессию профиля на раскладке.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+<span class="sd">            layout_id: Идентификатор раскладки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Сессия или ``None``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_one</span><span class="p">(</span>
+            <span class="s2">"SELECT * FROM tbl_sessions WHERE user_id = ? AND layout_id = ? "</span>
+            <span class="s2">"ORDER BY started_at DESC, id DESC LIMIT 1"</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">layout_id</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.get_best_wpm">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.get_best_wpm">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_best_wpm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Вернуть личный рекорд профиля (только завершённые сессии).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Максимальная WPM или ``None``, если сессий нет.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">"SELECT MAX(wpm) FROM tbl_sessions "</span>
+                <span class="s2">"WHERE user_id = ? AND is_completed = 1"</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">user_id</span><span class="p">,),</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.count_by_user">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.count_by_user">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_by_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Подсчитать сессии профиля.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Идентификатор профиля.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество сессий.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">"SELECT COUNT(*) FROM tbl_sessions WHERE user_id = ?"</span><span class="p">,</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.update">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.update">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Перезаписать метрики существующей сессии.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session: Сессия с существующим id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если сессия обновлена.</span>
+<span class="sd">        """</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span>
+            <span class="s2">"UPDATE tbl_sessions SET duration_sec = ?, wpm = ?, cpm = ?, "</span>
+            <span class="s2">"error_rate = ?, errors_count = ?, is_completed = ? WHERE id = ?"</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">duration_sec</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">wpm</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">cpm</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">error_rate</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">errors_count</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">is_completed</span><span class="p">),</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="SessionRepository.delete_many">
+<a class="viewcode-back" href="../../../../keytrainer.data.repositories.html#keytrainer.data.repositories.session_repository.SessionRepository.delete_many">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Удалить несколько сессий (их статистика по клавишам удаляется через CASCADE).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_ids: Идентификаторы сессий.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Количество удалённых сессий.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+                <span class="s2">"DELETE FROM tbl_sessions WHERE id = ?"</span><span class="p">,</span>
+                <span class="p">[(</span><span class="n">session_id</span><span class="p">,)</span> <span class="k">for</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">session_ids</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">rowcount</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.data.seed &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.data.seed</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.data.seed</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Первоначальное заполнение справочных таблиц (раскладки, клавиши, слова, тексты).</span>
+
+<span class="sd">Данные загружаются из текстовых файлов в ``keytrainer/resources`` при</span>
+<span class="sd">первом создании базы данных (ТЗ, раздел 7).</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RESOURCES_DIR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.data.keyboard_layouts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LAYOUT_EN</span><span class="p">,</span>
+    <span class="n">LAYOUT_IDS</span><span class="p">,</span>
+    <span class="n">LAYOUT_RU</span><span class="p">,</span>
+    <span class="n">build_key_specs</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DEFAULT_USER_NAME</span> <span class="o">=</span> <span class="s2">"Гость"</span>
+<span class="n">_LANG_SUFFIX</span> <span class="o">=</span> <span class="p">{</span><span class="n">LAYOUT_RU</span><span class="p">:</span> <span class="s2">"ru"</span><span class="p">,</span> <span class="n">LAYOUT_EN</span><span class="p">:</span> <span class="s2">"en"</span><span class="p">}</span>
+<span class="n">_TITLE_MARK</span> <span class="o">=</span> <span class="s2">"## "</span>
+
+
+<div class="viewcode-block" id="load_words">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.seed.load_words">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_words</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Прочитать файл словаря, где одно слово на строку.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: Текстовый файл в UTF-8.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Непустые, очищенные от пробелов слова в нижнем регистре без дубликатов.</span>
+<span class="sd">    """</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">word</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="parse_texts">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.seed.parse_texts">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_texts</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Прочитать библиотеку текстов, где каждый текст начинается со строки ``## Заголовок``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: Текстовый файл в UTF-8.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Пары ``(заголовок, содержимое)``.</span>
+<span class="sd">    """</span>
+    <span class="n">texts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">title</span><span class="p">,</span> <span class="n">lines</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">_TITLE_MARK</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_TITLE_MARK</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">title</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="n">texts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">title</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)))</span>
+            <span class="n">title</span><span class="p">,</span> <span class="n">lines</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_TITLE_MARK</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">texts</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_seed_layout</span><span class="p">(</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resources_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Вставить одну раскладку вместе с её клавишами, словами и текстами.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn: Открытое соединение внутри транзакции.</span>
+<span class="sd">        name: Имя раскладки.</span>
+<span class="sd">        resources_dir: Папка с файлами словарей и текстов.</span>
+<span class="sd">    """</span>
+    <span class="n">layout_id</span> <span class="o">=</span> <span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="n">_LANG_SUFFIX</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="s2">"INSERT INTO tbl_layouts (id, layout_name) VALUES (?, ?)"</span><span class="p">,</span> <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+        <span class="s2">"INSERT INTO tbl_keys (layout_id, key_char, row_num, finger, pos_x, pos_y) "</span>
+        <span class="s2">"VALUES (?, ?, ?, ?, ?, ?)"</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">key_char</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">row_num</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">finger</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">pos_y</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">build_key_specs</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">load_words</span><span class="p">(</span><span class="n">resources_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"words_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.txt"</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+        <span class="s2">"INSERT OR IGNORE INTO tbl_words (layout_id, word) VALUES (?, ?)"</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="n">parse_texts</span><span class="p">(</span><span class="n">resources_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"texts_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.txt"</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+        <span class="s2">"INSERT INTO tbl_texts (layout_id, title, content, is_custom) "</span>
+        <span class="s2">"VALUES (?, ?, ?, 0)"</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span> <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Seeded </span><span class="si">%s</span><span class="s2">: </span><span class="si">%d</span><span class="s2"> words, </span><span class="si">%d</span><span class="s2"> texts"</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="seed_reference_data">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.seed.seed_reference_data">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">seed_reference_data</span><span class="p">(</span>
+    <span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">resources_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">RESOURCES_DIR</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Заполнить справочные таблицы, если база данных пуста.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn: Открытое соединение; транзакцию фиксирует вызывающий код.</span>
+<span class="sd">        resources_dir: Папка с файлами словарей и текстов.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``True``, если данные вставлены, ``False``, если они уже были.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT COUNT(*) FROM tbl_layouts"</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LAYOUT_RU</span><span class="p">,</span> <span class="n">LAYOUT_EN</span><span class="p">):</span>
+        <span class="n">_seed_layout</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resources_dir</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="s2">"INSERT INTO tbl_users (user_name, layout_id, created_at) VALUES (?, ?, ?)"</span><span class="p">,</span>
+        <span class="p">(</span>
+            <span class="n">DEFAULT_USER_NAME</span><span class="p">,</span>
+            <span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="n">LAYOUT_RU</span><span class="p">],</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">"seconds"</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="sync_builtin_library">
+<a class="viewcode-back" href="../../../keytrainer.data.html#keytrainer.data.seed.sync_builtin_library">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sync_builtin_library</span><span class="p">(</span>
+    <span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">resources_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">RESOURCES_DIR</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Привести встроенные слова и тексты существующей базы данных к актуальному виду.</span>
+
+<span class="sd">    Библиотека растёт от версии к версии: добавляются новые слова словаря;</span>
+<span class="sd">    тексты сопоставляются по заголовку, новые добавляются, удалённые</span>
+<span class="sd">    убираются. Пользовательские тексты (``is_custom = 1``) не затрагиваются.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn: Открытое соединение; транзакцию фиксирует вызывающий код.</span>
+<span class="sd">        resources_dir: Папка с файлами текстов.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Количество добавленных текстов.</span>
+<span class="sd">    """</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LAYOUT_RU</span><span class="p">,</span> <span class="n">LAYOUT_EN</span><span class="p">):</span>
+        <span class="n">layout_id</span> <span class="o">=</span> <span class="n">LAYOUT_IDS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">_LANG_SUFFIX</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+            <span class="s2">"INSERT OR IGNORE INTO tbl_words (layout_id, word) VALUES (?, ?)"</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">load_words</span><span class="p">(</span><span class="n">resources_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"words_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.txt"</span><span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">texts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parse_texts</span><span class="p">(</span><span class="n">resources_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"texts_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.txt"</span><span class="p">))</span>
+        <span class="n">stored</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">"SELECT title FROM tbl_texts WHERE layout_id = ? AND is_custom = 0"</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">layout_id</span><span class="p">,),</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="p">[(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">texts</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">texts</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stored</span><span class="p">]</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+            <span class="s2">"INSERT INTO tbl_texts (layout_id, title, content, is_custom) "</span>
+            <span class="s2">"VALUES (?, ?, ?, 0)"</span><span class="p">,</span>
+            <span class="n">new</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">title</span> <span class="ow">in</span> <span class="n">stored</span> <span class="o">-</span> <span class="n">texts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">"DELETE FROM tbl_texts WHERE layout_id = ? AND is_custom = 0 "</span>
+                <span class="s2">"AND title = ?"</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">layout_id</span><span class="p">,</span> <span class="n">title</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">added</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">added</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Built-in library updated: </span><span class="si">%d</span><span class="s2"> texts added"</span><span class="p">,</span> <span class="n">added</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">added</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

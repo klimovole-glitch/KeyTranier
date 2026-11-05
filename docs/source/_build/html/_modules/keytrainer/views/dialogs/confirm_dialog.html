@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keytrainer.views.dialogs.confirm_dialog &mdash; документация KeyTranier 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            KeyTranier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide.html">Руководство пользователя</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../programmeguide.html">Руководство программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysprogrammeguide.html">Руководство системного программиста</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Справочник</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KeyTranier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">keytrainer.views.dialogs.confirm_dialog</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код keytrainer.views.dialogs.confirm_dialog</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="sd">"""Подтверждение поверх затемнённого окна (Figma 09c «История — удаление записи»).</span>
+
+<span class="sd">Окно затемняется :class:`DimLayer`; над ним безрамочное окно с</span>
+<span class="sd">«прозрачным» цветом фона показывает только вопрос и два действия, поэтому</span>
+<span class="sd">они кажутся лежащими прямо на затемнённом экране. Enter подтверждает,</span>
+<span class="sd">Esc отменяет. Где прозрачность недоступна, вопрос показывается на</span>
+<span class="sd">обычной тёмной панели посередине окна.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Animator</span><span class="p">,</span> <span class="n">mix_colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">px</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keytrainer.views.widgets.dim_layer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DIM_ALPHA</span><span class="p">,</span>
+    <span class="n">DimLayer</span><span class="p">,</span>
+    <span class="n">transparency_supported</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">FADE_IN_MS</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">TEXT</span> <span class="o">=</span> <span class="s2">"#e6e6ea"</span>
+<span class="n">MUTED</span> <span class="o">=</span> <span class="s2">"#9a9aa4"</span>
+<span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"#c97b7b"</span>
+
+
+<div class="viewcode-block" id="ConfirmOverlay">
+<a class="viewcode-back" href="../../../../keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ConfirmOverlay">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfirmOverlay</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Вопрос с «отмена» и опасным действием поверх затемнённого окна."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span>
+        <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">,</span>
+        <span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">details</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"удалить"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Построить наложение (показывается через :meth:`ask`).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: Главное окно.</span>
+<span class="sd">            theme: Менеджер тем (шрифты и фон).</span>
+<span class="sd">            question: Главная строка, например «удалить запись от 19.10.2026 18:30?».</span>
+<span class="sd">            details: Мелкая строка под вопросом.</span>
+<span class="sd">            action: Подпись подтверждающего действия.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">question</span> <span class="o">=</span> <span class="n">question</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span> <span class="o">=</span> <span class="n">details</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">DimLayer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_area</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_client_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Всё главное окно.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``x, y, width, height`` относительно главного окна.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ConfirmOverlay.ask">
+<a class="viewcode-back" href="../../../../keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ConfirmOverlay.ask">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Показать вопрос и дождаться ответа.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True``, если действие подтверждено.</span>
+<span class="sd">        """</span>
+        <span class="n">transparent</span> <span class="o">=</span> <span class="n">transparency_supported</span><span class="p">()</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">mix_colors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">bg</span><span class="p">,</span> <span class="s2">"#000000"</span><span class="p">,</span> <span class="n">DIM_ALPHA</span><span class="p">)</span>
+        <span class="n">bg</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">transparent</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">surface</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">overrideredirect</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">transient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel</span> <span class="o">=</span> <span class="n">panel</span>
+        <span class="k">if</span> <span class="n">transparent</span><span class="p">:</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">"-transparentcolor"</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">"-alpha"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">body</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">relx</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rely</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">"center"</span><span class="p">)</span>
+        <span class="n">fonts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span>
+        <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">question</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">fonts</span><span class="p">[</span><span class="s2">"confirm"</span><span class="p">])</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="p">:</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">MUTED</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">fonts</span><span class="p">[</span><span class="s2">"ui"</span><span class="p">])</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                <span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="n">px</span><span class="p">((</span><span class="mi">34</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_button</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="s2">"отмена"</span><span class="p">,</span> <span class="n">MUTED</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_button</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="s2">"#e09a9a"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confirm</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Escape&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">())</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Return&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confirm</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_panel</span><span class="p">()</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">lift</span><span class="p">()</span>
+        <span class="n">follow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">"&lt;Configure&gt;"</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">widget</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place_panel</span><span class="p">(),</span>
+            <span class="n">add</span><span class="o">=</span><span class="s2">"+"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">transparent</span><span class="p">:</span>
+            <span class="n">Animator</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="s2">"alpha"</span><span class="p">,</span> <span class="n">FADE_IN_MS</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">panel</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">"-alpha"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">grab_set</span><span class="p">()</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">focus_force</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">wait_window</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="s2">"&lt;Configure&gt;"</span><span class="p">,</span> <span class="n">follow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">hide</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">confirmed</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">hover</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Создать текстовое действие, которое светлеет под мышью.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent: Контейнер.</span>
+<span class="sd">            text: Подпись.</span>
+<span class="sd">            color: Обычный цвет.</span>
+<span class="sd">            hover: Цвет под мышью.</span>
+<span class="sd">            command: Вызывается по щелчку.</span>
+<span class="sd">            bg: Цвет фона.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Метка, используемая как кнопка.</span>
+<span class="sd">        """</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span>
+            <span class="n">fg</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fonts</span><span class="p">[</span><span class="s2">"ui"</span><span class="p">],</span>
+            <span class="n">cursor</span><span class="o">=</span><span class="s2">"hand2"</span><span class="p">,</span>
+            <span class="n">padx</span><span class="o">=</span><span class="n">px</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Enter&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">hover</span><span class="p">))</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Leave&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="n">label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">color</span><span class="p">))</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Button-1&gt;"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">_e</span><span class="p">:</span> <span class="n">command</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">label</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_place_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Накрыть главное окно панелью."""</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel</span>
+        <span class="k">if</span> <span class="n">panel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">panel</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">transparency_supported</span><span class="p">():</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">px</span><span class="p">(</span><span class="mi">640</span><span class="p">),</span> <span class="n">px</span><span class="p">(</span><span class="mi">240</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_rootx</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">()</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_rooty</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">:</span>  <span class="c1"># см. DimLayer.place: избегаем цикла</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_confirm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Закрыть с ответом «да»."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Закрыть с ответом «нет»."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Уничтожить панель (затемняющий слой гаснет следом)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">winfo_exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">grab_release</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">focus_force</span><span class="p">()</span>  <span class="c1"># клавиши должны возвращаться в главное окно</span></div>
+
+
+
+<div class="viewcode-block" id="ask_confirm">
+<a class="viewcode-back" href="../../../../keytrainer.views.dialogs.html#keytrainer.views.dialogs.confirm_dialog.ask_confirm">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ask_confirm</span><span class="p">(</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">Misc</span><span class="p">,</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeManager</span><span class="p">,</span>
+    <span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">details</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"удалить"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Показать подтверждение поверх затемнённого окна и дождаться ответа.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parent: Любой виджет главного окна.</span>
+<span class="sd">        theme: Менеджер тем.</span>
+<span class="sd">        question: Главная строка.</span>
+<span class="sd">        details: Пояснение мелким шрифтом.</span>
+<span class="sd">        action: Подпись подтверждающего действия.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``True``, если пользователь подтвердил.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">ConfirmOverlay</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">theme</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span><span class="o">.</span><span class="n">ask</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Климов О.В.. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
