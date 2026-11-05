@@ -1,12 +1,11 @@
-Документация проекта KeyTrainer
-========================================
+Документация проекта KeyTrainer Analytics
+=========================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Содержание:
 
-   modules
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   userguide
+   programmeguide
+   sysprogrammeguide
+   api

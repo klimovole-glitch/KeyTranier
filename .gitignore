@@ -9,4 +9,6 @@ htmlcov/
 *.log
 *.db
 *.db.bak
-settings.json
+settings.json_build/
+docs/build/
+docs/source/_build/
